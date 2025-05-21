@@ -73,6 +73,14 @@ const FooterContainer = styled.footer`
 	justify-content: space-between;
 	padding: 1rem;
 	color: #a3a3a3;
+
+	width: 100%;
+	position: fixed;
+	bottom: 0;
+	background-color: rgba(0, 0, 0, 0.05);
+	backdrop-filter: blur(38px);
+	border-top: 1px solid rgba(255, 255, 255, 0.1);
+	z-index: 100;
 `
 
 const Copyright = styled.aside`

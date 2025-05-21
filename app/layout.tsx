@@ -4,7 +4,7 @@ import "./globals.css"
 import { Header } from "./components/Header"
 import { Footer } from "./components/Footer"
 import { siteConfig } from "./siteConfig"
-import GiveATalkCTA from "./components/GiveATalkCTA"
+import { GiveATalkCTA } from "./components/GiveATalkCTA"
 import StyledComponentsRegistry from "./StyledComponentsRegistry"
 
 export const metadata: Metadata = {

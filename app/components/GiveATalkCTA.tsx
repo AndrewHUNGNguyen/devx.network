@@ -1,14 +1,10 @@
-import React from "react"
+"use client"
 import { links } from "../siteConfig"
+import styled from "styled-components"
 
-const GiveATalkCTA: React.FC = () => {
+export const GiveATalkCTA: React.FC = () => {
 	return (
-		<a
-			href={links.talkSubmissionUrl}
-			target="_blank"
-			rel="noopener noreferrer"
-			className="fixed flex items-center px-6 py-3 space-x-2 font-bold text-white transition-all duration-300 ease-in-out transform -translate-x-1/2 rounded-full shadow-lg bg-gradient-to-r from-purple-500 to-purple-600 sm:bottom-12 bottom-6 left-1/2 hover:from-purple-600 hover:to-purple-700 hover:scale-105 animate-pulse"
-		>
+		<StyledLink href={links.talkSubmissionUrl} target="_blank" rel="noopener noreferrer">
 			<svg
 				xmlns="http://www.w3.org/2000/svg"
 				className="w-6 h-6"
@@ -24,8 +20,57 @@ const GiveATalkCTA: React.FC = () => {
 				/>
 			</svg>
 			<span>Give a Talk!</span>
-		</a>
+		</StyledLink>
 	)
 }
 
-export default GiveATalkCTA
+const StyledLink = styled.a`
+	position: fixed;
+	display: flex;
+	align-items: center;
+	padding-left: 1.5rem; /* px-6 */
+	padding-right: 1.5rem; /* px-6 */
+	padding-top: 0.75rem; /* py-3 */
+	padding-bottom: 0.75rem; /* py-3 */
+	gap: 0.5rem; /* space-x-2 */
+	font-weight: 700; /* font-bold */
+	color: white; /* text-white */
+	transition: all 0.3s ease-in-out; /* transition-all duration-300 ease-in-out */
+	transform: translateX(-50%); /* -translate-x-1/2 */
+	border-radius: 9999px; /* rounded-full */
+	box-shadow:
+		0 10px 15px -3px rgba(0, 0, 0, 0.1),
+		0 4px 6px -2px rgba(0, 0, 0, 0.05); /* shadow-lg */
+	background: linear-gradient(
+		to right,
+		#8b5cf6,
+		#7c3aed
+	); /* bg-gradient-to-r from-purple-500 to-purple-600 */
+	bottom: 6rem; /* bottom-12 */
+	left: 50%; /* left-1/2 */
+	animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; /* animate-pulse */
+
+	&:hover {
+		background: linear-gradient(
+			to right,
+			#7c3aed,
+			#6d28d9
+		); /* hover:from-purple-600 hover:to-purple-700 */
+		transform: translateX(-50%) scale(1.05); /* hover:scale-105 */
+	}
+
+	svg {
+		width: 1.5rem; /* w-6 */
+		height: 1.5rem; /* h-6 */
+	}
+
+	@keyframes pulse {
+		0%,
+		100% {
+			opacity: 1;
+		}
+		50% {
+			opacity: 0.8;
+		}
+	}
+`
