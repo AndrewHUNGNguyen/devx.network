@@ -173,9 +173,6 @@ const NavLinks = () => {
 				<MenuLink href="/">Home</MenuLink>
 			</MenuItem>
 			<MenuItem>
-				<MenuLink href="/about">About</MenuLink>
-			</MenuItem>
-			<MenuItem>
 				<MenuLink target="_blank" href={links.lumaUrl}>
 					Event Calendar
 				</MenuLink>

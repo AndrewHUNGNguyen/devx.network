@@ -4,7 +4,6 @@ import "./globals.css"
 import { Header } from "./components/Header"
 import { Footer } from "./components/Footer"
 import { siteConfig } from "./siteConfig"
-import { GiveATalkCTA } from "./components/GiveATalkCTA"
 import StyledComponentsRegistry from "./StyledComponentsRegistry"
 
 export const metadata: Metadata = {
@@ -34,7 +33,6 @@ export default function RootLayout({
 					<Header />
 					{children}
 					<Footer />
-					<GiveATalkCTA />
 				</StyledComponentsRegistry>
 			</body>
 		</html>
