@@ -16,6 +16,7 @@
 		"*.{js,jsx,ts,tsx}": "eslint"
 	},
 	"dependencies": {
+		"@babel/runtime": "^7.27.1",
 		"better-sqlite3": "^11.1.2",
 		"next": "14.2.4",
 		"react": "^18",
@@ -27,8 +28,8 @@
 		"@types/node": "^20",
 		"@types/react": "^18",
 		"@types/react-dom": "^18",
-		"@types/styled-components": "^5.1.34",
 		"autoprefixer": "^10.4.19",
+		"babel-plugin-styled-components": "^2.1.4",
 		"daisyui": "^4.12.10",
 		"eslint": "^8",
 		"eslint-config-next": "14.2.4",
