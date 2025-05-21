@@ -25,7 +25,7 @@ export const GiveATalkCTA: React.FC = () => {
 }
 
 const StyledLink = styled.a`
-	position: fixed;
+	position: absolute;
 	display: flex;
 	align-items: center;
 	padding-left: 1.5rem; /* px-6 */
@@ -46,7 +46,7 @@ const StyledLink = styled.a`
 		#8b5cf6,
 		#7c3aed
 	); /* bg-gradient-to-r from-purple-500 to-purple-600 */
-	bottom: 6rem; /* bottom-12 */
+	top: -4rem; /* bottom-12 */
 	left: 50%; /* left-1/2 */
 	animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; /* animate-pulse */
 

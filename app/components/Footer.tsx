@@ -1,10 +1,12 @@
 "use client"
 import { links } from "../siteConfig"
 import styled from "styled-components"
+import { GiveATalkCTA } from "./GiveATalkCTA"
 
 export const Footer = () => {
 	return (
 		<FooterContainer>
+			<GiveATalkCTA />
 			<FooterContent>
 				<Copyright>
 					<CopyrightText>
@@ -72,6 +74,7 @@ export const Footer = () => {
 }
 
 const FooterContainer = styled.footer`
+	position: relative;
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -86,16 +89,26 @@ const FooterContainer = styled.footer`
 
 const FooterContent = styled.div`
 	display: flex;
+	flex-direction: column;
 	align-items: center;
 	justify-content: space-between;
 	padding: 1rem;
 	color: #a3a3a3;
 	max-width: 1200px;
 	width: 100%;
+
+	@media (min-width: 768px) {
+		flex-direction: row;
+	}
 `
 const Copyright = styled.aside`
 	display: flex;
 	align-items: center;
+	padding-bottom: 1rem;
+
+	@media (min-width: 768px) {
+		padding-bottom: 0;
+	}
 `
 
 const CopyrightText = styled.p`
