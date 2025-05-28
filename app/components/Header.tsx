@@ -155,14 +155,14 @@ const MenuLink = styled.a`
 const DiscordButton = styled.a`
 	display: inline-block;
 	padding: 0.5rem 1rem;
-	background-color: #5865f2;
-	color: white;
+	background-color: white;
+	color: black;
 	text-decoration: none;
 	border-radius: 0.25rem;
 	font-weight: 500;
 
 	&:hover {
-		background-color: #4752c4;
+		background-color: #ddd;
 	}
 `
 
