@@ -83,6 +83,10 @@ export const PotionBackground = () => {
 		// Set viewport to match canvas size
 		gl.viewport(0, 0, canvas.width, canvas.height)
 
+		// Setup blending for transparency
+		gl.enable(gl.BLEND)
+		gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA)
+
 		// Create shader program
 		const shaderResult = createFragmentShader({
 			blurAmount: 1000
@@ -167,24 +171,17 @@ export const PotionBackground = () => {
 		gl.activeTexture(gl.TEXTURE0)
 		gl.bindTexture(gl.TEXTURE_2D, gradientTexture)
 
-		// Create gradient data - purple to teal gradient
+		// Create gradient color data
+		const layerOneBg = [0, 0, 0, 0]
+		const layerOneFg = [32, 0, 32, 255]
+		const layerTwoBg = [32, 32, 64, 0]
+		const layerTwoFg = [32, 32, 32, 255]
+
 		const gradientData = new Uint8Array([
-			128,
-			0,
-			128,
-			255, // purple
-			0,
-			128,
-			128,
-			255, // teal
-			64,
-			0,
-			128,
-			255, // dark purple
-			0,
-			64,
-			128,
-			255 // dark teal
+			...layerOneBg,
+			...layerTwoBg,
+			...layerOneFg,
+			...layerTwoFg
 		])
 
 		gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 2, 2, 0, gl.RGBA, gl.UNSIGNED_BYTE, gradientData)

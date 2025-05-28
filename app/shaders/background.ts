@@ -130,9 +130,9 @@ const createFragmentShader: CreateFragmentShader = (options) => {
       return sum;
     }
   
-    vec3 calc_color(float lightness) {
+    vec4 calc_color(float lightness) {
       lightness = clamp(lightness, 0.0, 1.0);
-      return vec3(texture2D(u_gradient, vec2(lightness, 0.5)));
+      return texture2D(u_gradient, vec2(lightness, 0.5));
     }
   
     void main() {
@@ -147,7 +147,7 @@ const createFragmentShader: CreateFragmentShader = (options) => {
       lightness = lerp(lightness, w2_lightness, w2_alpha);
       lightness = lerp(lightness, w1_lightness, w1_alpha);
 
-      gl_FragColor = vec4(calc_color(lightness), 1.0);
+      gl_FragColor = calc_color(lightness);
     }
   `
 	return { shader, uniforms }
