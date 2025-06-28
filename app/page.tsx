@@ -106,7 +106,7 @@ export default function Home() {
 					<ContentWrapper>
 						<ResponsiveImage
 							as={motion.img}
-							src="/images/crowd.jpg"
+							src="/images/crowd.webp"
 							alt="Big crowd"
 							animate={{
 								scale: aboutInView ? 1 : 1.1,
