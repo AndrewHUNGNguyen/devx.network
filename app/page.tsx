@@ -1,76 +1,50 @@
 "use client"
+import { useRef } from "react"
 import styled from "styled-components"
+import { motion, useInView } from "framer-motion"
 import { PotionBackground } from "./components/PotionBackground"
 import { organizers } from "./info/organizers"
-import { motion, useScroll, useTransform, useSpring } from "framer-motion"
 import { links } from "./siteConfig"
 
 export default function Home() {
-	const { scrollYProgress } = useScroll()
-	const springScroll = useSpring(scrollYProgress, {
-		stiffness: 100,
-		damping: 30,
-		restDelta: 0.001
-	})
+	// Add refs for each animated section
+	const heroRef = useRef(null)
+	const buildConnectEmpowerRef = useRef(null)
+	const aboutRef = useRef(null)
+	const organizersRef = useRef(null)
+	const joinRef = useRef(null)
 
-	// Pre-compute all transforms
-	const backgroundColor = useTransform(
-		springScroll,
-		[0, 0.2, 0.8, 1],
-		["#00000000", "#00000022", "#00000022", "#00000000"]
-	)
-
-	const heroOpacity = useTransform(springScroll, [0, 0.2], [1, 0])
-	const heroScale = useTransform(springScroll, [0, 0.2], [1, 0.95])
-
-	const start = 0.35
-	const midStart = 0.5
-	const midEnd = 0.55
-	const end = 0.6
-	const crowdImageScale = useTransform(
-		scrollYProgress,
-		[start, midStart, midEnd, end],
-		[1.1, 1, 1, 0.9]
-	)
-	const crowdImageOpacity = useTransform(
-		scrollYProgress,
-		[start, midStart, midEnd, end],
-		[0, 1, 1, 0]
-	)
-	const aboutScale = useTransform(scrollYProgress, [start, midStart, midEnd, end], [1.1, 1, 1, 0.9])
-	const aboutOpacity = useTransform(scrollYProgress, [start, midStart, midEnd, end], [0, 1, 1, 0])
+	// Add useInView hooks for each section
+	const heroInView = useInView(heroRef, { amount: 0.3 })
+	const buildConnectEmpowerInView = useInView(buildConnectEmpowerRef, { amount: 0.3 })
+	const aboutInView = useInView(aboutRef, { amount: 0.3 })
+	const organizersInView = useInView(organizersRef, { amount: 0.3 })
+	const joinInView = useInView(joinRef, { amount: 0.3 })
 
 	return (
 		<>
 			<BackgroundContainer>
 				<PotionBackground />
-				<motion.div
-					style={{
-						backgroundColor: backgroundColor,
-						position: "absolute",
-						top: 0,
-						left: 0,
-						width: "100vw",
-						height: "100vh"
-					}}
-				/>
 			</BackgroundContainer>
 			<Main>
 				<Hero>
 					<HeroSection
-						style={{
-							opacity: heroOpacity,
-							scale: heroScale
+						ref={heroRef}
+						animate={{
+							opacity: heroInView ? 1 : 0,
+							scale: heroInView ? 1 : 0.95
 						}}
+						transition={{ duration: 0.6, ease: "easeOut" }}
 						as={motion.section}
 					>
 						<HeroImage src="/images/sd-devx-brand.png" alt="Developer meetup hero" />
 					</HeroSection>
 					<Tagline
-						style={{
-							opacity: heroOpacity,
-							scale: heroScale
+						animate={{
+							opacity: heroInView ? 1 : 0,
+							scale: heroInView ? 1 : 0.95
 						}}
+						transition={{ duration: 0.6, ease: "easeOut", delay: 0.2 }}
 						as={motion.section}
 					>
 						<TaglineText>
@@ -80,75 +54,72 @@ export default function Home() {
 				</Hero>
 
 				<ContentSection
+					ref={buildConnectEmpowerRef}
 					as={motion.section}
 					style={{
-						overflow: "hidden",
+						overflowX: "hidden",
 						height: "100vh",
 						display: "flex",
 						alignItems: "center"
 					}}
 				>
 					<motion.h1
-						style={{
-							fontSize: "10vh",
-							whiteSpace: "nowrap",
-							position: "relative",
-							x: useTransform(scrollYProgress, [0.1, 0.22], ["100vw", "0vw"], { clamp: true }),
-							opacity: useTransform(scrollYProgress, [0.1, 0.22, 0.26, 0.36], [0, 1, 1, 0], {
-								clamp: true
-							})
+						style={{ fontSize: "10vh", whiteSpace: "nowrap", position: "relative" }}
+						animate={{
+							x: buildConnectEmpowerInView ? 0 : "100vw",
+							opacity: buildConnectEmpowerInView ? 1 : 0
 						}}
+						transition={{ duration: 0.8, ease: "easeOut", delay: 0.1 }}
 					>
 						BUILD
 					</motion.h1>
 					<motion.h1
-						style={{
-							fontSize: "10vh",
-							whiteSpace: "nowrap",
-							position: "relative",
-							x: useTransform(scrollYProgress, [0.22, 0.24], ["100vw", "0vw"], { clamp: true }),
-							opacity: useTransform(scrollYProgress, [0.22, 0.24, 0.28, 0.38], [0, 1, 1, 0], {
-								clamp: true
-							})
+						style={{ fontSize: "10vh", whiteSpace: "nowrap", position: "relative" }}
+						animate={{
+							x: buildConnectEmpowerInView ? 0 : "100vw",
+							opacity: buildConnectEmpowerInView ? 1 : 0
 						}}
+						transition={{ duration: 0.8, ease: "easeOut", delay: 0.3 }}
 					>
 						CONNECT
 					</motion.h1>
 					<motion.h1
-						style={{
-							fontSize: "10vh",
-							whiteSpace: "nowrap",
-							position: "relative",
-							x: useTransform(scrollYProgress, [0.24, 0.26], ["100vw", "0vw"], { clamp: true }),
-							opacity: useTransform(scrollYProgress, [0.24, 0.26, 0.3, 0.4], [0, 1, 1, 0], {
-								clamp: true
-							})
+						style={{ fontSize: "10vh", whiteSpace: "nowrap", position: "relative" }}
+						animate={{
+							x: buildConnectEmpowerInView ? 0 : "100vw",
+							opacity: buildConnectEmpowerInView ? 1 : 0
 						}}
+						transition={{ duration: 0.8, ease: "easeOut", delay: 0.5 }}
 					>
 						EMPOWER
 					</motion.h1>
 				</ContentSection>
 
-				<ContentSection as={motion.section} style={{}}>
-					<SectionTitle as={motion.h2}>About us</SectionTitle>
+				<ContentSection ref={aboutRef} as={motion.section}>
+					<SectionTitle
+						as={motion.h2}
+						animate={{ opacity: aboutInView ? 1 : 0, y: aboutInView ? 0 : 50 }}
+						transition={{ duration: 0.6, ease: "easeOut" }}
+					>
+						About us
+					</SectionTitle>
 					<ContentWrapper>
-						<motion.img
+						<ResponsiveImage
+							as={motion.img}
 							src="/images/crowd.jpg"
 							alt="Big crowd"
-							style={{
-								width: "40vw",
-								objectFit: "cover",
-								borderRadius: "0.5rem",
-								boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)",
-								scale: crowdImageScale,
-								opacity: crowdImageOpacity
+							animate={{
+								scale: aboutInView ? 1 : 1.1,
+								opacity: aboutInView ? 1 : 0
 							}}
+							transition={{ duration: 0.8, ease: "easeOut" }}
 						/>
 						<ContentText
-							style={{
-								opacity: aboutOpacity,
-								scale: aboutScale
+							animate={{
+								opacity: aboutInView ? 1 : 0,
+								scale: aboutInView ? 1 : 0.9
 							}}
+							transition={{ duration: 0.6, ease: "easeOut", delay: 0.2 }}
 							as={motion.p}
 						>
 							{`We're a community of developers of all skill levels, dedicated to fostering a fun and
@@ -165,8 +136,14 @@ export default function Home() {
 					</ContentWrapper>
 				</ContentSection>
 
-				<ContentSection as={motion.section} style={{}}>
-					<SectionTitle as={motion.h2}>Organizers</SectionTitle>
+				<ContentSection ref={organizersRef} as={motion.section}>
+					<SectionTitle
+						as={motion.h2}
+						animate={{ opacity: organizersInView ? 1 : 0, y: organizersInView ? 0 : 50 }}
+						transition={{ duration: 0.6, ease: "easeOut" }}
+					>
+						Organizers
+					</SectionTitle>
 					<ContentWrapper>
 						<OrganizerGrid>
 							{organizers.map((organizer) => (
@@ -192,10 +169,20 @@ export default function Home() {
 					</ContentWrapper>
 				</ContentSection>
 
-				<ContentSection as={motion.section} style={{}}>
-					<SectionTitle as={motion.h2}>Join us</SectionTitle>
+				<ContentSection ref={joinRef} as={motion.section}>
+					<SectionTitle
+						as={motion.h2}
+						animate={{ opacity: joinInView ? 1 : 0, y: joinInView ? 0 : 50 }}
+						transition={{ duration: 0.6, ease: "easeOut" }}
+					>
+						Join us
+					</SectionTitle>
 					<ContentWrapper>
-						<ContentText>
+						<ContentText
+							as={motion.div}
+							animate={{ opacity: joinInView ? 1 : 0, scale: joinInView ? 1 : 0.9 }}
+							transition={{ duration: 0.6, ease: "easeOut", delay: 0.2 }}
+						>
 							<Button target="_blank" href={links.lumaUrl}>
 								View Upcoming Events
 							</Button>
@@ -277,13 +264,32 @@ const TaglineText = styled.p`
 const ContentSection = styled.section`
 	position: relative;
 	width: 100vw;
-	height: 100vh;
+	height: auto;
+	min-height: 100vh;
 	display: flex;
 	flex-direction: column;
 	align-items: center;
 	justify-content: center;
 	padding: 4rem;
 	box-sizing: border-box;
+
+	@media (max-width: 1024px) {
+		padding: 3rem;
+		height: auto;
+		min-height: 100vh;
+	}
+
+	@media (max-width: 768px) {
+		padding: 2rem;
+		height: auto;
+		min-height: 80vh;
+	}
+
+	@media (max-width: 480px) {
+		padding: 1rem;
+		height: auto;
+		min-height: 70vh;
+	}
 `
 
 const SectionTitle = styled.h2`
@@ -299,6 +305,17 @@ const ContentWrapper = styled.div`
 	align-items: center;
 	gap: 5rem;
 	padding: 5rem;
+
+	@media (max-width: 1280px) {
+		flex-direction: column;
+		gap: 2rem;
+		padding: 2rem;
+	}
+
+	@media (max-width: 480px) {
+		padding: 1rem;
+		gap: 1.5rem;
+	}
 `
 
 const ContentText = styled.p`
@@ -306,6 +323,16 @@ const ContentText = styled.p`
 	font-size: 1.25rem;
 	text-align: center;
 	max-width: 1024px;
+
+	@media (max-width: 768px) {
+		font-size: 1.125rem;
+		max-width: 90vw;
+	}
+
+	@media (max-width: 480px) {
+		font-size: 1rem;
+		line-height: 1.6;
+	}
 `
 
 const OrganizerGrid = styled.div`
@@ -358,4 +385,23 @@ const LinkedInLogo = styled.img`
 	height: 3rem;
 	width: 3rem;
 	margin-left: 0.5rem;
+`
+
+const ResponsiveImage = styled.img`
+	border-radius: 0.5rem;
+	box-shadow:
+		0 4px 6px -1px rgba(0, 0, 0, 0.1),
+		0 2px 4px -1px rgba(0, 0, 0, 0.06);
+	object-fit: cover;
+	width: min(40vw, 500px);
+
+	@media (max-width: 768px) {
+		width: 80vw;
+		max-width: 400px;
+	}
+
+	@media (max-width: 480px) {
+		width: 90vw;
+		max-width: 300px;
+	}
 `
