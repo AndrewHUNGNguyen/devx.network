@@ -287,7 +287,7 @@ const ContentSection = styled.section`
 `
 
 const SectionTitle = styled.h2`
-	font-size: 4rem;
+	font-size: clamp(2rem, 8vw, 4rem);
 	font-weight: 700;
 	margin: 0;
 `
