@@ -169,7 +169,7 @@ export default function Home() {
 					<SectionTitle as={motion.h2}>Organizers</SectionTitle>
 					<ContentWrapper>
 						<OrganizerGrid>
-							{organizers.map((organizer, index) => (
+							{organizers.map((organizer) => (
 								<OrganizerCardWrapper
 									as={motion.div}
 									key={organizer.name}
