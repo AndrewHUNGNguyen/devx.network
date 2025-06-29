@@ -1,10 +1,10 @@
 import { ReactNode } from "react"
 import type { Metadata } from "next"
 import "./globals.css"
-import Header from "./components/Header"
-import Footer from "./components/Footer"
+import { Header } from "./components/Header"
+import { Footer } from "./components/Footer"
 import { siteConfig } from "./siteConfig"
-import GiveATalkCTA from "./components/GiveATalkCTA"
+import StyledComponentsRegistry from "./StyledComponentsRegistry"
 
 export const metadata: Metadata = {
 	title: siteConfig.title,
@@ -26,13 +26,15 @@ export default function RootLayout({
 	return (
 		<html lang="en">
 			<head>
+				<meta name="viewport" content="width=device-width, initial-scale=1" />
 				<link rel="icon" href="/images/favicon.png" />
 			</head>
 			<body>
-				<Header />
-				{children}
-				<Footer />
-				<GiveATalkCTA />
+				<StyledComponentsRegistry>
+					<Header />
+					{children}
+					<Footer />
+				</StyledComponentsRegistry>
 			</body>
 		</html>
 	)

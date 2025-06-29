@@ -1,78 +1,191 @@
+"use client"
 import { links } from "../siteConfig"
+import styled from "styled-components"
+import { useState } from "react"
 
-const Header = () => {
+export const Header = () => {
+	const [isMenuOpen, setIsMenuOpen] = useState(false)
+
+	const toggleMenu = () => {
+		setIsMenuOpen(!isMenuOpen)
+	}
+
 	return (
-		<header>
-			<nav className="navbar bg-base-100">
-				<div className="navbar-start">
-					<div className="dropdown">
-						<div tabIndex={0} role="button" className="btn btn-ghost lg:hidden">
-							<svg
-								xmlns="http://www.w3.org/2000/svg"
-								className="w-5 h-5"
-								fill="none"
-								viewBox="0 0 24 24"
-								stroke="currentColor"
-							>
-								<path
-									strokeLinecap="round"
-									strokeLinejoin="round"
-									strokeWidth="2"
-									d="M4 6h16M4 12h8m-8 6h16"
-								/>
-							</svg>
-						</div>
-						<ul
-							tabIndex={0}
-							className="menu menu-lg dropdown-content bg-neutral rounded-box z-[1] mt-3 w-52 p-2 shadow"
+		<Container>
+			<Nav>
+				<NavStart>
+					<MenuButton onClick={toggleMenu}>
+						<MenuIcon
+							xmlns="http://www.w3.org/2000/svg"
+							fill="none"
+							viewBox="0 0 24 24"
+							stroke="currentColor"
 						>
-							<NavLinks />
-						</ul>
-					</div>
-					<a className="inline p-0" href="/">
-						<img src="/images/logo-header.png" className="h-12 rounded" />
-					</a>
-				</div>
-				<div className="hidden navbar-center lg:flex">
-					<ul className="px-1 menu menu-horizontal">
+							<path
+								strokeLinecap="round"
+								strokeLinejoin="round"
+								strokeWidth="2"
+								d="M4 6h16M4 12h8m-8 6h16"
+							/>
+						</MenuIcon>
+					</MenuButton>
+					<DropdownMenu isOpen={isMenuOpen}>
 						<NavLinks />
-					</ul>
-				</div>
-				<div className="navbar-end">
-					<a className="btn" href={links.discord}>
-						Join Us on Discord
-					</a>
-				</div>
-			</nav>
-		</header>
+					</DropdownMenu>
+				</NavStart>
+				<NavCenter>
+					<MenuList>
+						<NavLinks />
+					</MenuList>
+				</NavCenter>
+				<NavEnd>
+					<DiscordButton href={links.discord}>Join Us on Discord</DiscordButton>
+				</NavEnd>
+			</Nav>
+		</Container>
 	)
 }
+
+const Container = styled.header`
+	width: 100%;
+	position: fixed;
+	background-color: rgba(0, 0, 0, 0.05);
+	backdrop-filter: blur(38px);
+	border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+	z-index: 100;
+`
+
+const Nav = styled.nav`
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 1rem;
+	max-width: 1200px;
+	margin: 0 auto;
+`
+
+const NavStart = styled.div`
+	@media (min-width: 1024px) {
+		display: none;
+	}
+`
+
+const NavCenter = styled.div`
+	display: none;
+	@media (min-width: 1024px) {
+		display: flex;
+		justify-content: center;
+	}
+`
+
+const NavEnd = styled.div`
+	display: flex;
+	justify-content: flex-end;
+`
+
+const MenuButton = styled.button`
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background: none;
+	border: none;
+	cursor: pointer;
+	padding: 0.5rem;
+
+	&:hover {
+		opacity: 0.8;
+	}
+`
+
+const MenuIcon = styled.svg`
+	width: 1.25rem;
+	height: 1.25rem;
+`
+
+const DropdownMenu = styled.ul<{ isOpen: boolean }>`
+	position: absolute;
+	top: 100%;
+	left: 0;
+	background-color: #333;
+	border-radius: 0.5rem;
+	padding: 0.5rem;
+	width: 13rem;
+	box-shadow:
+		0 4px 6px -1px rgba(0, 0, 0, 0.1),
+		0 2px 4px -1px rgba(0, 0, 0, 0.06);
+	z-index: 10;
+	display: ${(props) => (props.isOpen ? "block" : "none")};
+`
+
+const MenuList = styled.ul`
+	display: flex;
+	list-style: none;
+	padding: 0;
+	margin: 0;
+
+	@media (min-width: 1024px) {
+		flex-direction: row;
+		gap: 1.5rem;
+	}
+`
+
+const MenuItem = styled.li`
+	margin: 0.5rem 0;
+
+	@media (min-width: 1024px) {
+		margin: 0;
+	}
+`
+
+const MenuLink = styled.a`
+	display: block;
+	padding: 0.5rem;
+	color: inherit;
+	text-decoration: none;
+
+	&:hover {
+		text-decoration: underline;
+	}
+
+	@media (min-width: 1024px) {
+		padding: 0.5rem 0;
+	}
+`
+
+const DiscordButton = styled.a`
+	display: inline-block;
+	padding: 0.5rem 1rem;
+	background-color: white;
+	color: black;
+	text-decoration: none;
+	border-radius: 0.25rem;
+	font-weight: 500;
+
+	&:hover {
+		background-color: #ddd;
+	}
+`
 
 const NavLinks = () => {
 	return (
 		<>
-			<li>
-				<a href="/">Home</a>
-			</li>
-			<li>
-				<a href="/about">About</a>
-			</li>
-			<li>
-				<a target="_blank" href={links.lumaUrl}>
+			<MenuItem>
+				<MenuLink href="/">Home</MenuLink>
+			</MenuItem>
+			<MenuItem>
+				<MenuLink target="_blank" href={links.lumaUrl}>
 					Event Calendar
-				</a>
-			</li>
+				</MenuLink>
+			</MenuItem>
 			{/* Hide Events until the page design is ready and finalized */}
-			{/* <li>
-				<a href="/events">Events</a>
-			</li> */}
-			<li>
-				<a target="_blank" href={links.talkSubmissionUrl}>
+			{/* <MenuItem>
+				<MenuLink href="/events">Events</MenuLink>
+			</MenuItem> */}
+			<MenuItem>
+				<MenuLink target="_blank" href={links.talkSubmissionUrl}>
 					Give a Talk!
-				</a>
-			</li>
+				</MenuLink>
+			</MenuItem>
 		</>
 	)
 }
-
-export default Header
