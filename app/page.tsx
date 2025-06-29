@@ -242,6 +242,7 @@ const Hero = styled.section`
 
 const HeroSection = styled.section`
 	position: relative;
+	margin: 0 1rem;
 `
 
 const HeroImage = styled.img`
