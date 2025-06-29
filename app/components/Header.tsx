@@ -91,6 +91,7 @@ const MenuButton = styled.button`
 	border: none;
 	cursor: pointer;
 	padding: 0.5rem;
+	color: white;
 
 	&:hover {
 		opacity: 0.8;
@@ -140,7 +141,7 @@ const MenuItem = styled.li`
 const MenuLink = styled.a`
 	display: block;
 	padding: 0.5rem;
-	color: inherit;
+	color: white;
 	text-decoration: none;
 
 	&:hover {
