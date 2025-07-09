@@ -8,44 +8,15 @@ export const PotionBackground = () => {
 	const canvasRef = useRef<HTMLCanvasElement>(null)
 	const requestRef = useRef<number>()
 	const timeRef = useRef<number>(0)
-	const [dimensions, setDimensions] = useState({ width: 0, height: 0 })
-	const [scale, setScale] = useState(1)
-	const [canvasDimensions, setCanvasDimensions] = useState({ width: 0, height: 0, top: 0, left: 0 })
 
-	useEffect(() => {
-		// Set scale based on device pixel ratio
-		const pixelRatio = window.devicePixelRatio * 2 || 1
-		setScale(pixelRatio)
-	}, [])
+	const [canvasDimensions, setCanvasDimensions] = useState({ width: 0, height: 0, top: 0, left: 0 })
 
 	useEffect(() => {
 		if (!containerRef.current) return
 
 		const updateDimensions = (el: HTMLElement) => {
 			const { width, height } = el.getBoundingClientRect()
-			setDimensions({ width, height })
-
-			// Calculate canvas dimensions maintaining 3:2 aspect ratio while covering container
-			const containerRatio = width / height
-			const targetRatio = 8 / 1
-
-			let canvasWidth, canvasHeight, top, left
-
-			if (containerRatio > targetRatio) {
-				// Container is wider than 16:1 - canvas will match container width and extend beyond height
-				canvasWidth = width
-				canvasHeight = width / targetRatio
-				top = (height - canvasHeight) / 2
-				left = 0
-			} else {
-				// Container is taller than 3:2 - canvas will match container height and extend beyond width
-				canvasHeight = height
-				canvasWidth = height * targetRatio
-				top = 0
-				left = (width - canvasWidth) / 2
-			}
-
-			setCanvasDimensions({ width: canvasWidth, height: canvasHeight, top, left })
+			setCanvasDimensions({ width, height, top: 0, left: 0 })
 		}
 
 		// Initialize dimensions
@@ -165,6 +136,7 @@ export const PotionBackground = () => {
 		const widthLocation = gl.getUniformLocation(program, "u_w")
 		const heightLocation = gl.getUniformLocation(program, "u_h")
 		const gradientLocation = gl.getUniformLocation(program, "u_gradient")
+		const pixelRatioLocation = gl.getUniformLocation(program, "u_pixelRatio")
 
 		// Create gradient texture
 		const gradientTexture = gl.createTexture()
@@ -193,8 +165,9 @@ export const PotionBackground = () => {
 
 		// Set uniform values
 		gl.uniform1i(gradientLocation, 0) // Use texture unit 0
-		gl.uniform1f(widthLocation, canvas.width)
-		gl.uniform1f(heightLocation, canvas.height)
+		gl.uniform1f(widthLocation, canvasDimensions.width)
+		gl.uniform1f(heightLocation, canvasDimensions.height)
+		gl.uniform1f(pixelRatioLocation, pixelRatio)
 
 		// Animation loop
 		const render = (time: number) => {
@@ -247,9 +220,7 @@ export const PotionBackground = () => {
 					width: `${canvasDimensions.width}px`,
 					height: `${canvasDimensions.height}px`,
 					top: `${canvasDimensions.top}px`,
-					left: `${canvasDimensions.left}px`,
-					transform: `scale(${scale})`,
-					transformOrigin: "0 0"
+					left: `${canvasDimensions.left}px`
 				}}
 			/>
 		</div>
