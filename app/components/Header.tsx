@@ -29,7 +29,7 @@ export const Header = () => {
 							/>
 						</MenuIcon>
 					</MenuButton>
-					<DropdownMenu isOpen={isMenuOpen}>
+					<DropdownMenu $isOpen={isMenuOpen}>
 						<NavLinks />
 					</DropdownMenu>
 				</NavStart>
@@ -103,7 +103,7 @@ const MenuIcon = styled.svg`
 	height: 1.25rem;
 `
 
-const DropdownMenu = styled.ul<{ isOpen: boolean }>`
+const DropdownMenu = styled.ul<{ $isOpen: boolean }>`
 	position: absolute;
 	top: 100%;
 	left: 0;
@@ -115,7 +115,7 @@ const DropdownMenu = styled.ul<{ isOpen: boolean }>`
 		0 4px 6px -1px rgba(0, 0, 0, 0.1),
 		0 2px 4px -1px rgba(0, 0, 0, 0.06);
 	z-index: 10;
-	display: ${(props) => (props.isOpen ? "block" : "none")};
+	display: ${(props) => (props.$isOpen ? "block" : "none")};
 `
 
 const MenuList = styled.ul`
