@@ -40,23 +40,91 @@ export const PotionBackground = () => {
 		if (!canvasRef.current || canvasDimensions.width === 0 || canvasDimensions.height === 0) return
 
 		const canvas = canvasRef.current
-		const pixelRatio = window.devicePixelRatio || 1
-		canvas.width = canvasDimensions.width * pixelRatio
-		canvas.height = canvasDimensions.height * pixelRatio
+		const pixelRatio = Math.min(window.devicePixelRatio, 1.5)
+		canvas.width = Math.floor(canvasDimensions.width * pixelRatio)
+		canvas.height = Math.floor(canvasDimensions.height * pixelRatio)
 
 		// Initialize WebGL
-		const gl = canvas.getContext("webgl")
+		const gl =
+			// Switch between webgl2 for performance benefits if available
+			canvas.getContext("webgl2", {
+				alpha: false,
+				antialias: false,
+				depth: false,
+				stencil: false,
+				preserveDrawingBuffer: false,
+				powerPreference: "low-power"
+			}) ||
+			canvas.getContext("webgl", {
+				alpha: false,
+				antialias: false,
+				depth: false,
+				stencil: false,
+				preserveDrawingBuffer: false,
+				powerPreference: "low-power"
+			})
 		if (!gl) {
 			console.error("WebGL not supported")
 			return
 		}
 
+		// 2) Adaptive DPR (min 0.75, max 1.25 for example)
+		let targetDPR = Math.min(window.devicePixelRatio, 1.25)
+		let adaptiveDPR = Math.max(0.75, Math.min(targetDPR, 1.25))
+
+		function resizeCanvas() {
+			if (!canvas || !gl) return
+			const pr = adaptiveDPR
+			canvas.width = Math.floor(canvasDimensions.width * pr)
+			canvas.height = Math.floor(canvasDimensions.height * pr)
+			gl.viewport(0, 0, canvas.width, canvas.height)
+			gl.uniform1f(pixelRatioLocation, pr * 2.0) // your code used *2, keep consistent
+		}
+
+		let lastFpsCheck = 0
+		let frames = 0
+		function maybeAdjustDPR(now: number) {
+			frames++
+			if (now - lastFpsCheck > 1000) {
+				const fps = frames
+				frames = 0
+				lastFpsCheck = now
+				// downshift DPR if fps < 26, upshift if > 34
+				if (fps < 26 && adaptiveDPR > 0.75) {
+					adaptiveDPR = Math.max(0.75, adaptiveDPR - 0.1)
+					resizeCanvas()
+				}
+				if (fps > 34 && adaptiveDPR < targetDPR) {
+					adaptiveDPR = Math.min(targetDPR, adaptiveDPR + 0.1)
+					resizeCanvas()
+				}
+			}
+		}
+
+		// 3) Cap FPS ~30
+		const FRAME_INTERVAL = 1000 / 30
+		let lastDraw = 0
+
+		// 4) Pause when hidden or not intersecting
+		let playing = true
+		document.addEventListener("visibilitychange", () => {
+			playing = !document.hidden
+		})
+		const io = new IntersectionObserver(
+			([entry]) => {
+				playing = entry.isIntersecting
+			},
+			{ threshold: 0 }
+		)
+		io.observe(canvas)
+
 		// Set viewport to match canvas size
 		gl.viewport(0, 0, canvas.width, canvas.height)
 
 		// Setup blending for transparency
-		gl.enable(gl.BLEND)
-		gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA)
+		// NOTE: Removed this for performance; no need for alpha channel
+		// gl.enable(gl.BLEND)
+		// gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA)
 
 		// Create shader program
 		const shaderResult = createFragmentShader({
@@ -139,24 +207,41 @@ export const PotionBackground = () => {
 		const pixelRatioLocation = gl.getUniformLocation(program, "u_pixelRatio")
 
 		// Create gradient texture
-		const gradientTexture = gl.createTexture()
+		// Build a 1D gradient texture (change stops to taste)
+		function makeGradientTexture() {
+			const w = 512,
+				h = 1
+			const canvas = document.createElement("canvas")
+			canvas.width = w
+			canvas.height = h
+			const ctx = canvas.getContext("2d")
+			if (!ctx) return
+			const g = ctx.createLinearGradient(0, 0, w, 0)
+			// Add your gradient stops here:
+			g.addColorStop(0.0, "#000102")
+			g.addColorStop(0.35, "#080909")
+			g.addColorStop(0.62, "#101116")
+			g.addColorStop(0.85, "#050708")
+			g.addColorStop(1.0, "#030303")
+			ctx.fillStyle = g
+			ctx.fillRect(0, 0, w, h)
+
+			if (!gl) return
+			const tex = gl.createTexture()
+			gl.bindTexture(gl.TEXTURE_2D, tex)
+			gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false)
+			gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, canvas)
+			gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR)
+			gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR)
+			gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE)
+			gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE)
+			return tex
+		}
+		// const gradientTexture = gl.createTexture()
+		const gradientTexture = makeGradientTexture()
+		if (!gradientTexture) return
 		gl.activeTexture(gl.TEXTURE0)
 		gl.bindTexture(gl.TEXTURE_2D, gradientTexture)
-
-		// Create gradient color data
-		const layerOneBg = [0, 0, 0, 0]
-		const layerOneFg = [32, 0, 32, 255]
-		const layerTwoBg = [32, 32, 64, 0]
-		const layerTwoFg = [32, 32, 32, 255]
-
-		const gradientData = new Uint8Array([
-			...layerOneBg,
-			...layerTwoBg,
-			...layerOneFg,
-			...layerTwoFg
-		])
-
-		gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 2, 2, 0, gl.RGBA, gl.UNSIGNED_BYTE, gradientData)
 
 		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR)
 		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR)
@@ -166,14 +251,19 @@ export const PotionBackground = () => {
 		// Set uniform values
 		gl.uniform1i(gradientLocation, 0) // Use texture unit 0
 		gl.uniform1f(widthLocation, canvasDimensions.width)
-		gl.uniform1f(heightLocation, canvasDimensions.height)
-		gl.uniform1f(pixelRatioLocation, pixelRatio)
+		gl.uniform1f(heightLocation, canvasDimensions.height / 3)
+		gl.uniform1f(pixelRatioLocation, pixelRatio * 2)
 
 		// Animation loop
-		const render = (time: number) => {
-			timeRef.current = time * 0.001 // Convert to seconds
+		const render = (now: number) => {
+			requestRef.current = requestAnimationFrame(render)
+			if (!playing) return
+			if (now - lastDraw < FRAME_INTERVAL) return
+			maybeAdjustDPR(now)
+			lastDraw = now
 
-			gl.uniform1f(timeLocation, timeRef.current)
+			const t = now * 0.001
+			gl.uniform1f(timeLocation, t)
 			gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4)
 
 			requestRef.current = requestAnimationFrame(render)
