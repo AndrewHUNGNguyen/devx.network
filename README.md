@@ -36,7 +36,7 @@ npm run dev
 
 The site will be running at http://localhost:3000.
 
-**Note: This project uses DaisyUI, a Tailwind CSS component library.**
+**Note: This project is being refactored to use styled-components exclusively. Please do not add new Tailwind classes. See [styling guidelines](./docs/conventions/styling-guidelines.md) for details.**
 
 ## Contributing
 
@@ -52,6 +52,12 @@ use [the ESLint extension](https://github.com/Microsoft/vscode-eslint).
 Pre-commit hooks are in place to ensure that the code is properly formatted
 before a commit is added to the repo. The pre-commit hook runs the precommit
 script (`npm run precommit`).
+
+For detailed code style and organization guidelines:
+
+- **[File Conventions](./docs/conventions/file-conventions.md)** - File structure and organization patterns for all code files
+- **[Styling Guidelines](./docs/conventions/styling-guidelines.md)** - Styled-components usage and migration from Tailwind
+- **[Agent Guidelines](./AGENTS.md)** - Complete coding standards for AI agents and developers
 
 ### Steps to Contribute
 
