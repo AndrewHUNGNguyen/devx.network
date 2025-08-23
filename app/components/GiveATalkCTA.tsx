@@ -28,31 +28,30 @@ export const GiveATalkCTA: React.FC = () => {
 }
 
 const StyledLink = styled.a`
-	position: absolute;
-	display: flex;
+	display: inline-flex;
 	align-items: center;
-	padding: 0.75rem 1.5rem;
+	padding: 0.5rem 1rem;
 	gap: 0.5rem;
-	font-weight: 700;
+	font-weight: 600;
+	font-size: 0.875rem;
 	color: white;
+	text-decoration: none;
 	transition: all 0.3s ease-in-out;
-	transform: translateX(-50%);
 	border-radius: 9999px;
 	box-shadow:
-		0 10px 15px -3px rgba(0, 0, 0, 0.1),
-		0 4px 6px -2px rgba(0, 0, 0, 0.05);
+		0 4px 6px -1px rgba(0, 0, 0, 0.1),
+		0 2px 4px -1px rgba(0, 0, 0, 0.06);
 	background: linear-gradient(to right, #8b5cf6, #7c3aed);
-	bottom: 3rem;
-	left: 50%;
 	animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-	z-index: 50;
+	white-space: nowrap;
 
 	&:hover {
 		background: linear-gradient(to right, #7c3aed, #6d28d9);
-		transform: translateX(-50%) scale(1.05);
+		transform: scale(1.05);
 		box-shadow:
-			0 20px 25px -5px rgba(0, 0, 0, 0.1),
-			0 10px 10px -5px rgba(0, 0, 0, 0.04);
+			0 10px 15px -3px rgba(0, 0, 0, 0.1),
+			0 4px 6px -2px rgba(0, 0, 0, 0.05);
+		text-decoration: none;
 	}
 
 	@keyframes pulse {
@@ -67,8 +66,11 @@ const StyledLink = styled.a`
 `
 
 const IconWrapper = styled.div`
-	width: 1.5rem;
-	height: 1.5rem;
+	width: 1.25rem;
+	height: 1.25rem;
+	display: flex;
+	align-items: center;
+	justify-content: center;
 
 	svg {
 		width: 100%;

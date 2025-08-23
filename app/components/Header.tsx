@@ -2,6 +2,7 @@
 import { useState } from "react"
 import styled from "styled-components"
 import { links } from "../siteConfig"
+import { GiveATalkCTA } from "./GiveATalkCTA"
 
 // Components //
 
@@ -63,11 +64,9 @@ const NavLinks = () => {
 			{/* <MenuItem>
 				<MenuLink href="/events">Events</MenuLink>
 			</MenuItem> */}
-			<MenuItem>
-				<MenuLink target="_blank" href={links.talkSubmissionUrl}>
-					Give a Talk!
-				</MenuLink>
-			</MenuItem>
+			<CTAMenuItem>
+				<GiveATalkCTA />
+			</CTAMenuItem>
 		</>
 	)
 }
@@ -165,6 +164,17 @@ const MenuItem = styled.li`
 
 	@media (min-width: 1024px) {
 		margin: 0;
+	}
+`
+
+const CTAMenuItem = styled.li`
+	margin: 0.5rem 0;
+	display: flex;
+	align-items: center;
+
+	@media (min-width: 1024px) {
+		margin: 0;
+		margin-left: 0.5rem;
 	}
 `
 
