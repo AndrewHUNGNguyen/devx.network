@@ -1,3 +1,5 @@
+// Constants //
+
 export const siteConfig = {
 	title: "San Diego DEVx",
 	description: "Fostering developer community through events and open-source projects.",

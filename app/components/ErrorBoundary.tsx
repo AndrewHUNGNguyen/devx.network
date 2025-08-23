@@ -1,5 +1,7 @@
 import { Component, ReactNode, ErrorInfo } from "react"
 
+// Types //
+
 interface ErrorBoundaryProps {
 	children?: ReactNode
 	fallback?: ReactNode
@@ -9,6 +11,8 @@ interface ErrorBoundaryState {
 	hasError: boolean
 }
 
+// Components //
+
 export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
 	constructor(props: ErrorBoundaryProps) {
 		super(props)
@@ -16,7 +20,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
 	}
 
 	static getDerivedStateFromError(_: Error): ErrorBoundaryState {
-		// Update state so the next render will show the fallback UI.
+		// Update state so the next render will show the fallback UI
 		return { hasError: true }
 	}
 
@@ -26,8 +30,12 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
 
 	render() {
 		if (this.state.hasError) {
-			// You can render any custom fallback UI
-			return this.props.fallback || <div>Something went wrong.</div>
+			// Render fallback UI, default to black background for WebGL crashes
+			return (
+				this.props.fallback || (
+					<div style={{ backgroundColor: "black", width: "100%", height: "100%" }} />
+				)
+			)
 		}
 
 		return this.props.children

@@ -1,3 +1,5 @@
+// Types //
+
 export interface FragmentShaderUniform {
 	label?: string
 	value: number

@@ -5,6 +5,9 @@ import { motion, useInView } from "framer-motion"
 import { PotionBackground } from "./components/PotionBackground"
 import { organizers } from "./info/organizers"
 import { links } from "./siteConfig"
+import { ErrorBoundary } from "./components/ErrorBoundary"
+
+// Components //
 
 export default function Home() {
 	// Add refs for each animated section
@@ -24,7 +27,11 @@ export default function Home() {
 	return (
 		<>
 			<BackgroundContainer>
-				<PotionBackground />
+				<ErrorBoundary
+					fallback={<div style={{ backgroundColor: "black", width: "100%", height: "100%" }} />}
+				>
+					<PotionBackground />
+				</ErrorBoundary>
 			</BackgroundContainer>
 			<Main>
 				<Hero>
@@ -194,7 +201,6 @@ export default function Home() {
 	)
 }
 
-// Styled components
 const Main = styled.main`
 	color: white;
 	display: flex;
@@ -296,7 +302,7 @@ const ContentSection = styled.section`
 const SectionTitle = styled.h2`
 	font-size: clamp(2rem, 8vw, 4rem);
 	font-weight: 700;
-	margin: 0;
+	margin: 0 0 2rem 0;
 `
 
 const ContentWrapper = styled.div`
@@ -368,6 +374,7 @@ const OrganizerImage = styled.img`
 const OrganizerName = styled.h3`
 	font-size: 1.25rem;
 	font-weight: 700;
+	margin: 1rem 0;
 `
 
 const SocialLink = styled.a`
@@ -390,9 +397,9 @@ const LinkedInLogo = styled.img`
 
 const ResponsiveImage = styled.img`
 	border-radius: 0.5rem;
-	box-shadow:
+	box-shadow:;
 		0 4px 6px -1px rgba(0, 0, 0, 0.1),
-		0 2px 4px -1px rgba(0, 0, 0, 0.06);
+		0 2px 4px -1px rgba(0, 0, 0, 0.06)
 	object-fit: cover;
 	width: min(40vw, 500px);
 

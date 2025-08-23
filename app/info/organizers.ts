@@ -1,3 +1,5 @@
+// Constants //
+
 export const organizers = [
 	{
 		name: "Sam Holmes",

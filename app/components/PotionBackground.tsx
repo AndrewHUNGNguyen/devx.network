@@ -1,13 +1,15 @@
 "use client"
 import { useRef, useEffect, useState } from "react"
+import styled from "styled-components"
 import createFragmentShader from "../shaders/background"
 import { FragmentShader } from "../shaders/types"
+
+// Components //
 
 export const PotionBackground = () => {
 	const containerRef = useRef<HTMLDivElement>(null)
 	const canvasRef = useRef<HTMLCanvasElement>(null)
 	const requestRef = useRef<number>()
-	const timeRef = useRef<number>(0)
 
 	const [canvasDimensions, setCanvasDimensions] = useState({ width: 0, height: 0, top: 0, left: 0 })
 
@@ -40,7 +42,11 @@ export const PotionBackground = () => {
 		if (!canvasRef.current || canvasDimensions.width === 0 || canvasDimensions.height === 0) return
 
 		const canvas = canvasRef.current
-		const pixelRatio = Math.min(window.devicePixelRatio, 1.5)
+		// Use a lower pixel ratio on mobile devices for better performance
+		const isMobile = window.innerWidth <= 768
+		const pixelRatio = isMobile
+			? Math.min(window.devicePixelRatio, 1.0)
+			: Math.min(window.devicePixelRatio, 1.5)
 		canvas.width = Math.floor(canvasDimensions.width * pixelRatio)
 		canvas.height = Math.floor(canvasDimensions.height * pixelRatio)
 
@@ -68,48 +74,17 @@ export const PotionBackground = () => {
 			return
 		}
 
-		// 2) Adaptive DPR (min 0.75, max 1.25 for example)
-		let targetDPR = Math.min(window.devicePixelRatio, 1.25)
-		let adaptiveDPR = Math.max(0.75, Math.min(targetDPR, 1.25))
-
-		function resizeCanvas() {
-			if (!canvas || !gl) return
-			const pr = adaptiveDPR
-			canvas.width = Math.floor(canvasDimensions.width * pr)
-			canvas.height = Math.floor(canvasDimensions.height * pr)
-			gl.viewport(0, 0, canvas.width, canvas.height)
-			gl.uniform1f(pixelRatioLocation, pr * 2.0) // your code used *2, keep consistent
-		}
-
-		let lastFpsCheck = 0
-		let frames = 0
-		function maybeAdjustDPR(now: number) {
-			frames++
-			if (now - lastFpsCheck > 1000) {
-				const fps = frames
-				frames = 0
-				lastFpsCheck = now
-				// downshift DPR if fps < 26, upshift if > 34
-				if (fps < 26 && adaptiveDPR > 0.75) {
-					adaptiveDPR = Math.max(0.75, adaptiveDPR - 0.1)
-					resizeCanvas()
-				}
-				if (fps > 34 && adaptiveDPR < targetDPR) {
-					adaptiveDPR = Math.min(targetDPR, adaptiveDPR + 0.1)
-					resizeCanvas()
-				}
-			}
-		}
-
 		// 3) Cap FPS ~30
 		const FRAME_INTERVAL = 1000 / 30
 		let lastDraw = 0
 
 		// 4) Pause when hidden or not intersecting
 		let playing = true
-		document.addEventListener("visibilitychange", () => {
+		const handleVisibilityChange = () => {
 			playing = !document.hidden
-		})
+		}
+		document.addEventListener("visibilitychange", handleVisibilityChange)
+
 		const io = new IntersectionObserver(
 			([entry]) => {
 				playing = entry.isIntersecting
@@ -136,7 +111,7 @@ export const PotionBackground = () => {
 			console.error("Expected FragmentShader object but got string")
 			return
 		}
-		const { shader: fragmentShaderSource, uniforms } = shaderResult as FragmentShader
+		const { shader: fragmentShaderSource } = shaderResult as FragmentShader
 
 		// Vertex shader - simple pass-through
 		const vertexShaderSource = `
@@ -256,10 +231,15 @@ export const PotionBackground = () => {
 
 		// Animation loop
 		const render = (now: number) => {
-			requestRef.current = requestAnimationFrame(render)
-			if (!playing) return
-			if (now - lastDraw < FRAME_INTERVAL) return
-			maybeAdjustDPR(now)
+			if (!playing) {
+				requestRef.current = requestAnimationFrame(render)
+				return
+			}
+			if (now - lastDraw < FRAME_INTERVAL) {
+				requestRef.current = requestAnimationFrame(render)
+				return
+			}
+
 			lastDraw = now
 
 			const t = now * 0.001
@@ -277,6 +257,10 @@ export const PotionBackground = () => {
 				cancelAnimationFrame(requestRef.current)
 			}
 
+			// Clean up event listeners and observer
+			document.removeEventListener("visibilitychange", handleVisibilityChange)
+			io.disconnect()
+
 			// Clean up WebGL resources
 			gl.deleteProgram(program)
 			gl.deleteShader(vertexShader)
@@ -287,32 +271,41 @@ export const PotionBackground = () => {
 	}, [canvasDimensions])
 
 	return (
-		<div
-			ref={containerRef}
-			style={{
-				backgroundColor: "black",
-				width: "100%",
-				height: "100%",
-				overflow: "hidden",
-				position: "absolute",
-				top: 0,
-				left: 0,
-				zIndex: -1
-			}}
-		>
-			<canvas
+		<BackgroundContainer ref={containerRef}>
+			<Canvas
 				ref={canvasRef}
 				width={canvasDimensions.width}
 				height={canvasDimensions.height}
-				style={{
-					display: "block",
-					position: "absolute",
-					width: `${canvasDimensions.width}px`,
-					height: `${canvasDimensions.height}px`,
-					top: `${canvasDimensions.top}px`,
-					left: `${canvasDimensions.left}px`
-				}}
+				$width={canvasDimensions.width}
+				$height={canvasDimensions.height}
+				$top={canvasDimensions.top}
+				$left={canvasDimensions.left}
 			/>
-		</div>
+		</BackgroundContainer>
 	)
 }
+
+const BackgroundContainer = styled.div`
+	background-color: black;
+	width: 100%;
+	height: 100%;
+	overflow: hidden;
+	position: absolute;
+	top: 0;
+	left: 0;
+	z-index: -1;
+`
+
+const Canvas = styled.canvas<{
+	$width: number
+	$height: number
+	$top: number
+	$left: number
+}>`
+	display: block;
+	position: absolute;
+	width: ${(props) => props.$width}px
+	height: ${(props) => props.$height}px
+	top: ${(props) => props.$top}px
+	left: ${(props) => props.$left}px
+`

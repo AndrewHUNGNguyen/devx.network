@@ -1,7 +1,9 @@
 "use client"
-import { links } from "../siteConfig"
 import styled from "styled-components"
+import { links } from "../siteConfig"
 import { GiveATalkCTA } from "./GiveATalkCTA"
+
+// Components //
 
 export const Footer = () => {
 	return (
@@ -101,6 +103,7 @@ const FooterContent = styled.div`
 		flex-direction: row;
 	}
 `
+
 const Copyright = styled.aside`
 	display: flex;
 	align-items: center;

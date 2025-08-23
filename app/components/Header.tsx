@@ -1,7 +1,9 @@
 "use client"
-import { links } from "../siteConfig"
-import styled from "styled-components"
 import { useState } from "react"
+import styled from "styled-components"
+import { links } from "../siteConfig"
+
+// Components //
 
 export const Header = () => {
 	const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -46,6 +48,30 @@ export const Header = () => {
 	)
 }
 
+const NavLinks = () => {
+	return (
+		<>
+			<MenuItem>
+				<MenuLink href="/">Home</MenuLink>
+			</MenuItem>
+			<MenuItem>
+				<MenuLink target="_blank" href={links.lumaUrl}>
+					Event Calendar
+				</MenuLink>
+			</MenuItem>
+			{/* Hide Events until the page design is ready and finalized */}
+			{/* <MenuItem>
+				<MenuLink href="/events">Events</MenuLink>
+			</MenuItem> */}
+			<MenuItem>
+				<MenuLink target="_blank" href={links.talkSubmissionUrl}>
+					Give a Talk!
+				</MenuLink>
+			</MenuItem>
+		</>
+	)
+}
+
 const Container = styled.header`
 	width: 100%;
 	position: fixed;
@@ -65,6 +91,8 @@ const Nav = styled.nav`
 `
 
 const NavStart = styled.div`
+	position: relative;
+
 	@media (min-width: 1024px) {
 		display: none;
 	}
@@ -105,7 +133,7 @@ const MenuIcon = styled.svg`
 
 const DropdownMenu = styled.ul<{ $isOpen: boolean }>`
 	position: absolute;
-	top: 100%;
+	top: 3rem;
 	left: 0;
 	background-color: #333;
 	border-radius: 0.5rem;
@@ -116,6 +144,8 @@ const DropdownMenu = styled.ul<{ $isOpen: boolean }>`
 		0 2px 4px -1px rgba(0, 0, 0, 0.06);
 	z-index: 10;
 	display: ${(props) => (props.$isOpen ? "block" : "none")};
+	list-style: none;
+	margin: 0;
 `
 
 const MenuList = styled.ul`
@@ -166,27 +196,3 @@ const DiscordButton = styled.a`
 		background-color: #ddd;
 	}
 `
-
-const NavLinks = () => {
-	return (
-		<>
-			<MenuItem>
-				<MenuLink href="/">Home</MenuLink>
-			</MenuItem>
-			<MenuItem>
-				<MenuLink target="_blank" href={links.lumaUrl}>
-					Event Calendar
-				</MenuLink>
-			</MenuItem>
-			{/* Hide Events until the page design is ready and finalized */}
-			{/* <MenuItem>
-				<MenuLink href="/events">Events</MenuLink>
-			</MenuItem> */}
-			<MenuItem>
-				<MenuLink target="_blank" href={links.talkSubmissionUrl}>
-					Give a Talk!
-				</MenuLink>
-			</MenuItem>
-		</>
-	)
-}
