@@ -92,14 +92,14 @@ const Nav = styled.nav`
 const NavStart = styled.div`
 	position: relative;
 
-	@media (min-width: 1024px) {
+	@media (min-width: 768px) {
 		display: none;
 	}
 `
 
 const NavCenter = styled.div`
 	display: none;
-	@media (min-width: 1024px) {
+	@media (min-width: 768px) {
 		display: flex;
 		justify-content: center;
 	}
@@ -153,7 +153,7 @@ const MenuList = styled.ul`
 	padding: 0;
 	margin: 0;
 
-	@media (min-width: 1024px) {
+	@media (min-width: 768px) {
 		flex-direction: row;
 		gap: 1.5rem;
 	}
@@ -162,7 +162,7 @@ const MenuList = styled.ul`
 const MenuItem = styled.li`
 	margin: 0.5rem 0;
 
-	@media (min-width: 1024px) {
+	@media (min-width: 768px) {
 		margin: 0;
 	}
 `
@@ -172,7 +172,7 @@ const CTAMenuItem = styled.li`
 	display: flex;
 	align-items: center;
 
-	@media (min-width: 1024px) {
+	@media (min-width: 768px) {
 		margin: 0;
 		margin-left: 0.5rem;
 	}
@@ -188,7 +188,7 @@ const MenuLink = styled.a`
 		text-decoration: underline;
 	}
 
-	@media (min-width: 1024px) {
+	@media (min-width: 768px) {
 		padding: 0.5rem 0;
 	}
 `

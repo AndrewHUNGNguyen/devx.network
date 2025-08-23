@@ -40,7 +40,7 @@ const FormContainer = styled.form`
 	flex-direction: column;
 	gap: 1rem;
 
-	@media (min-width: 640px) {
+	@media (min-width: 768px) {
 		padding: 3rem;
 	}
 `
