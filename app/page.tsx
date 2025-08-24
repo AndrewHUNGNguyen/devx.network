@@ -29,10 +29,12 @@ export default function Home() {
 	// Image slider state
 	const [currentImageIndex, setCurrentImageIndex] = useState(0)
 	const sliderImages = [
-		"/images/crowd.webp",
-		"/images/crowd.webp",
-		"/images/crowd.webp",
-		"/images/crowd.webp"
+		"/images/slides/slide1.webp",
+		"/images/slides/slide2.webp",
+		"/images/slides/slide3.webp",
+		"/images/slides/slide4.webp",
+		"/images/slides/slide5.webp",
+		"/images/slides/slide6.webp"
 	]
 
 	// Auto-advance slider
