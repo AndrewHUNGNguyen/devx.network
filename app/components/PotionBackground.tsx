@@ -193,11 +193,12 @@ export const PotionBackground = () => {
 			if (!ctx) return
 			const g = ctx.createLinearGradient(0, 0, w, 0)
 			// Add your gradient stops here:
-			g.addColorStop(0.0, "#000102")
-			g.addColorStop(0.35, "#080909")
-			g.addColorStop(0.62, "#101116")
-			g.addColorStop(0.85, "#050708")
-			g.addColorStop(1.0, "#030303")
+			g.addColorStop(0.0, "#000001")
+			g.addColorStop(0.25, "#08080a")
+			g.addColorStop(0.45, "#15151c")
+			g.addColorStop(0.65, "#0f0f16")
+			g.addColorStop(0.85, "#000001")
+			g.addColorStop(1.0, "#1c1c28")
 			ctx.fillStyle = g
 			ctx.fillRect(0, 0, w, h)
 
