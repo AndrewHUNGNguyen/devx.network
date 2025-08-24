@@ -213,18 +213,28 @@ export default function Home() {
 							transition={{ duration: 0.6, ease: "easeOut", delay: 0.2 }}
 							as={motion.div}
 						>
-							<ContentText>
-								{`We're a community of developers of all skill levels, dedicated to fostering a fun and
-								educational environment. Hosted by a team of passionate organizers, our
-								monthly meetups offer an opportunity to network, learn, and showcase community projects. At
-								each event, you'll enjoy complimentary food and drinks during our networking lunch,
-								followed by a series of engaging presentations on various developer and engineering
-								topics. After the talks, we break into groups for casual networking, project showcases,
-								and coding help. Whether you're a seasoned developer or just starting out, there's
-								something for everyone. Be sure to bring your laptop if you'd like to share your latest
-								project or give a presentation. We look forward to meeting you and seeing what you're
-								excited about!`}
-							</ContentText>
+							<AboutTextContent>
+								<ContentParagraph>
+									We&apos;re a community of developers of all skill levels, dedicated to fostering a
+									fun and educational environment.
+								</ContentParagraph>
+								<ContentParagraph>
+									Hosted by a team of passionate organizers, our monthly meetups offer an
+									opportunity to network, learn, and showcase community projects. Each event
+									features complimentary food and drinks during our networking lunch, followed by
+									engaging presentations on various developer and engineering topics.
+								</ContentParagraph>
+								<ContentParagraph>
+									After the talks, we break into groups for casual networking, project showcases,
+									and coding help. Whether you&apos;re a seasoned developer or just starting out,
+									there&apos;s something for everyone.
+								</ContentParagraph>
+								<ContentParagraph $noMargin>
+									Be sure to bring your laptop if you&apos;d like to share your latest project or
+									give a presentation. We look forward to meeting you and seeing what you&apos;re
+									excited about!
+								</ContentParagraph>
+							</AboutTextContent>
 						</AboutTextBox>
 					</AboutContentOverlay>
 				</AboutSectionWithSlider>
@@ -482,21 +492,64 @@ const AboutContentOverlay = styled.div`
 `
 
 const AboutTextBox = styled.div`
-	background-color: rgba(0, 0, 0, 0.6);
-	padding: 3rem;
+	background-color: rgba(0, 0, 0, 0.75);
+	padding: 3.5rem;
 	border-radius: 1rem;
-	backdrop-filter: blur(5px);
-	max-width: 900px;
+	backdrop-filter: blur(8px);
+	max-width: 800px;
 	margin: 0 auto;
-	box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+	box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
 
 	@media (max-width: 768px) {
-		padding: 2rem;
+		padding: 2.5rem;
+		max-width: 90%;
 	}
 
 	@media (max-width: 480px) {
-		padding: 1.5rem;
+		padding: 2rem;
 		border-radius: 0.75rem;
+	}
+`
+
+const AboutTextContent = styled.div`
+	display: flex;
+	flex-direction: column;
+	gap: 1.5rem;
+`
+
+const ContentParagraph = styled.p<{ $noMargin?: boolean }>`
+	font-size: 1.125rem;
+	line-height: 1.9;
+	text-align: left;
+	margin: ${(props) => (props.$noMargin ? "0" : "0")};
+	color: rgba(255, 255, 255, 0.9);
+	font-weight: 300;
+
+	&:first-child {
+		font-size: 1.375rem;
+		font-weight: 300;
+		text-align: center;
+		margin-bottom: 0.75rem;
+		color: rgba(255, 255, 255, 0.95);
+		letter-spacing: 0.02em;
+	}
+
+	@media (max-width: 768px) {
+		font-size: 1.05rem;
+		line-height: 1.8;
+
+		&:first-child {
+			font-size: 1.25rem;
+		}
+	}
+
+	@media (max-width: 480px) {
+		font-size: 1rem;
+		line-height: 1.7;
+
+		&:first-child {
+			font-size: 1.15rem;
+		}
 	}
 `
 
