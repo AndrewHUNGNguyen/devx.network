@@ -2,9 +2,9 @@
 
 export const organizers = [
 	{
-		name: "Sam Holmes",
-		imageSrc: "/images/sam-about.webp",
-		linkedIn: "https://www.linkedin.com/in/sammyholmes/"
+		name: "AJ Caldwell",
+		imageSrc: "/images/aj-about.webp",
+		linkedIn: "https://www.linkedin.com/in/aj-caldwell/"
 	},
 	{
 		name: "Ezekiel Lopez",
@@ -12,9 +12,9 @@ export const organizers = [
 		linkedIn: "https://www.linkedin.com/in/ezekiel-lopez-633b57212/"
 	},
 	{
-		name: "AJ Caldwell",
-		imageSrc: "/images/aj-about.webp",
-		linkedIn: "https://www.linkedin.com/in/aj-caldwell/"
+		name: "Sam Holmes",
+		imageSrc: "/images/sam-about.webp",
+		linkedIn: "https://www.linkedin.com/in/sammyholmes/"
 	},
 	{
 		name: "Zane Prunella",
