@@ -225,7 +225,9 @@ export default function Home() {
 										<OrganizerImage src={organizer.imageSrc} alt={organizer.name} />
 										<OrganizerName>{organizer.name}</OrganizerName>
 										<SocialLink href={organizer.linkedIn} target="_blank" rel="noopener noreferrer">
-											<LinkedInLogo src="/images/linkedin-logo.webp" alt="LinkedIn Logo" />
+											<LinkedInIcon xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+												<path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" />
+											</LinkedInIcon>
 										</SocialLink>
 									</OrganizerCard>
 								</OrganizerCardWrapper>
@@ -487,19 +489,20 @@ const OrganizerName = styled.h3`
 const SocialLink = styled.a`
 	margin-top: 0.5rem;
 	font-size: 1.125rem;
-	color: #60a5fa;
+	color: white;
 	display: inline-flex;
 	align-items: center;
+	transition: opacity 0.3s ease;
 
 	&:hover {
-		text-decoration: underline;
+		opacity: 0.8;
 	}
 `
 
-const LinkedInLogo = styled.img`
-	height: 3rem;
-	width: 3rem;
-	margin-left: 0.5rem;
+const LinkedInIcon = styled.svg`
+	height: 2rem;
+	width: 2rem;
+	fill: currentColor;
 `
 
 const ResponsiveImage = styled.img`
