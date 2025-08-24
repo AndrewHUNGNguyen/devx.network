@@ -212,8 +212,11 @@ export default function Home() {
 						<OrganizerGrid>
 							{organizers.map((organizer) => (
 								<OrganizerCardWrapper key={organizer.name}>
-									<OrganizerCard
-										as={motion.div}
+									<OrganizerCardLink
+										href={organizer.linkedIn}
+										target="_blank"
+										rel="noopener noreferrer"
+										as={motion.a}
 										initial={{ opacity: 0, y: 50 }}
 										animate={{ opacity: 1, y: 0 }}
 										transition={{
@@ -224,12 +227,10 @@ export default function Home() {
 									>
 										<OrganizerImage src={organizer.imageSrc} alt={organizer.name} />
 										<OrganizerName>{organizer.name}</OrganizerName>
-										<SocialLink href={organizer.linkedIn} target="_blank" rel="noopener noreferrer">
-											<LinkedInIcon xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-												<path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" />
-											</LinkedInIcon>
-										</SocialLink>
-									</OrganizerCard>
+										<LinkedInIcon xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+											<path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" />
+										</LinkedInIcon>
+									</OrganizerCardLink>
 								</OrganizerCardWrapper>
 							))}
 						</OrganizerGrid>
@@ -450,7 +451,7 @@ const OrganizerCardWrapper = styled.div`
 	max-width: 350px;
 `
 
-const OrganizerCard = styled.div`
+const OrganizerCardLink = styled.a`
 	background-color: rgba(255, 255, 255, 0.02);
 	padding: 3rem;
 	border-radius: 0.5rem;
@@ -460,6 +461,14 @@ const OrganizerCard = styled.div`
 	align-items: center;
 	justify-content: center;
 	width: 280px;
+	text-decoration: none;
+	color: inherit;
+	cursor: pointer;
+	transition: background-color 0.3s ease;
+
+	&:hover {
+		background-color: rgba(255, 255, 255, 0.05);
+	}
 
 	@media (max-width: 768px) {
 		width: 260px;
@@ -486,23 +495,11 @@ const OrganizerName = styled.h3`
 	margin: 1rem 0;
 `
 
-const SocialLink = styled.a`
-	margin-top: 0.5rem;
-	font-size: 1.125rem;
-	color: white;
-	display: inline-flex;
-	align-items: center;
-	transition: opacity 0.3s ease;
-
-	&:hover {
-		opacity: 0.8;
-	}
-`
-
 const LinkedInIcon = styled.svg`
 	height: 2rem;
 	width: 2rem;
 	fill: currentColor;
+	margin-top: 0.5rem;
 `
 
 const ResponsiveImage = styled.img`
