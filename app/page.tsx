@@ -1,10 +1,13 @@
 "use client"
-import { useRef } from "react"
+import { useRef, useState, useEffect } from "react"
 import styled from "styled-components"
-import { motion, useInView } from "framer-motion"
-import { PotionBackground } from "./components/PotionBackground"
+import { motion, useInView, AnimatePresence } from "framer-motion"
+import { Header } from "./components/Header"
 import { organizers } from "./info/organizers"
 import { links } from "./siteConfig"
+import { Footer } from "./components/Footer"
+import { GiveATalkCTA } from "./components/GiveATalkCTA"
+import { PotionBackground } from "./components/PotionBackground"
 import { ErrorBoundary } from "./components/ErrorBoundary"
 
 // Components //
@@ -17,11 +20,29 @@ export default function Home() {
 	const organizersRef = useRef(null)
 	const joinRef = useRef(null)
 
-	// Add useInView hooks for each section
+	// Use IntersectionObserver to check if sections are in view
 	const heroInView = useInView(heroRef, { amount: 0.3 })
 	const buildConnectEmpowerInView = useInView(buildConnectEmpowerRef, { amount: 0.3 })
 	const aboutInView = useInView(aboutRef, { amount: 0.3 })
 	const organizersInView = useInView(organizersRef, { amount: 0.3 })
+
+	// Image slider state
+	const [currentImageIndex, setCurrentImageIndex] = useState(0)
+	const sliderImages = [
+		"/images/crowd.webp",
+		"/images/crowd.webp",
+		"/images/crowd.webp",
+		"/images/crowd.webp"
+	]
+
+	// Auto-advance slider
+	useEffect(() => {
+		const interval = setInterval(() => {
+			setCurrentImageIndex((prevIndex) => (prevIndex + 1) % sliderImages.length)
+		}, 4000) // Change image every 4 seconds
+
+		return () => clearInterval(interval)
+	}, [])
 	const joinInView = useInView(joinRef, { amount: 0.3 })
 
 	return (
@@ -159,46 +180,51 @@ export default function Home() {
 					</motion.h1>
 				</ContentSection>
 
-				<ContentSection ref={aboutRef} as={motion.section}>
-					<SectionTitle
-						as={motion.h2}
-						animate={{ opacity: aboutInView ? 1 : 0, y: aboutInView ? 0 : 50 }}
-						transition={{ duration: 0.6, ease: "easeOut" }}
-					>
-						About us
-					</SectionTitle>
-					<ContentWrapper>
-						<ResponsiveImage
-							as={motion.img}
-							src="/images/crowd.webp"
-							alt="Big crowd"
-							animate={{
-								scale: aboutInView ? 1 : 1.1,
-								opacity: aboutInView ? 1 : 0
-							}}
-							transition={{ duration: 0.8, ease: "easeOut" }}
-						/>
-						<ContentText
+				<AboutSectionWithSlider ref={aboutRef} as={motion.section}>
+					<SliderContainer>
+						<AnimatePresence mode="wait">
+							<SliderImage
+								key={currentImageIndex}
+								src={sliderImages[currentImageIndex]}
+								alt="Community gathering"
+								initial={{ opacity: 0 }}
+								animate={{ opacity: 1 }}
+								exit={{ opacity: 0 }}
+								transition={{ duration: 1 }}
+							/>
+						</AnimatePresence>
+					</SliderContainer>
+					<AboutContentOverlay>
+						<SectionTitle
+							as={motion.h2}
+							animate={{ opacity: aboutInView ? 1 : 0, y: aboutInView ? 0 : 50 }}
+							transition={{ duration: 0.6, ease: "easeOut" }}
+						>
+							About us
+						</SectionTitle>
+						<AboutTextBox
 							animate={{
 								opacity: aboutInView ? 1 : 0,
 								scale: aboutInView ? 1 : 0.9
 							}}
 							transition={{ duration: 0.6, ease: "easeOut", delay: 0.2 }}
-							as={motion.p}
+							as={motion.div}
 						>
-							{`We're a community of developers of all skill levels, dedicated to fostering a fun and
-							educational environment. Hosted by a team of passionate organizers, our
-							monthly meetups offer an opportunity to network, learn, and showcase community projects. At
-							each event, you'll enjoy complimentary food and drinks during our networking lunch,
-							followed by a series of engaging presentations on various developer and engineering
-							topics. After the talks, we break into groups for casual networking, project showcases,
-							and coding help. Whether you're a seasoned developer or just starting out, there's
-							something for everyone. Be sure to bring your laptop if you'd like to share your latest
-							project or give a presentation. We look forward to meeting you and seeing what you're
-							excited about!`}
-						</ContentText>
-					</ContentWrapper>
-				</ContentSection>
+							<ContentText>
+								{`We're a community of developers of all skill levels, dedicated to fostering a fun and
+								educational environment. Hosted by a team of passionate organizers, our
+								monthly meetups offer an opportunity to network, learn, and showcase community projects. At
+								each event, you'll enjoy complimentary food and drinks during our networking lunch,
+								followed by a series of engaging presentations on various developer and engineering
+								topics. After the talks, we break into groups for casual networking, project showcases,
+								and coding help. Whether you're a seasoned developer or just starting out, there's
+								something for everyone. Be sure to bring your laptop if you'd like to share your latest
+								project or give a presentation. We look forward to meeting you and seeing what you're
+								excited about!`}
+							</ContentText>
+						</AboutTextBox>
+					</AboutContentOverlay>
+				</AboutSectionWithSlider>
 
 				<ContentSection ref={organizersRef} as={motion.section}>
 					<SectionTitle
@@ -392,6 +418,64 @@ const ContentSection = styled.section`
 	}
 `
 
+const AboutSectionWithSlider = styled.section`
+	position: relative;
+	width: 100vw;
+	height: 100vh;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	overflow: hidden;
+`
+
+const SliderContainer = styled.div`
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	z-index: 0;
+`
+
+const SliderImage = styled(motion.img)`
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+`
+
+const AboutContentOverlay = styled.div`
+	position: relative;
+	z-index: 1;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	padding: 2rem;
+	width: 100%;
+	max-width: 1200px;
+`
+
+const AboutTextBox = styled.div`
+	background-color: rgba(0, 0, 0, 0.7);
+	padding: 3rem;
+	border-radius: 1rem;
+	backdrop-filter: blur(10px);
+	max-width: 900px;
+	margin: 0 auto;
+
+	@media (max-width: 768px) {
+		padding: 2rem;
+	}
+
+	@media (max-width: 480px) {
+		padding: 1.5rem;
+		border-radius: 0.75rem;
+	}
+`
+
 const SectionTitle = styled.h2`
 	font-size: clamp(2rem, 8vw, 4rem);
 	font-weight: 700;
@@ -500,23 +584,4 @@ const LinkedInIcon = styled.svg`
 	width: 2rem;
 	fill: currentColor;
 	margin-top: 0.5rem;
-`
-
-const ResponsiveImage = styled.img`
-	border-radius: 0.5rem;
-	box-shadow:;
-		0 4px 6px -1px rgba(0, 0, 0, 0.1),
-		0 2px 4px -1px rgba(0, 0, 0, 0.06)
-	object-fit: cover;
-	width: min(40vw, 500px);
-
-	@media (max-width: 768px) {
-		width: 80vw;
-		max-width: 400px;
-	}
-
-	@media (max-width: 480px) {
-		width: 90vw;
-		max-width: 300px;
-	}
 `
