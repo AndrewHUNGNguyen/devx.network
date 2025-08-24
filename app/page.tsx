@@ -211,22 +211,23 @@ export default function Home() {
 					<ContentWrapper>
 						<OrganizerGrid>
 							{organizers.map((organizer) => (
-								<OrganizerCardWrapper
-									as={motion.div}
-									key={organizer.name}
-									initial={{ opacity: 0, y: 50 }}
-									animate={{ opacity: 1, y: 0 }}
-									transition={{
-										duration: 0.5,
-										ease: "easeOut"
-									}}
-									whileHover={{ scale: 1.1 }}
-								>
-									<OrganizerImage src={organizer.imageSrc} alt={organizer.name} />
-									<OrganizerName>{organizer.name}</OrganizerName>
-									<SocialLink href={organizer.linkedIn} target="_blank" rel="noopener noreferrer">
-										<LinkedInLogo src="/images/linkedin-logo.webp" alt="LinkedIn Logo" />
-									</SocialLink>
+								<OrganizerCardWrapper key={organizer.name}>
+									<OrganizerCard
+										as={motion.div}
+										initial={{ opacity: 0, y: 50 }}
+										animate={{ opacity: 1, y: 0 }}
+										transition={{
+											duration: 0.5,
+											ease: "easeOut"
+										}}
+										whileHover={{ scale: 1.1 }}
+									>
+										<OrganizerImage src={organizer.imageSrc} alt={organizer.name} />
+										<OrganizerName>{organizer.name}</OrganizerName>
+										<SocialLink href={organizer.linkedIn} target="_blank" rel="noopener noreferrer">
+											<LinkedInLogo src="/images/linkedin-logo.webp" alt="LinkedIn Logo" />
+										</SocialLink>
+									</OrganizerCard>
 								</OrganizerCardWrapper>
 							))}
 						</OrganizerGrid>
@@ -440,6 +441,14 @@ const OrganizerGrid = styled.div`
 `
 
 const OrganizerCardWrapper = styled.div`
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex: 1 1 300px;
+	max-width: 350px;
+`
+
+const OrganizerCard = styled.div`
 	background-color: rgba(255, 255, 255, 0.02);
 	padding: 3rem;
 	border-radius: 0.5rem;
@@ -448,8 +457,17 @@ const OrganizerCardWrapper = styled.div`
 	flex-direction: column;
 	align-items: center;
 	justify-content: center;
-	flex: 1;
-	min-width: 250px;
+	width: 280px;
+
+	@media (max-width: 768px) {
+		width: 260px;
+		padding: 2.5rem;
+	}
+
+	@media (max-width: 480px) {
+		width: 240px;
+		padding: 2rem;
+	}
 `
 
 const OrganizerImage = styled.img`
