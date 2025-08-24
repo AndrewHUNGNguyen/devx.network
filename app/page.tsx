@@ -182,7 +182,7 @@ export default function Home() {
 
 				<AboutSectionWithSlider ref={aboutRef} as={motion.section}>
 					<SliderContainer>
-						<AnimatePresence mode="wait">
+						<AnimatePresence>
 							<SliderImage
 								key={currentImageIndex}
 								src={sliderImages[currentImageIndex]}
@@ -190,10 +190,11 @@ export default function Home() {
 								initial={{ opacity: 0 }}
 								animate={{ opacity: 1 }}
 								exit={{ opacity: 0 }}
-								transition={{ duration: 1 }}
+								transition={{ duration: 1.5 }}
 							/>
 						</AnimatePresence>
 					</SliderContainer>
+					<SliderOverlay />
 					<AboutContentOverlay>
 						<SectionTitle
 							as={motion.h2}
@@ -421,11 +422,16 @@ const ContentSection = styled.section`
 const AboutSectionWithSlider = styled.section`
 	position: relative;
 	width: 100vw;
-	height: 100vh;
+	min-height: 100vh;
 	display: flex;
 	align-items: center;
 	justify-content: center;
 	overflow: hidden;
+
+	@media (max-width: 768px) {
+		overflow: visible;
+		padding: 4rem 0;
+	}
 `
 
 const SliderContainer = styled.div`
@@ -444,11 +450,22 @@ const SliderImage = styled(motion.img)`
 	width: 100%;
 	height: 100%;
 	object-fit: cover;
+	filter: blur(2px);
+`
+
+const SliderOverlay = styled.div`
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background-color: rgba(0, 0, 0, 0.4);
+	z-index: 1;
 `
 
 const AboutContentOverlay = styled.div`
 	position: relative;
-	z-index: 1;
+	z-index: 2;
 	display: flex;
 	flex-direction: column;
 	align-items: center;
@@ -456,15 +473,20 @@ const AboutContentOverlay = styled.div`
 	padding: 2rem;
 	width: 100%;
 	max-width: 1200px;
+
+	@media (max-width: 768px) {
+		padding: 3rem 1rem;
+	}
 `
 
 const AboutTextBox = styled.div`
-	background-color: rgba(0, 0, 0, 0.7);
+	background-color: rgba(0, 0, 0, 0.6);
 	padding: 3rem;
 	border-radius: 1rem;
-	backdrop-filter: blur(10px);
+	backdrop-filter: blur(5px);
 	max-width: 900px;
 	margin: 0 auto;
+	box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
 
 	@media (max-width: 768px) {
 		padding: 2rem;
