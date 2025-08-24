@@ -23,7 +23,7 @@ export default function Home() {
 	// Use IntersectionObserver to check if sections are in view
 	const heroInView = useInView(heroRef, { amount: 0.3 })
 	const buildConnectEmpowerInView = useInView(buildConnectEmpowerRef, { amount: 0.3 })
-	const aboutInView = useInView(aboutRef, { amount: 0.3 })
+	const aboutInView = useInView(aboutRef, { amount: 0.2 })
 	const organizersInView = useInView(organizersRef, { amount: 0.3 })
 
 	// Image slider state
@@ -182,8 +182,18 @@ export default function Home() {
 					</motion.h1>
 				</ContentSection>
 
-				<AboutSectionWithSlider ref={aboutRef} as={motion.section}>
-					<SliderContainer>
+				<AboutSectionWithSlider
+					ref={aboutRef}
+					as={motion.section}
+					initial={{ opacity: 1 }}
+					animate={{ opacity: aboutInView ? 1 : 0.3 }}
+					transition={{ duration: 0.8, ease: "easeOut" }}
+				>
+					<SliderContainer
+						as={motion.div}
+						animate={{ opacity: aboutInView ? 1 : 0 }}
+						transition={{ duration: 1, ease: "easeOut" }}
+					>
 						<AnimatePresence>
 							<SliderImage
 								key={currentImageIndex}
@@ -196,7 +206,11 @@ export default function Home() {
 							/>
 						</AnimatePresence>
 					</SliderContainer>
-					<SliderOverlay />
+					<SliderOverlay
+						as={motion.div}
+						animate={{ opacity: aboutInView ? 1 : 0.6 }}
+						transition={{ duration: 1, ease: "easeOut" }}
+					/>
 					<AboutContentOverlay>
 						<SectionTitle
 							as={motion.h2}
