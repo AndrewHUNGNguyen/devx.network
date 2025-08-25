@@ -37,7 +37,7 @@ const StyledLink = styled.a`
 	color: rgba(255, 255, 255, 0.95);
 	text-decoration: none;
 	transition: all 0.3s ease-in-out;
-	border-radius: 2px;
+	border-radius: 8px;
 	box-shadow:
 		0 0 20px rgba(156, 163, 255, 0.15),
 		0 0 40px rgba(92, 107, 246, 0.1),
