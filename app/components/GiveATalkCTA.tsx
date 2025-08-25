@@ -30,14 +30,14 @@ export const GiveATalkCTA: React.FC = () => {
 const StyledLink = styled.a`
 	display: inline-flex;
 	align-items: center;
-	padding: 0.35rem 1.25rem;
+	padding: 0.5rem 1rem;
 	gap: 0.5rem;
 	font-weight: 500;
 	font-size: 0.875rem;
 	color: rgba(255, 255, 255, 0.95);
 	text-decoration: none;
 	transition: all 0.3s ease-in-out;
-	border-radius: 8px;
+	border-radius: 15px 0 20px 0px;
 	box-shadow:
 		0 0 20px rgba(156, 163, 255, 0.15),
 		0 0 40px rgba(92, 107, 246, 0.1),
@@ -53,11 +53,11 @@ const StyledLink = styled.a`
 		rgba(15, 15, 22, 0.95) 75%,
 		rgba(28, 28, 40, 0.9) 100%
 	);
-	border: 1px solid rgba(156, 163, 255, 0.05);
+	border: 1px solid rgba(156, 163, 255, 0.5);
 	position: relative;
 	overflow: hidden;
 	white-space: nowrap;
-	transform: perspective(1000px) rotateX(5deg);
+	transform: perspective(1000px) rotateX(5deg) skew(-10deg) scaleY(.9);
 	animation: pulseGlow 3s ease-in-out infinite;
 
 	&::before {
@@ -95,7 +95,7 @@ const StyledLink = styled.a`
 	}
 
 	&:hover {
-		transform: perspective(1000px) rotateX(5deg) translateY(-1px);
+		transform: perspective(1000px) rotateX(5deg) translateY(-1px) skew(-10deg) scaleY(.9);
 		box-shadow:
 			0 0 30px rgba(156, 163, 255, 0.25),
 			0 0 50px rgba(92, 107, 246, 0.15),
@@ -137,8 +137,7 @@ const StyledLink = styled.a`
 	}
 
 		&:hover {
-			transform: scale(1.02);
-			border-color: rgba(255, 255, 255, 0.12);
+			transform: scale(1.02) skew(-10deg) scaleY(.9);
 			box-shadow:
 				0 4px 12px rgba(0, 0, 0, 1),
 				0 0 20px rgba(92, 107, 246, 0.1),
@@ -167,7 +166,7 @@ const StyledLink = styled.a`
 		}
 
 		&:hover {
-			transform: scale(1.03);
+			transform: scale(1.03) skew(-10deg) scaleY(.9);
 			box-shadow:
 				0 6px 16px rgba(0, 0, 0, 0.8),
 				0 0 20px rgba(92, 107, 246, 0.15),
