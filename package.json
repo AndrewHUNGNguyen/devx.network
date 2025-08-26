@@ -26,6 +26,7 @@
 		"styled-components": "^6.1.18"
 	},
 	"devDependencies": {
+		"@types/better-sqlite3": "^7.6.13",
 		"@types/node": "^20",
 		"@types/react": "^18",
 		"@types/react-dom": "^18",

@@ -1,19 +1,21 @@
+"use client"
+import styled from "styled-components"
+
+// Components //
+
 export default function Join() {
 	return (
-		<main>
-			<section className="bg-gray-800 p-8 rounded-lg shadow-md mb-12">
-				<h2 className="text-3xl font-bold mb-4 text-center">Current Events</h2>
-				<div className="w-full flex flex-col items-center">
-					<p className="mt-2  text-xl text-center max-w-screen-lg mb-12">
-						Stay updated with our latest events, workshops, and meetups. Join us to network and
-						learn with fellow developers.
-					</p>
-					<div className="flex justify-center gap-6 w-full">
-						<div
-							className="flex flex-col items-center flex-1 "
-							style={{ flexBasis: "50%", height: "600px", overflow: "hidden" }}
-						>
-							<h2 className="text-3xl font-bold mb-4 text-center ">On Lu.ma</h2>
+		<Main>
+			<EventSection>
+				<Title>Current Events</Title>
+				<EventDescription>
+					Stay updated with our latest events, workshops, and meetups. Join us to network and learn
+					with fellow developers.
+				</EventDescription>
+				<EventsGrid>
+					<EventColumn>
+						<EventTitle>On Lu.ma</EventTitle>
+						<IframeContainer>
 							<iframe
 								src="https://lu.ma/embed/event/evt-UDB2YUh2bKH152P/simple"
 								width="100%"
@@ -21,48 +23,151 @@ export default function Join() {
 								allowFullScreen
 								aria-hidden="false"
 							></iframe>
-						</div>
-						<div
-							className="flex flex-col items-center flex-1"
-							style={{ flexBasis: "50%", height: "600px", overflow: "hidden" }}
-						>
-							<h2 className="text-3xl font-bold mb-4 text-center">On Meetup.com</h2>
-							<a href="https://www.meetup.com/san-diego-devx/events/301885439/?utm_medium=referral&utm_campaign=share-btn_savedevents_share_modal&utm_source=link">
-								<img
-									src="https://secure.meetupstatic.com/photos/event/5/0/b/c/600_519680668.webp?w=384"
-									alt="Meetup Event"
-									style={{
-										width: "100%",
-										height: "600px",
-										objectFit: "cover"
-									}}
-								/>
-							</a>
-						</div>
-					</div>
-				</div>
-				<h2 className="mt-12 text-3xl font-bold mb-4 text-center">Join Our Discord</h2>
-				<div className="w-full flex flex-col items-center">
-					<div className="flex justify-center">
-						<a
+						</IframeContainer>
+					</EventColumn>
+					<EventColumn>
+						<EventTitle>On Meetup.com</EventTitle>
+						<MeetupLink href="https://www.meetup.com/san-diego-devx/events/301885439/?utm_medium=referral&utm_campaign=share-btn_savedevents_share_modal&utm_source=link">
+							<MeetupImage
+								src="https://secure.meetupstatic.com/photos/event/5/0/b/c/600_519680668.webp?w=384"
+								alt="Meetup Event"
+							/>
+						</MeetupLink>
+					</EventColumn>
+				</EventsGrid>
+				<DiscordSection>
+					<DiscordTitle>Join Our Discord</DiscordTitle>
+					<DiscordButtonContainer>
+						<DiscordButton
 							href="https://discord.gg/rmbT75CB"
 							target="_blank"
 							rel="noopener noreferrer"
-							className="btn btn-primary"
-							style={{
-								backgroundColor: "#5865F2",
-								color: "white",
-								padding: "15px 20px",
-								borderRadius: "1px",
-								textDecoration: "none",
-								display: "inline-block"
-							}}
 						>
 							DEVx Discord
-						</a>
-					</div>
-				</div>
-			</section>
-		</main>
+						</DiscordButton>
+					</DiscordButtonContainer>
+				</DiscordSection>
+			</EventSection>
+		</Main>
 	)
 }
+
+const Main = styled.main`
+	padding-top: 5rem;
+	min-height: 100vh;
+`
+
+const EventSection = styled.section`
+	background-color: #1f2937;
+	padding: 2rem;
+	border-radius: 0.5rem;
+	box-shadow:
+		0 4px 6px -1px rgba(0, 0, 0, 0.1),
+		0 2px 4px -1px rgba(0, 0, 0, 0.06);
+	margin-bottom: 3rem;
+	max-width: 1200px;
+	margin-left: auto;
+	margin-right: auto;
+`
+
+const Title = styled.h2`
+	font-size: 1.875rem;
+	font-weight: bold;
+	margin-bottom: 1rem;
+	text-align: center;
+	color: white;
+`
+
+const EventDescription = styled.p`
+	margin-top: 0.5rem;
+	font-size: 1.25rem;
+	text-align: center;
+	max-width: 60rem;
+	margin-left: auto;
+	margin-right: auto;
+	margin-bottom: 3rem;
+	color: #d1d5db;
+`
+
+const EventsGrid = styled.div`
+	display: flex;
+	justify-content: center;
+	gap: 1.5rem;
+	width: 100%;
+	flex-direction: column;
+
+	@media (min-width: 768px) {
+		flex-direction: row;
+	}
+`
+
+const EventColumn = styled.div`
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	flex: 1;
+	height: 600px;
+	overflow: hidden;
+`
+
+const EventTitle = styled.h2`
+	font-size: 1.875rem;
+	font-weight: bold;
+	margin-bottom: 1rem;
+	text-align: center;
+	color: white;
+`
+
+const IframeContainer = styled.div`
+	width: 100%;
+	height: 100%;
+	flex: 1;
+`
+
+const MeetupLink = styled.a`
+	width: 100%;
+	height: 100%;
+	display: block;
+`
+
+const MeetupImage = styled.img`
+	width: 100%;
+	height: 600px;
+	object-fit: cover;
+`
+
+const DiscordSection = styled.div`
+	margin-top: 3rem;
+`
+
+const DiscordTitle = styled.h2`
+	margin-top: 3rem;
+	font-size: 1.875rem;
+	font-weight: bold;
+	margin-bottom: 1rem;
+	text-align: center;
+	color: white;
+`
+
+const DiscordButtonContainer = styled.div`
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+`
+
+const DiscordButton = styled.a`
+	background-color: #5865f2;
+	color: white;
+	padding: 15px 20px;
+	border-radius: 1px;
+	text-decoration: none;
+	display: inline-block;
+	font-weight: 500;
+	transition: background-color 0.2s ease;
+
+	&:hover {
+		background-color: #4752c4;
+	}
+`

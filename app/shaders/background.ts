@@ -4,8 +4,8 @@ import { CreateFragmentShader, FragmentShaderUniforms } from "./types"
 
 const createFragmentShader: CreateFragmentShader = (options) => {
 	const {
-		blurAmount = 345,
-		blurQuality = 7,
+		blurAmount = 100,
+		blurQuality = 3,
 		blurExponentRange = [0.9, 1.2]
 	} = options as Partial<{
 		blurAmount: number
@@ -47,9 +47,16 @@ const createFragmentShader: CreateFragmentShader = (options) => {
 	float ease_in(float x)
 	  { return 1.0 - cos((x * PI) * 0.5); }
 
+	// approx pow(x, 1.1..1.2) with a quadratic fit around [0,1]
+	float pow_approx(float x){
+		//  a*x^2 + b*x + c tuned to feel similar; start simple:
+		return x*(0.6 + 0.4*x); // fast and smooth
+	}
+
 	float wave_alpha_part(float dist, float blur_fac, float t) {
 	  float exp = mix(${blurExponentRange[0].toFixed(5)}, ${blurExponentRange[1].toFixed(5)}, t);
-	  float v = pow(blur_fac, exp);
+	  // float v = pow(blur_fac, exp);
+	  float v = pow_approx(blur_fac);
 	  v = ease_in(v);
 	  v = smoothstep(v);
 	  v = clamp(v, 0.008, 1.0);
@@ -74,7 +81,6 @@ const createFragmentShader: CreateFragmentShader = (options) => {
 	  float sum = 0.5;
 	  sum += simplex_noise(vec3(x * L1 +  x_shift * 1.1, y * L1 * LY1, time * S)) * 0.30;
 	  sum += simplex_noise(vec3(x * L2 + -x_shift * 0.6, y * L2 * LY2, time * S)) * 0.25;
-	  sum += simplex_noise(vec3(x * L3 +  x_shift * 0.8, y * L3 * LY3, time * S)) * 0.20;
 	  return sum;
 	}
 
@@ -92,7 +98,6 @@ const createFragmentShader: CreateFragmentShader = (options) => {
 	  sum += simplex_noise(vec2(x * 1.30 + x_shift, y * 0.54)) * 0.85;
 	  sum += simplex_noise(vec2(x * 1.00 + x_shift, y * 0.68)) * 1.15;
 	  sum += simplex_noise(vec2(x * 0.70 + x_shift, y * 0.59)) * 0.60;
-	  sum += simplex_noise(vec2(x * 0.40 + x_shift, y * 0.48)) * 0.40;
 	  return sum;
 	}
 

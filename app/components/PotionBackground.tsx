@@ -1,13 +1,15 @@
 "use client"
 import { useRef, useEffect, useState } from "react"
+import styled from "styled-components"
 import createFragmentShader from "../shaders/background"
 import { FragmentShader } from "../shaders/types"
+
+// Components //
 
 export const PotionBackground = () => {
 	const containerRef = useRef<HTMLDivElement>(null)
 	const canvasRef = useRef<HTMLCanvasElement>(null)
 	const requestRef = useRef<number>()
-	const timeRef = useRef<number>(0)
 
 	const [canvasDimensions, setCanvasDimensions] = useState({ width: 0, height: 0, top: 0, left: 0 })
 
@@ -40,23 +42,64 @@ export const PotionBackground = () => {
 		if (!canvasRef.current || canvasDimensions.width === 0 || canvasDimensions.height === 0) return
 
 		const canvas = canvasRef.current
-		const pixelRatio = window.devicePixelRatio || 1
-		canvas.width = canvasDimensions.width * pixelRatio
-		canvas.height = canvasDimensions.height * pixelRatio
+		// Use a lower pixel ratio on mobile devices for better performance
+		const isMobile = window.innerWidth <= 768
+		const pixelRatio = isMobile
+			? Math.min(window.devicePixelRatio, 1.0)
+			: Math.min(window.devicePixelRatio, 1.5)
+		canvas.width = Math.floor(canvasDimensions.width * pixelRatio)
+		canvas.height = Math.floor(canvasDimensions.height * pixelRatio)
 
 		// Initialize WebGL
-		const gl = canvas.getContext("webgl")
+		const gl =
+			// Switch between webgl2 for performance benefits if available
+			canvas.getContext("webgl2", {
+				alpha: false,
+				antialias: false,
+				depth: false,
+				stencil: false,
+				preserveDrawingBuffer: false,
+				powerPreference: "low-power"
+			}) ||
+			canvas.getContext("webgl", {
+				alpha: false,
+				antialias: false,
+				depth: false,
+				stencil: false,
+				preserveDrawingBuffer: false,
+				powerPreference: "low-power"
+			})
 		if (!gl) {
 			console.error("WebGL not supported")
 			return
 		}
 
+		// 3) Cap FPS ~30
+		const FRAME_INTERVAL = 1000 / 30
+		let lastDraw = 0
+
+		// 4) Pause when hidden or not intersecting
+		let playing = true
+		const handleVisibilityChange = () => {
+			playing = !document.hidden
+		}
+		document.addEventListener("visibilitychange", handleVisibilityChange)
+
+		const io = new IntersectionObserver(
+			([entry]) => {
+				playing = entry.isIntersecting
+			},
+			{ threshold: 0 }
+		)
+		io.observe(canvas)
+
 		// Set viewport to match canvas size
 		gl.viewport(0, 0, canvas.width, canvas.height)
 
 		// Setup blending for transparency
-		gl.enable(gl.BLEND)
-		gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA)
+		// NOTE: Removed this for performance; no need for alpha channel
+		// gl.enable(gl.BLEND)
+		// gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA)
 
 		// Create shader program
 		const shaderResult = createFragmentShader({
@@ -68,7 +111,7 @@ export const PotionBackground = () => {
 			console.error("Expected FragmentShader object but got string")
 			return
 		}
-		const { shader: fragmentShaderSource, uniforms } = shaderResult as FragmentShader
+		const { shader: fragmentShaderSource } = shaderResult as FragmentShader
 
 		// Vertex shader - simple pass-through
 		const vertexShaderSource = `
@@ -139,24 +182,42 @@ export const PotionBackground = () => {
 		const pixelRatioLocation = gl.getUniformLocation(program, "u_pixelRatio")
 
 		// Create gradient texture
-		const gradientTexture = gl.createTexture()
+		// Build a 1D gradient texture (change stops to taste)
+		function makeGradientTexture() {
+			const w = 512,
+				h = 1
+			const canvas = document.createElement("canvas")
+			canvas.width = w
+			canvas.height = h
+			const ctx = canvas.getContext("2d")
+			if (!ctx) return
+			const g = ctx.createLinearGradient(0, 0, w, 0)
+			// Add your gradient stops here:
+			g.addColorStop(0.0, "#000001")
+			g.addColorStop(0.25, "#08080a")
+			g.addColorStop(0.45, "#15151c")
+			g.addColorStop(0.65, "#0f0f16")
+			g.addColorStop(0.85, "#000001")
+			g.addColorStop(1.0, "#1c1c28")
+			ctx.fillStyle = g
+			ctx.fillRect(0, 0, w, h)
+
+			if (!gl) return
+			const tex = gl.createTexture()
+			gl.bindTexture(gl.TEXTURE_2D, tex)
+			gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false)
+			gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, canvas)
+			gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR)
+			gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR)
+			gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE)
+			gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE)
+			return tex
+		}
+		// const gradientTexture = gl.createTexture()
+		const gradientTexture = makeGradientTexture()
+		if (!gradientTexture) return
 		gl.activeTexture(gl.TEXTURE0)
 		gl.bindTexture(gl.TEXTURE_2D, gradientTexture)
-
-		// Create gradient color data
-		const layerOneBg = [0, 0, 0, 0]
-		const layerOneFg = [32, 0, 32, 255]
-		const layerTwoBg = [32, 32, 64, 0]
-		const layerTwoFg = [32, 32, 32, 255]
-
-		const gradientData = new Uint8Array([
-			...layerOneBg,
-			...layerTwoBg,
-			...layerOneFg,
-			...layerTwoFg
-		])
-
-		gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 2, 2, 0, gl.RGBA, gl.UNSIGNED_BYTE, gradientData)
 
 		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR)
 		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR)
@@ -166,14 +227,24 @@ export const PotionBackground = () => {
 		// Set uniform values
 		gl.uniform1i(gradientLocation, 0) // Use texture unit 0
 		gl.uniform1f(widthLocation, canvasDimensions.width)
-		gl.uniform1f(heightLocation, canvasDimensions.height)
-		gl.uniform1f(pixelRatioLocation, pixelRatio)
+		gl.uniform1f(heightLocation, canvasDimensions.height / 3)
+		gl.uniform1f(pixelRatioLocation, pixelRatio * 2)
 
 		// Animation loop
-		const render = (time: number) => {
-			timeRef.current = time * 0.001 // Convert to seconds
+		const render = (now: number) => {
+			if (!playing) {
+				requestRef.current = requestAnimationFrame(render)
+				return
+			}
+			if (now - lastDraw < FRAME_INTERVAL) {
+				requestRef.current = requestAnimationFrame(render)
+				return
+			}
 
-			gl.uniform1f(timeLocation, timeRef.current)
+			lastDraw = now
+
+			const t = now * 0.001
+			gl.uniform1f(timeLocation, t)
 			gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4)
 
 			requestRef.current = requestAnimationFrame(render)
@@ -187,6 +258,10 @@ export const PotionBackground = () => {
 				cancelAnimationFrame(requestRef.current)
 			}
 
+			// Clean up event listeners and observer
+			document.removeEventListener("visibilitychange", handleVisibilityChange)
+			io.disconnect()
+
 			// Clean up WebGL resources
 			gl.deleteProgram(program)
 			gl.deleteShader(vertexShader)
@@ -197,32 +272,41 @@ export const PotionBackground = () => {
 	}, [canvasDimensions])
 
 	return (
-		<div
-			ref={containerRef}
-			style={{
-				backgroundColor: "black",
-				width: "100%",
-				height: "100%",
-				overflow: "hidden",
-				position: "absolute",
-				top: 0,
-				left: 0,
-				zIndex: -1
-			}}
-		>
-			<canvas
+		<BackgroundContainer ref={containerRef}>
+			<Canvas
 				ref={canvasRef}
 				width={canvasDimensions.width}
 				height={canvasDimensions.height}
-				style={{
-					display: "block",
-					position: "absolute",
-					width: `${canvasDimensions.width}px`,
-					height: `${canvasDimensions.height}px`,
-					top: `${canvasDimensions.top}px`,
-					left: `${canvasDimensions.left}px`
-				}}
+				$width={canvasDimensions.width}
+				$height={canvasDimensions.height}
+				$top={canvasDimensions.top}
+				$left={canvasDimensions.left}
 			/>
-		</div>
+		</BackgroundContainer>
 	)
 }
+
+const BackgroundContainer = styled.div`
+	background-color: black;
+	width: 100%;
+	height: 100%;
+	overflow: hidden;
+	position: absolute;
+	top: 0;
+	left: 0;
+	z-index: -1;
+`
+
+const Canvas = styled.canvas<{
+	$width: number
+	$height: number
+	$top: number
+	$left: number
+}>`
+	display: block;
+	position: absolute;
+	width: ${(props) => props.$width}px
+	height: ${(props) => props.$height}px
+	top: ${(props) => props.$top}px
+	left: ${(props) => props.$left}px
+`

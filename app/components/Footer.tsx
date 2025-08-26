@@ -1,12 +1,12 @@
 "use client"
-import { links } from "../siteConfig"
 import styled from "styled-components"
-import { GiveATalkCTA } from "./GiveATalkCTA"
+import { links } from "../siteConfig"
+
+// Components //
 
 export const Footer = () => {
 	return (
 		<FooterContainer>
-			<GiveATalkCTA />
 			<FooterContent>
 				<Copyright>
 					<CopyrightText>
@@ -74,17 +74,14 @@ export const Footer = () => {
 }
 
 const FooterContainer = styled.footer`
-	position: relative;
 	display: flex;
 	align-items: center;
 	justify-content: center;
 	width: 100%;
-	position: fixed;
-	bottom: 0;
 	background-color: rgba(0, 0, 0, 0.05);
 	backdrop-filter: blur(38px);
 	border-top: 1px solid rgba(255, 255, 255, 0.1);
-	z-index: 100;
+	margin-top: auto;
 `
 
 const FooterContent = styled.div`
@@ -92,33 +89,35 @@ const FooterContent = styled.div`
 	flex-direction: column;
 	align-items: center;
 	justify-content: space-between;
-	padding: 1rem;
+	padding: 1.5rem 1rem;
 	color: #a3a3a3;
 	max-width: 1200px;
 	width: 100%;
+	gap: 1rem;
 
 	@media (min-width: 768px) {
 		flex-direction: row;
+		padding: 1rem;
+		gap: 0;
 	}
 `
+
 const Copyright = styled.aside`
 	display: flex;
 	align-items: center;
-	padding-bottom: 1rem;
-
-	@media (min-width: 768px) {
-		padding-bottom: 0;
-	}
 `
 
 const CopyrightText = styled.p`
 	display: flex;
 	align-items: center;
+	margin: 0;
+	font-size: 0.875rem;
 `
 
 const SocialNav = styled.nav`
 	display: flex;
-	gap: 1rem;
+	align-items: center;
+	gap: 0.75rem;
 
 	@media (min-width: 768px) {
 		place-self: center;
@@ -127,16 +126,16 @@ const SocialNav = styled.nav`
 `
 
 const SocialLink = styled.a`
-	margin-right: 1rem;
-	&:last-child {
-		margin-right: 0;
-	}
+	display: flex;
+	align-items: center;
+	color: inherit;
+	transition: opacity 0.2s ease;
 
 	svg {
 		fill: currentColor;
 	}
 
 	&:hover {
-		opacity: 0.8;
+		opacity: 0.7;
 	}
 `

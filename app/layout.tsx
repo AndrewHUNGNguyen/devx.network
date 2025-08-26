@@ -6,6 +6,8 @@ import { Footer } from "./components/Footer"
 import { siteConfig } from "./siteConfig"
 import StyledComponentsRegistry from "./StyledComponentsRegistry"
 
+// Constants //
+
 export const metadata: Metadata = {
 	title: siteConfig.title,
 	description: siteConfig.description,
@@ -17,6 +19,8 @@ export const metadata: Metadata = {
 		images: siteConfig.ogImage
 	}
 }
+
+// Components //
 
 export default function RootLayout({
 	children

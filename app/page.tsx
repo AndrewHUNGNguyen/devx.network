@@ -1,10 +1,16 @@
 "use client"
-import { useRef } from "react"
+import { useRef, useState, useEffect } from "react"
 import styled from "styled-components"
-import { motion, useInView } from "framer-motion"
-import { PotionBackground } from "./components/PotionBackground"
+import { motion, useInView, AnimatePresence } from "framer-motion"
+import { Header } from "./components/Header"
 import { organizers } from "./info/organizers"
 import { links } from "./siteConfig"
+import { Footer } from "./components/Footer"
+import { GiveATalkCTA } from "./components/GiveATalkCTA"
+import { PotionBackground } from "./components/PotionBackground"
+import { ErrorBoundary } from "./components/ErrorBoundary"
+
+// Components //
 
 export default function Home() {
 	// Add refs for each animated section
@@ -14,19 +20,43 @@ export default function Home() {
 	const organizersRef = useRef(null)
 	const joinRef = useRef(null)
 
-	// Add useInView hooks for each section
+	// Use IntersectionObserver to check if sections are in view
 	const heroInView = useInView(heroRef, { amount: 0.3 })
 	const buildConnectEmpowerInView = useInView(buildConnectEmpowerRef, { amount: 0.3 })
-	const aboutInView = useInView(aboutRef, { amount: 0.3 })
+	const aboutInView = useInView(aboutRef, { amount: 0.2 })
 	const organizersInView = useInView(organizersRef, { amount: 0.3 })
+
+	// Image slider state
+	const [currentImageIndex, setCurrentImageIndex] = useState(0)
+	const sliderImages = [
+		"/images/slides/slide1.webp",
+		"/images/slides/slide2.webp",
+		"/images/slides/slide3.webp",
+		"/images/slides/slide4.webp",
+		"/images/slides/slide5.webp",
+		"/images/slides/slide6.webp"
+	]
+
+	// Auto-advance slider
+	useEffect(() => {
+		const interval = setInterval(() => {
+			setCurrentImageIndex((prevIndex) => (prevIndex + 1) % sliderImages.length)
+		}, 4000) // Change image every 4 seconds
+
+		return () => clearInterval(interval)
+	}, [])
 	const joinInView = useInView(joinRef, { amount: 0.3 })
 
 	return (
 		<>
 			<BackgroundContainer>
-				<PotionBackground />
+				<ErrorBoundary
+					fallback={<div style={{ backgroundColor: "black", width: "100%", height: "100%" }} />}
+				>
+					<PotionBackground />
+				</ErrorBoundary>
 			</BackgroundContainer>
-			<Main>
+			<Main ignoreHeader>
 				<Hero>
 					<HeroSection
 						ref={heroRef}
@@ -51,6 +81,63 @@ export default function Home() {
 							A developer community of events and open-source projects in San Diego, California.
 						</TaglineText>
 					</Tagline>
+					<HeroSocialLinks
+						animate={{
+							opacity: heroInView ? 1 : 0,
+							y: heroInView ? 0 : 20
+						}}
+						transition={{ duration: 0.6, ease: "easeOut", delay: 0.4 }}
+						as={motion.div}
+					>
+						<HeroSocialIcon href={links.linkedInUrl} aria-label="LinkedIn" target="_blank">
+							<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 50 50">
+								<path d="M41,4H9C6.24,4,4,6.24,4,9v32c0,2.76,2.24,5,5,5h32c2.76,0,5-2.24,5-5V9C46,6.24,43.76,4,41,4z M17,20v19h-6V20H17z M11,14.47c0-1.4,1.2-2.47,3-2.47s2.93,1.07,3,2.47c0,1.4-1.12,2.53-3,2.53C12.2,17,11,15.87,11,14.47z M39,39h-6c0,0,0-9.26,0-10 c0-2-1-4-3.5-4.04h-0.08C27,24.96,26,27.02,26,29c0,0.91,0,10,0,10h-6V20h6v2.56c0,0,1.93-2.56,5.81-2.56 c3.97,0,7.19,2.73,7.19,8.26V39z" />
+							</svg>
+						</HeroSocialIcon>
+						<HeroSocialIcon href={links.youtube} aria-label="Youtube" target="_blank">
+							<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+								<path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"></path>
+							</svg>
+						</HeroSocialIcon>
+						<HeroSocialIcon href={links.lumaUrl} aria-label="Luma" target="_blank">
+							<svg
+								xmlns="http://www.w3.org/2000/svg"
+								fill="none"
+								width="24"
+								height="24"
+								viewBox="0 0 133 134"
+							>
+								<path
+									fill="currentColor"
+									d="M133 67C96.282 67 66.5 36.994 66.5 0c0 36.994-29.782 67-66.5 67 36.718 0 66.5 30.006 66.5 67 0-36.994 29.782-67 66.5-67"
+								></path>
+							</svg>
+						</HeroSocialIcon>
+						<HeroSocialIcon href={links.meetupUrl} aria-label="Meetup" target="_blank">
+							<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 32 32">
+								<path
+									fill="currentColor"
+									d="M31.969 26.984c-.401-2.572-5.163-.593-5.459-3.411c-.417-4 5.531-12.615 5.063-15.964c-.417-3.005-2.453-3.64-4.219-3.677c-1.715-.025-2.167.245-2.745.584c-.339.192-.817.577-1.484-.057c-.443-.423-.745-.713-1.208-1.089c-.24-.192-.62-.432-1.261-.525c-.629-.099-1.463 0-1.984.219c-.532.229-.937.625-1.369 1c-.433.375-1.532 1.599-2.548 1.145c-.448-.192-1.948-.943-3.031-1.405c-2.084-.901-5.093.557-6.183 2.489C3.926 9.157.745 20.428.254 21.913c-1.077 3.333 1.381 6.052 4.683 5.895c1.401-.067 2.333-.572 3.213-2.181c.511-.928 5.308-13.448 5.667-14.057c.261-.432 1.125-1.005 1.855-.636c.735.38.88 1.161.771 1.896c-.183 1.193-3.557 8.839-3.693 9.699c-.219 1.473.48 2.285 2.011 2.369c1.043.052 2.089-.317 2.912-1.88c.464-.871 5.797-11.557 6.265-12.271c.521-.781.937-1.043 1.475-1.011c.411.02 1.061.125.9 1.353c-.161 1.209-4.452 9.043-4.9 10.959c-.605 2.573.801 5.167 3.124 6.308c1.48.728 7.959 1.968 7.433-1.371z"
+								/>
+							</svg>
+						</HeroSocialIcon>
+						<HeroSocialIcon href={links.discord} aria-label="Discord" target="_blank">
+							<svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24">
+								<path
+									fill="currentColor"
+									d="M19.27 5.33C17.94 4.71 16.5 4.26 15 4a.09.09 0 0 0-.07.03c-.18.33-.39.76-.53 1.09a16.09 16.09 0 0 0-4.8 0c-.14-.34-.35-.76-.54-1.09c-.01-.02-.04-.03-.07-.03c-1.5.26-2.93.71-4.27 1.33c-.01 0-.02.01-.03.02c-2.72 4.07-3.47 8.03-3.1 11.95c0 .02.01.04.03.05c1.8 1.32 3.53 2.12 5.24 2.65c.03.01.06 0 .07-.02c.4-.55.76-1.13 1.07-1.74c.02-.04 0-.08-.04-.09c-.57-.22-1.11-.48-1.64-.78c-.04-.02-.04-.08-.01-.11c.11-.08.22-.17.33-.25c.02-.02.05-.02.07-.01c3.44 1.57 7.15 1.57 10.55 0c.02-.01.05-.01.07.01c.11.09.22.17.33.26c.04.03.04.09-.01.11c-.52.31-1.07.56-1.64.78c-.04.01-.05.06-.04.09c.32.61.68 1.19 1.07 1.74c.03.01.06.02.09.01c1.72-.53 3.45-1.33 5.25-2.65c.02-.01.03-.03.03-.05c.44-4.53-.73-8.46-3.1-11.95c-.01-.01-.02-.02-.04-.02M8.52 14.91c-1.03 0-1.89-.95-1.89-2.12s.84-2.12 1.89-2.12c1.06 0 1.9.96 1.89 2.12c0 1.17-.84 2.12-1.89 2.12m6.97 0c-1.03 0-1.89-.95-1.89-2.12s.84-2.12 1.89-2.12c1.06 0 1.9.96 1.89 2.12c0 1.17-.83 2.12-1.89 2.12"
+								></path>
+							</svg>
+						</HeroSocialIcon>
+						<HeroSocialIcon href={links.github} aria-label="Github" target="_blank">
+							<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24">
+								<path
+									fill="currentColor"
+									d="M5.315 2.1c.791-.113 1.9.145 3.333.966l.272.161l.16.1l.397-.083a13.3 13.3 0 0 1 4.59-.08l.456.08l.396.083l.161-.1c1.385-.84 2.487-1.17 3.322-1.148l.164.008l.147.017l.076.014l.05.011l.144.047a1 1 0 0 1 .53.514a5.2 5.2 0 0 1 .397 2.91l-.047.267l-.046.196l.123.163c.574.795.93 1.728 1.03 2.707l.023.295L21 9.5c0 3.855-1.659 5.883-4.644 6.68l-.245.061l-.132.029l.014.161l.008.157l.004.365l-.002.213L16 21a1 1 0 0 1-.883.993L15 22H9a1 1 0 0 1-.993-.883L8 21v-.734c-1.818.26-3.03-.424-4.11-1.878l-.535-.766c-.28-.396-.455-.579-.589-.644l-.048-.019a1 1 0 0 1 .564-1.918c.642.188 1.074.568 1.57 1.239l.538.769c.76 1.079 1.36 1.459 2.609 1.191L8 17.562l-.018-.168a5 5 0 0 1-.021-.824l.017-.185l.019-.12l-.108-.024c-2.976-.71-4.703-2.573-4.875-6.139l-.01-.31L3 9.5a5.6 5.6 0 0 1 .908-3.051l.152-.222l.122-.163l-.045-.196a5.2 5.2 0 0 1 .145-2.642l.1-.282l.106-.253a1 1 0 0 1 .529-.514l.144-.047z"
+								/>
+							</svg>
+						</HeroSocialIcon>
+					</HeroSocialLinks>
 				</Hero>
 
 				<ContentSection
@@ -95,46 +182,76 @@ export default function Home() {
 					</motion.h1>
 				</ContentSection>
 
-				<ContentSection ref={aboutRef} as={motion.section}>
-					<SectionTitle
-						as={motion.h2}
-						animate={{ opacity: aboutInView ? 1 : 0, y: aboutInView ? 0 : 50 }}
-						transition={{ duration: 0.6, ease: "easeOut" }}
+				<AboutSectionWithSlider
+					ref={aboutRef}
+					as={motion.section}
+					initial={{ opacity: 1 }}
+					animate={{ opacity: aboutInView ? 1 : 0.3 }}
+					transition={{ duration: 0.8, ease: "easeOut" }}
+				>
+					<SliderContainer
+						as={motion.div}
+						animate={{ opacity: aboutInView ? 1 : 0 }}
+						transition={{ duration: 1, ease: "easeOut" }}
 					>
-						About us
-					</SectionTitle>
-					<ContentWrapper>
-						<ResponsiveImage
-							as={motion.img}
-							src="/images/crowd.webp"
-							alt="Big crowd"
-							animate={{
-								scale: aboutInView ? 1 : 1.1,
-								opacity: aboutInView ? 1 : 0
-							}}
-							transition={{ duration: 0.8, ease: "easeOut" }}
-						/>
-						<ContentText
+						<AnimatePresence>
+							<SliderImage
+								key={currentImageIndex}
+								src={sliderImages[currentImageIndex]}
+								alt="Community gathering"
+								initial={{ opacity: 0 }}
+								animate={{ opacity: 1 }}
+								exit={{ opacity: 0 }}
+								transition={{ duration: 1.5 }}
+							/>
+						</AnimatePresence>
+					</SliderContainer>
+					<SliderOverlay
+						as={motion.div}
+						animate={{ opacity: aboutInView ? 1 : 0.6 }}
+						transition={{ duration: 1, ease: "easeOut" }}
+					/>
+					<AboutContentOverlay>
+						<SectionTitle
+							as={motion.h2}
+							animate={{ opacity: aboutInView ? 1 : 0, y: aboutInView ? 0 : 50 }}
+							transition={{ duration: 0.6, ease: "easeOut" }}
+						>
+							About us
+						</SectionTitle>
+						<AboutTextBox
 							animate={{
 								opacity: aboutInView ? 1 : 0,
 								scale: aboutInView ? 1 : 0.9
 							}}
 							transition={{ duration: 0.6, ease: "easeOut", delay: 0.2 }}
-							as={motion.p}
+							as={motion.div}
 						>
-							{`We're a community of developers of all skill levels, dedicated to fostering a fun and
-							educational environment. Hosted by a team of passionate organizers, our
-							monthly meetups offer an opportunity to network, learn, and showcase community projects. At
-							each event, you'll enjoy complimentary food and drinks during our networking lunch,
-							followed by a series of engaging presentations on various developer and engineering
-							topics. After the talks, we break into groups for casual networking, project showcases,
-							and coding help. Whether you're a seasoned developer or just starting out, there's
-							something for everyone. Be sure to bring your laptop if you'd like to share your latest
-							project or give a presentation. We look forward to meeting you and seeing what you're
-							excited about!`}
-						</ContentText>
-					</ContentWrapper>
-				</ContentSection>
+							<AboutTextContent>
+								<ContentParagraph>
+									We&apos;re a community of developers of all skill levels, dedicated to fostering a
+									fun and educational environment.
+								</ContentParagraph>
+								<ContentParagraph>
+									Hosted by a team of passionate organizers, our monthly meetups offer an
+									opportunity to network, learn, and showcase community projects. Each event
+									features complimentary food and drinks during our networking lunch, followed by
+									engaging presentations on various developer and engineering topics.
+								</ContentParagraph>
+								<ContentParagraph>
+									After the talks, we break into groups for casual networking, project showcases,
+									and coding help. Whether you&apos;re a seasoned developer or just starting out,
+									there&apos;s something for everyone.
+								</ContentParagraph>
+								<ContentParagraph $noMargin>
+									Be sure to bring your laptop if you&apos;d like to share your latest project or
+									give a presentation. We look forward to meeting you and seeing what you&apos;re
+									excited about!
+								</ContentParagraph>
+							</AboutTextContent>
+						</AboutTextBox>
+					</AboutContentOverlay>
+				</AboutSectionWithSlider>
 
 				<ContentSection ref={organizersRef} as={motion.section}>
 					<SectionTitle
@@ -147,22 +264,26 @@ export default function Home() {
 					<ContentWrapper>
 						<OrganizerGrid>
 							{organizers.map((organizer) => (
-								<OrganizerCardWrapper
-									as={motion.div}
-									key={organizer.name}
-									initial={{ opacity: 0, y: 50 }}
-									animate={{ opacity: 1, y: 0 }}
-									transition={{
-										duration: 0.5,
-										ease: "easeOut"
-									}}
-									whileHover={{ scale: 1.1 }}
-								>
-									<OrganizerImage src={organizer.imageSrc} alt={organizer.name} />
-									<OrganizerName>{organizer.name}</OrganizerName>
-									<SocialLink href={organizer.linkedIn} target="_blank" rel="noopener noreferrer">
-										<LinkedInLogo src="/images/linkedin-logo.webp" alt="LinkedIn Logo" />
-									</SocialLink>
+								<OrganizerCardWrapper key={organizer.name}>
+									<OrganizerCardLink
+										href={organizer.linkedIn}
+										target="_blank"
+										rel="noopener noreferrer"
+										as={motion.a}
+										initial={{ opacity: 0, y: 50 }}
+										animate={{ opacity: 1, y: 0 }}
+										transition={{
+											duration: 0.5,
+											ease: "easeOut"
+										}}
+										whileHover={{ scale: 1.1 }}
+									>
+										<OrganizerImage src={organizer.imageSrc} alt={organizer.name} />
+										<OrganizerName>{organizer.name}</OrganizerName>
+										<LinkedInIcon xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+											<path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" />
+										</LinkedInIcon>
+									</OrganizerCardLink>
 								</OrganizerCardWrapper>
 							))}
 						</OrganizerGrid>
@@ -194,8 +315,8 @@ export default function Home() {
 	)
 }
 
-// Styled components
-const Main = styled.main`
+const Main = styled.main<{ ignoreHeader?: boolean }>`
+	margin-top: ${({ ignoreHeader = false }) => (ignoreHeader ? "-72px" : "0")};
 	color: white;
 	display: flex;
 	flex-direction: column;
@@ -238,6 +359,37 @@ const Hero = styled.section`
 	flex-direction: column;
 	align-items: center;
 	justify-content: center;
+`
+
+const HeroSocialLinks = styled.div`
+	position: absolute;
+	bottom: 4rem;
+	display: flex;
+	gap: 1.5rem;
+	align-items: center;
+	justify-content: center;
+
+	@media (max-width: 768px) {
+		bottom: 3rem;
+	}
+`
+
+const HeroSocialIcon = styled.a`
+	display: flex;
+	align-items: center;
+	color: rgba(255, 255, 255, 0.7);
+	transition: all 0.3s ease;
+
+	svg {
+		fill: currentColor;
+		width: 28px;
+		height: 28px;
+	}
+
+	&:hover {
+		color: rgba(255, 255, 255, 1);
+		transform: scale(1.1);
+	}
 `
 
 const HeroSection = styled.section`
@@ -293,10 +445,132 @@ const ContentSection = styled.section`
 	}
 `
 
+const AboutSectionWithSlider = styled.section`
+	position: relative;
+	width: 100vw;
+	min-height: 100vh;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	overflow: hidden;
+
+	@media (max-width: 768px) {
+		overflow: visible;
+		padding: 4rem 0;
+	}
+`
+
+const SliderContainer = styled.div`
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	z-index: 0;
+`
+
+const SliderImage = styled(motion.img)`
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	filter: blur(2px);
+`
+
+const SliderOverlay = styled.div`
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background-color: rgba(0, 0, 0, 0.4);
+	z-index: 1;
+`
+
+const AboutContentOverlay = styled.div`
+	position: relative;
+	z-index: 2;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	padding: 2rem;
+	width: 100%;
+	max-width: 1200px;
+
+	@media (max-width: 768px) {
+		padding: 3rem 1rem;
+	}
+`
+
+const AboutTextBox = styled.div`
+	background-color: rgba(0, 0, 0, 0.75);
+	padding: 3.5rem;
+	border-radius: 1rem;
+	backdrop-filter: blur(8px);
+	max-width: 800px;
+	margin: 0 auto;
+	box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+
+	@media (max-width: 768px) {
+		padding: 2.5rem;
+		max-width: 90%;
+	}
+
+	@media (max-width: 480px) {
+		padding: 2rem;
+		border-radius: 0.75rem;
+	}
+`
+
+const AboutTextContent = styled.div`
+	display: flex;
+	flex-direction: column;
+	gap: 1.5rem;
+`
+
+const ContentParagraph = styled.p<{ $noMargin?: boolean }>`
+	font-size: 1.125rem;
+	line-height: 1.9;
+	text-align: left;
+	margin: ${(props) => (props.$noMargin ? "0" : "0")};
+	color: rgba(255, 255, 255, 0.9);
+	font-weight: 300;
+
+	&:first-child {
+		font-size: 1.375rem;
+		font-weight: 300;
+		text-align: center;
+		margin-bottom: 0.75rem;
+		color: rgba(255, 255, 255, 0.95);
+		letter-spacing: 0.02em;
+	}
+
+	@media (max-width: 768px) {
+		font-size: 1.05rem;
+		line-height: 1.8;
+
+		&:first-child {
+			font-size: 1.25rem;
+		}
+	}
+
+	@media (max-width: 480px) {
+		font-size: 1rem;
+		line-height: 1.7;
+
+		&:first-child {
+			font-size: 1.15rem;
+		}
+	}
+`
+
 const SectionTitle = styled.h2`
 	font-size: clamp(2rem, 8vw, 4rem);
 	font-weight: 700;
-	margin: 0;
+	margin: 0 0 2rem 0;
 `
 
 const ContentWrapper = styled.div`
@@ -345,6 +619,14 @@ const OrganizerGrid = styled.div`
 `
 
 const OrganizerCardWrapper = styled.div`
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex: 1 1 300px;
+	max-width: 350px;
+`
+
+const OrganizerCardLink = styled.a`
 	background-color: rgba(255, 255, 255, 0.02);
 	padding: 3rem;
 	border-radius: 0.5rem;
@@ -353,8 +635,25 @@ const OrganizerCardWrapper = styled.div`
 	flex-direction: column;
 	align-items: center;
 	justify-content: center;
-	flex: 1;
-	min-width: 250px;
+	width: 280px;
+	text-decoration: none;
+	color: inherit;
+	cursor: pointer;
+	transition: background-color 0.3s ease;
+
+	&:hover {
+		background-color: rgba(255, 255, 255, 0.05);
+	}
+
+	@media (max-width: 768px) {
+		width: 260px;
+		padding: 2.5rem;
+	}
+
+	@media (max-width: 480px) {
+		width: 240px;
+		padding: 2rem;
+	}
 `
 
 const OrganizerImage = styled.img`
@@ -368,41 +667,12 @@ const OrganizerImage = styled.img`
 const OrganizerName = styled.h3`
 	font-size: 1.25rem;
 	font-weight: 700;
+	margin: 1rem 0;
 `
 
-const SocialLink = styled.a`
+const LinkedInIcon = styled.svg`
+	height: 2rem;
+	width: 2rem;
+	fill: currentColor;
 	margin-top: 0.5rem;
-	font-size: 1.125rem;
-	color: #60a5fa;
-	display: inline-flex;
-	align-items: center;
-
-	&:hover {
-		text-decoration: underline;
-	}
-`
-
-const LinkedInLogo = styled.img`
-	height: 3rem;
-	width: 3rem;
-	margin-left: 0.5rem;
-`
-
-const ResponsiveImage = styled.img`
-	border-radius: 0.5rem;
-	box-shadow:
-		0 4px 6px -1px rgba(0, 0, 0, 0.1),
-		0 2px 4px -1px rgba(0, 0, 0, 0.06);
-	object-fit: cover;
-	width: min(40vw, 500px);
-
-	@media (max-width: 768px) {
-		width: 80vw;
-		max-width: 400px;
-	}
-
-	@media (max-width: 480px) {
-		width: 90vw;
-		max-width: 300px;
-	}
 `

@@ -13,10 +13,54 @@
 	}
 }
 
+html,
+body {
+	height: 100%;
+}
+
 body {
 	min-height: 100vh;
 	display: flex;
 	flex-direction: column;
+	margin: 0;
+	padding: 0;
+}
+
+#__next {
+	display: flex;
+	flex-direction: column;
+	min-height: 100vh;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+	margin-top: 0;
+	margin-bottom: 1rem;
+	line-height: 1.2;
+}
+
+h1 {
+	font-size: 2.5rem;
+	font-weight: 800;
+}
+
+h2 {
+	font-size: 2rem;
+	font-weight: 700;
+}
+
+h3 {
+	font-size: 1.5rem;
+	font-weight: 600;
+}
+
+p {
+	line-height: 1.6;
+	margin-bottom: 1rem;
 }
 
 header {
@@ -26,6 +70,7 @@ header {
 main {
 	position: relative;
 	flex: 1;
+	padding-top: 4rem; /* Account for fixed header height */
 }
 
 .footer {
