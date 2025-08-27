@@ -15,10 +15,10 @@ export const organizers = [
 		name: "Sam Holmes",
 		imageSrc: "/images/sam-about.webp",
 		linkedIn: "https://www.linkedin.com/in/sammyholmes/"
-	},
-	{
-		name: "Zane Prunella",
-		imageSrc: "/images/zane-about.webp",
-		linkedIn: "https://www.linkedin.com/in/zprunella/"
 	}
+	//, {
+	// 	name: "Zane Prunella",
+	// 	imageSrc: "/images/zane-about.webp",
+	// 	linkedIn: "https://www.linkedin.com/in/zprunella/"
+	// }
 ]
