@@ -310,7 +310,9 @@
 
 			// Initialize WebGL
 			const canvas = document.getElementById("canvas")
-			const gl = canvas.getContext("webgl") || canvas.getContext("experimental-webgl")
+			const gl =
+				canvas.getContext("webgl", { preserveDrawingBuffer: true }) ||
+				canvas.getContext("experimental-webgl", { preserveDrawingBuffer: true })
 
 			if (!gl) {
 				alert("WebGL not supported")
@@ -409,6 +411,8 @@
 
 			// Animation loop
 			let startTime = Date.now()
+			let animationId
+
 			function render() {
 				const currentTime = (Date.now() - startTime) / 1000
 
@@ -420,7 +424,7 @@
 
 				gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4)
 
-				requestAnimationFrame(render)
+				animationId = requestAnimationFrame(render)
 			}
 
 			render()
@@ -504,16 +508,51 @@
 
 			// Screenshot functionality
 			screenshotBtn.addEventListener("click", () => {
-				canvas.toBlob((blob) => {
-					const url = URL.createObjectURL(blob)
-					const a = document.createElement("a")
-					a.href = url
-					a.download = `shader_screenshot_${new Date().getTime()}.png`
-					a.click()
-					URL.revokeObjectURL(url)
-					statusDiv.textContent = "Screenshot saved!"
-					setTimeout(() => (statusDiv.textContent = ""), 3000)
-				}, "image/png")
+				// Force a render before taking screenshot
+				render()
+
+				// Use a small delay to ensure the frame is fully rendered
+				setTimeout(() => {
+					// Alternative method: read pixels directly
+					const width = canvas.width
+					const height = canvas.height
+					const pixels = new Uint8Array(width * height * 4)
+
+					gl.readPixels(0, 0, width, height, gl.RGBA, gl.UNSIGNED_BYTE, pixels)
+
+					// Create a new canvas to draw the pixels (flipped vertically)
+					const tempCanvas = document.createElement("canvas")
+					tempCanvas.width = width
+					tempCanvas.height = height
+					const tempCtx = tempCanvas.getContext("2d")
+					const imageData = tempCtx.createImageData(width, height)
+
+					// Flip vertically while copying pixels
+					for (let y = 0; y < height; y++) {
+						for (let x = 0; x < width; x++) {
+							const srcIdx = ((height - y - 1) * width + x) * 4
+							const dstIdx = (y * width + x) * 4
+							imageData.data[dstIdx] = pixels[srcIdx]
+							imageData.data[dstIdx + 1] = pixels[srcIdx + 1]
+							imageData.data[dstIdx + 2] = pixels[srcIdx + 2]
+							imageData.data[dstIdx + 3] = pixels[srcIdx + 3]
+						}
+					}
+
+					tempCtx.putImageData(imageData, 0, 0)
+
+					// Convert to blob and download
+					tempCanvas.toBlob((blob) => {
+						const url = URL.createObjectURL(blob)
+						const a = document.createElement("a")
+						a.href = url
+						a.download = `shader_screenshot_${new Date().getTime()}.png`
+						a.click()
+						URL.revokeObjectURL(url)
+						statusDiv.textContent = "Screenshot saved!"
+						setTimeout(() => (statusDiv.textContent = ""), 3000)
+					}, "image/png")
+				}, 100)
 			})
 		</script>
 	</body>
