@@ -12,6 +12,11 @@ export const organizers = [
 		linkedIn: "https://www.linkedin.com/in/ezekiel-lopez-633b57212/"
 	},
 	{
+		name: "Jonathan Lewis",
+		imageSrc: "/images/jon-about.webp",
+		linkedIn: "https://www.linkedin.com/in/jonathan-david-lewis/"
+	},
+	{
 		name: "Sam Holmes",
 		imageSrc: "/images/sam-about.webp",
 		linkedIn: "https://www.linkedin.com/in/sammyholmes/"
