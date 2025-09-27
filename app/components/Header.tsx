@@ -125,7 +125,7 @@ const NavLinks = () => {
 				</MenuLink>
 			</MenuItem>
 			<MenuItem>
-				<MenuLink href="/archive">Archive</MenuLink>
+				<MenuLink href="/watch">Watch</MenuLink>
 			</MenuItem>
 			{/* Hide Events until the page design is ready and finalized */}
 			{/* <MenuItem>
