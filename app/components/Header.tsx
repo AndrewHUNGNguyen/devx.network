@@ -124,6 +124,9 @@ const NavLinks = () => {
 					Event Calendar
 				</MenuLink>
 			</MenuItem>
+			<MenuItem>
+				<MenuLink href="/watch">Watch</MenuLink>
+			</MenuItem>
 			{/* Hide Events until the page design is ready and finalized */}
 			{/* <MenuItem>
 				<MenuLink href="/events">Events</MenuLink>
