@@ -15,14 +15,18 @@ import { ErrorBoundary } from "./components/ErrorBoundary"
 export default function Home() {
 	// Add refs for each animated section
 	const heroRef = useRef(null)
-	const buildConnectEmpowerRef = useRef(null)
+	const firstLineRef = useRef(null)
+	const secondLineRef = useRef(null)
+	const thirdLineRef = useRef(null)
 	const aboutRef = useRef(null)
 	const organizersRef = useRef(null)
 	const joinRef = useRef(null)
 
 	// Use IntersectionObserver to check if sections are in view
 	const heroInView = useInView(heroRef, { amount: 0.3 })
-	const buildConnectEmpowerInView = useInView(buildConnectEmpowerRef, { amount: 0.3 })
+	const firstLineView = useInView(firstLineRef, { amount: 0.4 })
+	const secondLineView = useInView(secondLineRef, { amount: 0.4 })
+	const thirdLineView = useInView(thirdLineRef, { amount: 0.4 })
 	const aboutInView = useInView(aboutRef, { amount: 0.2 })
 	const organizersInView = useInView(organizersRef, { amount: 0.3 })
 
@@ -140,47 +144,68 @@ export default function Home() {
 					</HeroSocialLinks>
 				</Hero>
 
-				<ContentSection
-					ref={buildConnectEmpowerRef}
-					as={motion.section}
-					style={{
-						overflowX: "hidden",
-						height: "100vh",
-						display: "flex",
-						alignItems: "center"
-					}}
-				>
-					<motion.h1
-						style={{ fontSize: "10vh", whiteSpace: "nowrap", position: "relative" }}
+				<ScrollFeatureSection ref={firstLineRef}>
+					<ScrollFeatureTitle
 						animate={{
-							x: buildConnectEmpowerInView ? 0 : "100vw",
-							opacity: buildConnectEmpowerInView ? 1 : 0
+							x: firstLineView ? 0 : "-40vw",
+							opacity: firstLineView ? 1 : 0
 						}}
-						transition={{ duration: 0.8, ease: "easeOut", delay: 0.1 }}
-					>
-						BUILD
-					</motion.h1>
-					<motion.h1
-						style={{ fontSize: "10vh", whiteSpace: "nowrap", position: "relative" }}
-						animate={{
-							x: buildConnectEmpowerInView ? 0 : "100vw",
-							opacity: buildConnectEmpowerInView ? 1 : 0
-						}}
-						transition={{ duration: 0.8, ease: "easeOut", delay: 0.3 }}
+						transition={{ duration: 0.9, ease: "easeOut" }}
 					>
 						CONNECT
-					</motion.h1>
-					<motion.h1
-						style={{ fontSize: "10vh", whiteSpace: "nowrap", position: "relative" }}
+					</ScrollFeatureTitle>
+					<ScrollFeatureTagline
 						animate={{
-							x: buildConnectEmpowerInView ? 0 : "100vw",
-							opacity: buildConnectEmpowerInView ? 1 : 0
+							opacity: firstLineView ? 1 : 0,
+							y: firstLineView ? 0 : 40
 						}}
-						transition={{ duration: 0.8, ease: "easeOut", delay: 0.5 }}
+						transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }}
 					>
-						EMPOWER
-					</motion.h1>
-				</ContentSection>
+						where ideas meet action
+					</ScrollFeatureTagline>
+				</ScrollFeatureSection>
+
+				<ScrollFeatureSection ref={secondLineRef}>
+					<ScrollFeatureTitle
+						animate={{
+							x: secondLineView ? 0 : "40vw",
+							opacity: secondLineView ? 1 : 0
+						}}
+						transition={{ duration: 0.9, ease: "easeOut" }}
+					>
+						INSPIRE
+					</ScrollFeatureTitle>
+					<ScrollFeatureTagline
+						animate={{
+							opacity: secondLineView ? 1 : 0,
+							y: secondLineView ? 0 : 40
+						}}
+						transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }}
+					>
+						innovation through imagination
+					</ScrollFeatureTagline>
+				</ScrollFeatureSection>
+
+				<ScrollFeatureSection ref={thirdLineRef}>
+					<ScrollFeatureTitle
+						animate={{
+							x: thirdLineView ? 0 : "-40vw",
+							opacity: thirdLineView ? 1 : 0
+						}}
+						transition={{ duration: 0.9, ease: "easeOut" }}
+					>
+						BUILD
+					</ScrollFeatureTitle>
+					<ScrollFeatureTagline
+						animate={{
+							opacity: thirdLineView ? 1 : 0,
+							y: thirdLineView ? 0 : 40
+						}}
+						transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }}
+					>
+						the next big thing
+					</ScrollFeatureTagline>
+				</ScrollFeatureSection>
 
 				<AboutSectionWithSlider
 					ref={aboutRef}
@@ -412,6 +437,46 @@ const TaglineText = styled.p`
 	font-size: 1.25rem;
 	text-align: center;
 	max-width: 1024px;
+`
+
+const ScrollFeatureSection = styled.section`
+	width: 100vw;
+	min-height: 80vh;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	padding: 6rem 2rem;
+	gap: 1.5rem;
+	box-sizing: border-box;
+	margin: 4rem 0;
+
+	@media (max-width: 768px) {
+		min-height: 70vh;
+		padding: 4rem 1.5rem;
+		margin: 2rem 0;
+	}
+
+	@media (max-width: 480px) {
+		min-height: 60vh;
+		padding: 3rem 1rem;
+	}
+`
+
+const ScrollFeatureTitle = styled(motion.h1)`
+	font-size: clamp(3rem, 10vw, 8rem);
+	font-weight: 800;
+	letter-spacing: 0.1em;
+	text-transform: uppercase;
+	text-align: center;
+`
+
+const ScrollFeatureTagline = styled(motion.p)`
+	font-size: clamp(1.5rem, 3vw, 2.5rem);
+	text-align: center;
+	max-width: 820px;
+	color: rgba(255, 255, 255, 0.8);
+	line-height: 1.4;
 `
 
 const ContentSection = styled.section`
