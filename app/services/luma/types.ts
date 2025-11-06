@@ -15,6 +15,7 @@ export interface LumaEvent {
 	api_id: string
 	name: string
 	description: string
+	description_html?: string
 	start_at: string
 	end_at: string
 	location?: LumaLocation

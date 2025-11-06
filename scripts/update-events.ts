@@ -17,6 +17,7 @@
 import { readFileSync, writeFileSync } from "fs"
 import { join } from "path"
 import puppeteer, { Browser, ElementHandle, Page } from "puppeteer"
+import type { LumaEvent, LumaLocation } from "@/app/services/luma/types"
 
 const PROJECT_ROOT = join(process.cwd())
 const EVENTS_FILE = join(PROJECT_ROOT, "app/data/events.json")
@@ -56,6 +57,34 @@ const MONTH_ABBREVIATIONS = [
 	"nov",
 	"dec"
 ]
+
+type TimelineEntry = {
+	start_at?: string
+	end_at?: string
+	timezone?: string
+}
+
+type Coordinates = {
+	lat: number
+	lng: number
+}
+
+type ScrapedLocation = LumaLocation
+
+type RawScrapedEvent = {
+	api_id: string | null
+	name: string
+	description: string
+	description_html?: string
+	start_at: string | null
+	end_at: string | null
+	location: ScrapedLocation | null
+	cover_url: string | null
+	url: string
+	guest_count: number
+	visibility: "public" | "private"
+	timezone?: string
+}
 
 const US_STATE_ABBREVIATIONS = {
 	alabama: "AL",
@@ -140,7 +169,7 @@ function toIsoFromLocal(
 	return date.toISOString()
 }
 
-function parseTimelineText(text: string) {
+function parseTimelineText(text: string): TimelineEntry | null {
 	if (!text) {
 		return null
 	}
@@ -240,9 +269,9 @@ async function scrapeEventPage(
 	page: Page,
 	eventUrl: string,
 	isPastEvent = false,
-	timelineOverride: any = null
-) {
-	let eventData = null
+	timelineOverride: TimelineEntry | null = null
+): Promise<LumaEvent | null> {
+	let rawEvent: RawScrapedEvent | null = null
 
 	try {
 		console.log(`  Scraping event: ${eventUrl}`)
@@ -274,7 +303,7 @@ async function scrapeEventPage(
 		// Wait a bit more for dynamic content to fully render
 		await new Promise((resolve) => setTimeout(resolve, 1000))
 
-		eventData = await page.evaluate(
+		rawEvent = await page.evaluate<RawScrapedEvent | null>(
 			(isPast, defaultTimezone) => {
 				// Extract event ID from URL
 				const url = window.location.href
@@ -557,26 +586,40 @@ async function scrapeEventPage(
 						locationElement.querySelector("a")?.getAttribute("href") ||
 						""
 					if (mapsLink) {
-						let coordMatch = mapsLink.match(/@(-?\d+\.\d+),(-?\d+\.\d+)/)
-						if (!coordMatch) coordMatch = mapsLink.match(/query=(-?\d+\.\d+),(-?\d+\.\d+)/)
-						if (!coordMatch) {
-							const floats = mapsLink.match(/-?\d+\.\d+/g)
-							if (floats && floats.length >= 2) {
-								coordMatch = [null as any, floats[0], floats[1]]
+						let latVal: number | null = null
+						let lngVal: number | null = null
+
+						const atMatch = mapsLink.match(/@(-?\d+\.\d+),(-?\d+\.\d+)/)
+						if (atMatch) {
+							latVal = parseFloat(atMatch[1])
+							lngVal = parseFloat(atMatch[2])
+						}
+
+						if (latVal === null || lngVal === null) {
+							const queryMatch = mapsLink.match(/query=(-?\d+\.\d+),(-?\d+\.\d+)/)
+							if (queryMatch) {
+								latVal = parseFloat(queryMatch[1])
+								lngVal = parseFloat(queryMatch[2])
 							}
 						}
 
-						if (coordMatch) {
-							const latVal = parseFloat(coordMatch[1])
-							const lngVal = parseFloat(coordMatch[2])
-							if (
-								Number.isFinite(latVal) &&
-								Number.isFinite(lngVal) &&
-								Math.abs(latVal) <= 90 &&
-								Math.abs(lngVal) <= 180
-							) {
-								domCoordinates = { lat: latVal, lng: lngVal }
+						if (latVal === null || lngVal === null) {
+							const floats = mapsLink.match(/-?\d+\.\d+/g)
+							if (floats && floats.length >= 2) {
+								latVal = parseFloat(floats[0])
+								lngVal = parseFloat(floats[1])
 							}
+						}
+
+						if (
+							latVal !== null &&
+							lngVal !== null &&
+							Number.isFinite(latVal) &&
+							Number.isFinite(lngVal) &&
+							Math.abs(latVal) <= 90 &&
+							Math.abs(lngVal) <= 180
+						) {
+							domCoordinates = { lat: latVal, lng: lngVal }
 						}
 					}
 
@@ -613,17 +656,41 @@ async function scrapeEventPage(
 					}
 				}
 
-				// Extract description
-				const aboutSection = document.querySelector(
-					"[class*='About'], [class*='about'], [class*='description']"
-				)
+				// Extract description (preserve markup)
+				const primaryAboutSelector = "[class*='about'] [class*='content']"
+				const fallbackAboutSelector = "[class*='About'], [class*='about'], [class*='description']"
+				const aboutSection =
+					(document.querySelector(primaryAboutSelector) as HTMLElement | null) ??
+					(document.querySelector(fallbackAboutSelector) as HTMLElement | null)
 				let description = ""
-				if (aboutSection) {
-					const paragraphs = Array.from(aboutSection.querySelectorAll("p"))
-					description = paragraphs
-						.map((p) => p.textContent?.trim())
-						.filter(Boolean)
-						.join("\n\n")
+				let descriptionHtml: string | undefined
+				if (aboutSection instanceof HTMLElement) {
+					const clone = aboutSection.cloneNode(true) as HTMLElement
+					clone
+						.querySelectorAll("script, style, iframe, noscript")
+						.forEach((element) => element.remove())
+					clone.querySelectorAll("[style]").forEach((element) => element.removeAttribute("style"))
+					clone.querySelectorAll("*").forEach((element) => {
+						Array.from(element.attributes)
+							.filter((attribute) => attribute.name.toLowerCase().startsWith("on"))
+							.forEach((attribute) => element.removeAttribute(attribute.name))
+					})
+					clone.querySelectorAll("a[href]").forEach((anchor) => {
+						const href = anchor.getAttribute("href")
+						if (href) {
+							try {
+								const absoluteUrl = new URL(href, window.location.href)
+								anchor.setAttribute("href", absoluteUrl.toString())
+							} catch {
+								anchor.removeAttribute("href")
+							}
+						}
+						anchor.setAttribute("target", "_blank")
+						anchor.setAttribute("rel", "noopener noreferrer")
+					})
+
+					descriptionHtml = clone.innerHTML.trim() || undefined
+					description = clone.textContent?.replace(/\s+/g, " ").trim() || ""
 				}
 
 				// Extract guest count
@@ -639,10 +706,15 @@ async function scrapeEventPage(
 					}
 				}
 
+				if (!description) {
+					description = name
+				}
+
 				return {
 					api_id: apiId,
 					name,
-					description: description || name,
+					description,
+					description_html: descriptionHtml,
 					start_at: startAt || new Date().toISOString(),
 					end_at: endAt || new Date().toISOString(),
 					location,
@@ -661,27 +733,50 @@ async function scrapeEventPage(
 		return null
 	}
 
-	if (!eventData) {
+	if (!rawEvent || !rawEvent.api_id) {
 		return null
 	}
 
-	if (eventData.location) {
-		eventData.location = normalizeLocationFields(eventData.location)
+	const normalizedLocation = rawEvent.location
+		? normalizeLocationFields(rawEvent.location)
+		: undefined
+
+	const startAt = rawEvent.start_at ?? new Date().toISOString()
+	let endAt = rawEvent.end_at
+	if (!endAt) {
+		const tentativeEnd = new Date(startAt)
+		tentativeEnd.setUTCHours(tentativeEnd.getUTCHours() + 4)
+		endAt = tentativeEnd.toISOString()
+	}
+
+	const normalizedEvent: LumaEvent = {
+		api_id: rawEvent.api_id,
+		name: rawEvent.name,
+		description: rawEvent.description,
+		description_html: rawEvent.description_html,
+		start_at: startAt,
+		end_at: endAt,
+		location: normalizedLocation,
+		cover_url: rawEvent.cover_url ?? undefined,
+		url: rawEvent.url,
+		guest_count: rawEvent.guest_count,
+		visibility: rawEvent.visibility ?? "public",
+		timezone: rawEvent.timezone ?? DEFAULT_TIMEZONE
 	}
 
 	if (timelineOverride) {
 		if (timelineOverride.start_at) {
-			eventData.start_at = timelineOverride.start_at
+			normalizedEvent.start_at = timelineOverride.start_at
 		}
 		if (timelineOverride.end_at) {
-			eventData.end_at = timelineOverride.end_at
+			normalizedEvent.end_at = timelineOverride.end_at
 		}
 		if (timelineOverride.timezone) {
-			eventData.timezone = timelineOverride.timezone
+			normalizedEvent.timezone = timelineOverride.timezone
 		}
 	}
 
-	return eventData
+	return normalizedEvent
 }
 
 /**
@@ -689,10 +784,10 @@ async function scrapeEventPage(
  */
 async function scrapeCalendarEvents(
 	page: Page,
-	filter = "upcoming",
-	existingEventMap = new Map(),
-	timelineMap = new Map()
-) {
+	filter: "upcoming" | "past" = "upcoming",
+	existingEventMap: Map<string, LumaEvent> = new Map(),
+	timelineMap: Map<string, TimelineEntry> = new Map()
+): Promise<LumaEvent[]> {
 	console.log(`\nScraping ${filter} events from: ${PUBLIC_CALENDAR_URL}`)
 
 	await page.goto(PUBLIC_CALENDAR_URL, { waitUntil: "networkidle2", timeout: 30000 })
@@ -747,7 +842,7 @@ async function scrapeCalendarEvents(
 	})
 
 	// Extract event links
-	const eventLinks = await page.evaluate(() => {
+	const eventLinks = await page.evaluate<string[]>(() => {
 		const links = Array.from(document.querySelectorAll<HTMLAnchorElement>("a[href]"))
 		const eventUrls = new Set<string>()
 
@@ -776,35 +871,30 @@ async function scrapeCalendarEvents(
 	console.log(`  Found ${eventLinks.length} event links`)
 
 	// Scrape each event page
-	const events = []
+	const events: LumaEvent[] = []
 	for (const eventUrl of eventLinks) {
 		const apiIdFromLink = extractEventId(eventUrl)
-		const cachedEvent = apiIdFromLink ? existingEventMap.get(apiIdFromLink) : null
+		const cachedEvent = apiIdFromLink ? existingEventMap.get(apiIdFromLink) : undefined
 
-		const timelineOverride = apiIdFromLink ? timelineMap.get(apiIdFromLink) : null
-		let eventData = await scrapeEventPage(page, eventUrl, filter === "past", timelineOverride)
+		const timelineOverride = apiIdFromLink ? (timelineMap.get(apiIdFromLink) ?? null) : null
+		const scrapedEvent = await scrapeEventPage(page, eventUrl, filter === "past", timelineOverride)
 
-		if (!eventData) {
+		if (!scrapedEvent) {
 			if (cachedEvent) {
 				events.push(cachedEvent)
 			}
 			continue
 		}
 
-		if (!eventData.api_id && apiIdFromLink) {
-			eventData.api_id = apiIdFromLink
+		if (!scrapedEvent.api_id && apiIdFromLink) {
+			scrapedEvent.api_id = apiIdFromLink
 		}
 
-		if (cachedEvent) {
-			eventData = { ...cachedEvent, ...eventData }
-		}
-
-		if (eventData?.api_id) {
-			events.push(eventData)
-		}
+		const mergedEvent = cachedEvent ? { ...cachedEvent, ...scrapedEvent } : scrapedEvent
+		events.push(mergedEvent)
 
 		// Small delay to avoid rate limiting
-		await new Promise((resolve) => setTimeout(resolve, 500))
+		await new Promise<void>((resolve) => setTimeout(resolve, 500))
 	}
 
 	return events
@@ -813,29 +903,27 @@ async function scrapeCalendarEvents(
 /**
  * Merge and deduplicate events
  */
-function mergeEvents(existingEvents: any[], newEvents: any[]) {
-	const eventMap = new Map()
+function mergeEvents(existingEvents: LumaEvent[], newEvents: LumaEvent[]): LumaEvent[] {
+	const eventMap = new Map<string, LumaEvent>()
 
-	// Add existing events
-	existingEvents.forEach((event: any) => {
+	for (const event of existingEvents) {
 		if (event.api_id) {
 			eventMap.set(event.api_id, event)
 		}
-	})
+	}
 
-	// Add/update with new events
-	newEvents.forEach((event: any) => {
-		if (event.api_id) {
-			// Merge with existing if present
-			const existing = eventMap.get(event.api_id)
-			if (existing) {
-				// Preserve existing data, update with new data
-				eventMap.set(event.api_id, { ...existing, ...event })
-			} else {
-				eventMap.set(event.api_id, event)
-			}
+	for (const event of newEvents) {
+		if (!event.api_id) {
+			continue
 		}
-	})
+
+		const existing = eventMap.get(event.api_id)
+		if (existing) {
+			eventMap.set(event.api_id, { ...existing, ...event })
+		} else {
+			eventMap.set(event.api_id, event)
+		}
+	}
 
 	return Array.from(eventMap.values())
 }
@@ -859,12 +947,18 @@ function normalizeStateAbbreviation(value: string) {
 	return lookup || trimmed
 }
 
-function normalizeLocationFields(location: any) {
-	if (!location || location.type !== "physical") {
+function normalizeLocationFields(
+	location: ScrapedLocation | null | undefined
+): ScrapedLocation | undefined {
+	if (!location) {
+		return undefined
+	}
+
+	if (location.type !== "physical") {
 		return location
 	}
 
-	const normalized = { ...location }
+	const normalized: ScrapedLocation = { ...location }
 
 	if (normalized.address) {
 		normalized.address = normalized.address.replace(/\s{2,}/g, " ").trim()
@@ -901,7 +995,10 @@ function normalizeLocationFields(location: any) {
 	return normalized
 }
 
-async function scrapeManageCalendarDates(browser: Browser, period: string) {
+async function scrapeManageCalendarDates(
+	browser: Browser,
+	period: string
+): Promise<Map<string, TimelineEntry>> {
 	const page = await browser.newPage()
 	const url = `${CALENDAR_MANAGE_URL}?period=${period}`
 
@@ -913,7 +1010,7 @@ async function scrapeManageCalendarDates(browser: Browser, period: string) {
 		await page.goto(url, { waitUntil: "networkidle2", timeout: 30000 })
 		await page.waitForSelector("a[href]", { timeout: 10000 }).catch(() => {})
 
-		const entries = await page.evaluate(() => {
+		const entries = await page.evaluate<Array<{ href: string; text: string }>>(() => {
 			const links = Array.from(document.querySelectorAll<HTMLAnchorElement>("a[href]"))
 			return links.map((link) => {
 				const hrefAttr = link.getAttribute("href")
@@ -937,7 +1034,7 @@ async function scrapeManageCalendarDates(browser: Browser, period: string) {
 			console.warn("  Sample text:", bodyText.slice(0, 200))
 		}
 
-		const dateMap = new Map()
+		const dateMap = new Map<string, TimelineEntry>()
 
 		entries.forEach(({ href, text }) => {
 			const apiId = extractEventId(href || "")
@@ -992,24 +1089,28 @@ async function main() {
 
 	try {
 		// Read existing events (if present)
-		let existingEvents = []
+		let existingEvents: LumaEvent[] = []
 		try {
 			const existingData = readFileSync(EVENTS_FILE, "utf-8")
-			existingEvents = JSON.parse(existingData)
+			existingEvents = JSON.parse(existingData) as LumaEvent[]
 			console.log(`Loaded ${existingEvents.length} existing events`)
 		} catch (error) {
 			console.warn("No existing events file found. A new dataset will be created.")
 		}
 
-		const existingEventMap = new Map(
-			existingEvents
-				.filter((event: any) => event?.api_id)
-				.map((event: any) => [event.api_id, event])
-		)
+		const existingEventMap = new Map<string, LumaEvent>()
+		for (const event of existingEvents) {
+			if (event?.api_id) {
+				existingEventMap.set(event.api_id, event)
+			}
+		}
 
 		const manageUpcomingMap = await scrapeManageCalendarDates(browser, "upcoming")
 		const managePastMap = await scrapeManageCalendarDates(browser, "past")
-		const timelineMap = new Map([...manageUpcomingMap, ...managePastMap])
+		const timelineMap = new Map<string, TimelineEntry>(manageUpcomingMap)
+		for (const [eventId, timeline] of managePastMap) {
+			timelineMap.set(eventId, timeline)
+		}
 
 		const page = await browser.newPage()
 		await page.setViewport({ width: 1920, height: 1080 })

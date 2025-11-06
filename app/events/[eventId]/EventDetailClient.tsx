@@ -203,7 +203,11 @@ export default function EventDetailClient() {
 
 						<DescriptionSection>
 							<SectionTitle>About This Event</SectionTitle>
-							<Description>{event.description}</Description>
+							{event.description_html ? (
+								<Description dangerouslySetInnerHTML={{ __html: event.description_html }} />
+							) : (
+								<Description>{event.description}</Description>
+							)}
 						</DescriptionSection>
 
 						{event.guest_count !== undefined && (
@@ -366,11 +370,89 @@ const DescriptionSection = styled.section`
 	margin-bottom: 2rem;
 `
 
-const Description = styled.p`
+const Description = styled.div`
 	font-size: 1rem;
 	color: #d1d5db;
-	line-height: 1.6;
-	white-space: pre-wrap;
+	line-height: 1.5;
+	word-break: break-word;
+
+	p {
+		margin: 0 0 1.2rem;
+		line-height: 1.5;
+	}
+
+	p:last-child {
+		margin-bottom: 0;
+	}
+
+	h1 {
+		font-size: 1.5rem;
+		font-weight: 600;
+		line-height: 1.2;
+		margin: 2rem 0 1.5rem;
+	}
+
+	h2 {
+		font-size: 1.25rem;
+		font-weight: 600;
+		line-height: 1.2;
+		margin: 1.5rem 0 1rem;
+	}
+
+	h1:first-child,
+	h2:first-child {
+		margin-top: 0;
+	}
+
+	ul {
+		list-style: disc;
+	}
+	ol {
+		list-style: auto;
+	}
+	ul,
+	ol {
+		margin: 1rem 0 1.2rem;
+		padding-left: 1.375rem;
+	}
+
+	ol p + ol,
+	ol p + ul,
+	ul p + ol,
+	ul p + ul {
+		margin-top: 0.25rem;
+	}
+
+	ol p,
+	ul p {
+		margin-bottom: 0rem;
+	}
+
+	ul:last-child,
+	ol:last-child {
+		margin-bottom: 0;
+	}
+
+	li {
+		padding-left: 0.3125rem;
+		margin: 0;
+	}
+
+	code {
+		font-size: 0.875rem;
+		line-height: 1.5;
+	}
+
+	a {
+		color: #8b5cf6;
+		text-decoration: underline;
+		text-underline-offset: 0.2em;
+	}
+
+	strong {
+		font-weight: 600;
+		color: inherit;
+	}
 `
 
 const AttendeeSection = styled.section`
