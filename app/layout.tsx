@@ -30,6 +30,16 @@ export default function RootLayout({
 	return (
 		<html lang="en">
 			<head>
+				<script async src="https://www.googletagmanager.com/gtag/js?id=G-L0X5333Q2X"></script>
+				<script>
+					{`
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+
+gtag('config', 'G-L0X5333Q2X');
+`}
+				</script>
 				<meta name="viewport" content="width=device-width, initial-scale=1" />
 				<link rel="icon" href="/images/favicon.png" />
 			</head>
