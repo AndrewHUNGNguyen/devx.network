@@ -111,6 +111,13 @@ export default function EventDetailClient() {
 		}
 	}
 
+	const handleClearUserInfo = () => {
+		localStorage.removeItem("devx_user_info")
+		localStorage.removeItem("devx_user_email")
+		setUserInfo({ name: "", email: "" })
+		setHasStoredInfo(false)
+	}
+
 	if (loading) {
 		return (
 			<>
@@ -203,7 +210,16 @@ export default function EventDetailClient() {
 									<OneClickRSVPContainer>
 										<StoredInfoDisplay>
 											RSVP as: <NameValue>{userInfo.name}</NameValue>{" "}
-											<EmailValue>{userInfo.email}</EmailValue>
+											<EmailValue>{userInfo.email}</EmailValue>{" "}
+											<ClearUserInfoLink
+												href="#"
+												onClick={(e) => {
+													e.preventDefault()
+													handleClearUserInfo()
+												}}
+											>
+												Change
+											</ClearUserInfoLink>
 										</StoredInfoDisplay>
 										<Button onClick={handleOneClickRSVP} disabled={registering}>
 											{registering ? "Redirecting..." : "One-Click RSVP"}
@@ -537,6 +553,19 @@ const NameValue = styled.span`
 
 const EmailValue = styled.span`
 	color: #aaa;
+`
+
+const ClearUserInfoLink = styled.a`
+	color: #8b5cf6;
+	font-weight: 500;
+	text-decoration: none;
+	font-size: 0.875rem;
+	margin-top: 0.25rem;
+	display: inline-block;
+
+	&:hover {
+		text-decoration: underline;
+	}
 `
 
 const LoadingMessage = styled.p`
