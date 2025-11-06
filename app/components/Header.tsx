@@ -3,6 +3,7 @@ import { useState, useEffect } from "react"
 import styled from "styled-components"
 import { links } from "../siteConfig"
 import { GiveATalkCTA } from "./GiveATalkCTA"
+import { Button } from "./Button"
 
 // Components //
 
@@ -80,7 +81,7 @@ export const Header = () => {
 						</MenuList>
 					</NavCenter>
 					<NavEnd>
-						<DiscordButton href={links.discord}>Join Us on Discord</DiscordButton>
+						<Button href={links.discord}>Join Us on Discord</Button>
 					</NavEnd>
 				</Nav>
 			</Container>
@@ -317,19 +318,5 @@ const MenuLink = styled.a`
 			background-color: transparent;
 			text-decoration: underline;
 		}
-	}
-`
-
-const DiscordButton = styled.a`
-	display: inline-block;
-	padding: 0.5rem 1rem;
-	background-color: white;
-	color: black;
-	text-decoration: none;
-	border-radius: 0.25rem;
-	font-weight: 500;
-
-	&:hover {
-		background-color: #ddd;
 	}
 `

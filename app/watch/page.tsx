@@ -4,6 +4,7 @@ import styled from "styled-components"
 import { talks } from "../info/talks"
 import { PotionBackground } from "../components/PotionBackground"
 import { ErrorBoundary } from "../components/ErrorBoundary"
+import { Button } from "../components/Button"
 
 // Types
 
@@ -130,13 +131,13 @@ Explore our collection of presentations from the community.`}
 						)
 					})}
 					<ButtonSection>
-						<ViewAllButton
+						<Button
 							href="https://www.youtube.com/@DEVxNetwork"
 							target="_blank"
 							rel="noopener noreferrer"
 						>
 							Watch More
-						</ViewAllButton>
+						</Button>
 					</ButtonSection>
 				</WatchSection>
 			</Main>
@@ -282,22 +283,6 @@ const ButtonSection = styled.div`
 	margin-top: 3rem;
 	display: flex;
 	justify-content: center;
-`
-
-const ViewAllButton = styled.a`
-	background-color: white;
-	color: black;
-	padding: 15px 30px;
-	border-radius: 0.25rem;
-	text-decoration: none;
-	display: inline-block;
-	font-weight: 600;
-	font-size: 1.1rem;
-	transition: background-color 0.2s ease;
-
-	&:hover {
-		background-color: #e5e5e5;
-	}
 `
 
 const HeroSection = styled.section`

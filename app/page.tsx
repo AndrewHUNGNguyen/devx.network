@@ -9,6 +9,7 @@ import { Footer } from "./components/Footer"
 import { GiveATalkCTA } from "./components/GiveATalkCTA"
 import { PotionBackground } from "./components/PotionBackground"
 import { ErrorBoundary } from "./components/ErrorBoundary"
+import { Button } from "./components/Button"
 
 // Components //
 
@@ -329,7 +330,7 @@ export default function Home() {
 							animate={{ opacity: joinInView ? 1 : 0, scale: joinInView ? 1 : 0.9 }}
 							transition={{ duration: 0.6, ease: "easeOut", delay: 0.2 }}
 						>
-							<Button target="_blank" href={links.lumaUrl}>
+							<Button href={links.lumaUrl} target="_blank">
 								View Upcoming Events
 							</Button>
 						</ContentText>
@@ -347,20 +348,6 @@ const Main = styled.main<{ ignoreHeader?: boolean }>`
 	flex-direction: column;
 	align-items: center;
 	justify-content: center;
-`
-
-const Button = styled.a`
-	background-color: white;
-	color: black;
-	padding: 1rem 2rem;
-	border-radius: 0.5rem;
-	border: none;
-	font-size: 1.25rem;
-	cursor: pointer;
-
-	&:hover {
-		background-color: #ddd;
-	}
 `
 
 const BackgroundContainer = styled.section`
