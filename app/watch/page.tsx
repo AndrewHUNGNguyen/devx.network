@@ -165,9 +165,6 @@ const BackgroundContainer = styled.section`
 const Main = styled.main`
 	position: relative;
 	z-index: 1;
-	& ~ footer {
-		display: none;
-	}
 `
 
 const WatchSection = styled.section`
