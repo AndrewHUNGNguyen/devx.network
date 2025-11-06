@@ -299,7 +299,7 @@ const Main = styled.main`
 `
 
 const Container = styled.div`
-	max-width: 900px;
+	max-width: 960px;
 	margin: 0 auto;
 	background-color: rgba(21, 21, 28, 0.75);
 	backdrop-filter: blur(10px);
