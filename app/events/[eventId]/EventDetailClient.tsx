@@ -164,13 +164,6 @@ export default function EventDetailClient() {
 							<Button href="#registration-form">Attend This Event</Button>
 						</Header>
 
-						{event.location && event.location.type === "physical" && (
-							<LocationSection>
-								<SectionTitle>Location</SectionTitle>
-								<LocationText>{event.location.address}</LocationText>
-							</LocationSection>
-						)}
-
 						{event.location && event.location.type === "online" && (
 							<LocationSection>
 								<SectionTitle>Location</SectionTitle>
@@ -247,6 +240,13 @@ export default function EventDetailClient() {
 									</RegistrationForm>
 								)}
 							</RegistrationSection>
+						)}
+
+						{event.location && event.location.type === "physical" && (
+							<LocationSection>
+								<SectionTitle>Location</SectionTitle>
+								<LocationText>{event.location.address}</LocationText>
+							</LocationSection>
 						)}
 
 						{event.location && event.location.type === "physical" && event.location.coordinates && (
