@@ -4,6 +4,8 @@ import styled from "styled-components"
 import { talks } from "../info/talks"
 import { PotionBackground } from "../components/PotionBackground"
 import { ErrorBoundary } from "../components/ErrorBoundary"
+import { Card, CardContent, CardTitle, CardText } from "../components/Card"
+import { Button } from "../components/Button"
 
 // Types
 
@@ -72,22 +74,23 @@ Explore our collection of presentations from the community.`}
 					{/* 3 most recent talks displayed as cards */}
 					<FeaturedGrid>
 						{featuredTalks.map((talk) => (
-							<FeaturedCard key={`${talk.videoId}-${talk.speaker}`}>
-								<ThumbnailLink
-									href={buildYouTubeUrl(talk.videoId, talk.startTime)}
-									target="_blank"
-									rel="noopener noreferrer"
-								>
-									<HeroThumbnailContainer>
-										<HeroThumbnailImage src={getYouTubeThumbnail(talk.videoId)} alt={talk.title} />
-										<HeroPlayButton>▶</HeroPlayButton>
-									</HeroThumbnailContainer>
-								</ThumbnailLink>
-								<FeaturedInfo>
-									<FeaturedTitle>{talk.title}</FeaturedTitle>
-									<FeaturedSpeaker>{talk.speaker}</FeaturedSpeaker>
-								</FeaturedInfo>
-							</FeaturedCard>
+							<Card
+								key={`${talk.videoId}-${talk.speaker}`}
+								image={getYouTubeThumbnail(talk.videoId)}
+								imageAlt={talk.title}
+								showPlayButton
+								imageAspectRatio="16/9"
+								href={buildYouTubeUrl(talk.videoId, talk.startTime)}
+								target="_blank"
+								rel="noopener noreferrer"
+							>
+								<CardContent>
+									<CardTitle $size="1rem">{talk.title}</CardTitle>
+									<CardText $size="0.9rem" $weight="600">
+										{talk.speaker}
+									</CardText>
+								</CardContent>
+							</Card>
 						))}
 					</FeaturedGrid>
 				</HeroSection>
@@ -105,38 +108,38 @@ Explore our collection of presentations from the community.`}
 								{/* Render all talks in grid */}
 								<LivestreamGrid>
 									{yearTalks.map((talk: Talk) => (
-										<LivestreamCard key={`${talk.videoId}-${talk.speaker}`}>
-											<ThumbnailLink
-												href={buildYouTubeUrl(talk.videoId, talk.startTime)}
-												target="_blank"
-												rel="noopener noreferrer"
-											>
-												<ThumbnailContainer>
-													<ThumbnailImage
-														src={getYouTubeThumbnail(talk.videoId)}
-														alt={talk.title}
-													/>
-													<PlayButton>▶</PlayButton>
-												</ThumbnailContainer>
-											</ThumbnailLink>
-											<StreamInfo>
-												<TalkTitle>{talk.title}</TalkTitle>
-												<SpeakerName>{talk.speaker}</SpeakerName>
-											</StreamInfo>
-										</LivestreamCard>
+										<Card
+											key={`${talk.videoId}-${talk.speaker}`}
+											image={getYouTubeThumbnail(talk.videoId)}
+											imageAlt={talk.title}
+											showPlayButton
+											imageAspectRatio="16/9"
+											href={buildYouTubeUrl(talk.videoId, talk.startTime)}
+											target="_blank"
+											rel="noopener noreferrer"
+										>
+											<CardContent $padding="1rem 1rem">
+												<CardText $size="0.9rem" $color="#d1d5db" $weight="500">
+													{talk.title}
+												</CardText>
+												<CardText $size="0.85rem" $color="#9ca3af" $weight="600">
+													{talk.speaker}
+												</CardText>
+											</CardContent>
+										</Card>
 									))}
 								</LivestreamGrid>
 							</YearSection>
 						)
 					})}
 					<ButtonSection>
-						<ViewAllButton
+						<Button
 							href="https://www.youtube.com/@DEVxNetwork"
 							target="_blank"
 							rel="noopener noreferrer"
 						>
 							Watch More
-						</ViewAllButton>
+						</Button>
 					</ButtonSection>
 				</WatchSection>
 			</Main>
@@ -162,9 +165,6 @@ const BackgroundContainer = styled.section`
 const Main = styled.main`
 	position: relative;
 	z-index: 1;
-	& ~ footer {
-		display: none;
-	}
 `
 
 const WatchSection = styled.section`
@@ -195,109 +195,10 @@ const LivestreamGrid = styled.div`
 	}
 `
 
-const LivestreamCard = styled.div`
-	display: flex;
-	flex-direction: column;
-	background-color: transparent;
-	border-radius: 0.5rem;
-	overflow: hidden;
-	transition: transform 0.2s ease;
-
-	&:hover {
-		transform: translateY(-4px);
-	}
-`
-
-const ThumbnailLink = styled.a`
-	display: block;
-	text-decoration: none;
-	position: relative;
-	width: 100%;
-	height: 100%;
-`
-
-const ThumbnailContainer = styled.div`
-	width: 100%;
-	aspect-ratio: 16/9;
-	position: relative;
-	overflow: hidden;
-	background-color: rgba(0, 0, 0, 0.8);
-	border-radius: 0.5rem;
-`
-
-const ThumbnailImage = styled.img`
-	width: 100%;
-	height: 100%;
-	object-fit: cover;
-	transition: opacity 0.2s ease;
-
-	&:hover {
-		opacity: 0.8;
-	}
-`
-
-const PlayButton = styled.div`
-	position: absolute;
-	top: 50%;
-	left: 50%;
-	transform: translate(-50%, -50%);
-	background-color: rgba(255, 255, 255, 0.5);
-	color: black;
-	border-radius: 50%;
-	width: 60px;
-	height: 60px;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	font-size: 1.5rem;
-	font-weight: bold;
-	transition: all 0.2s ease;
-
-	&:hover {
-		background-color: rgba(255, 255, 255, 0.8);
-		transform: translate(-50%, -50%) scale(1.1);
-	}
-`
-
-const StreamInfo = styled.div`
-	padding: 1rem 0;
-`
-
-const TalkTitle = styled.p`
-	font-size: 0.9rem;
-	line-height: 1.3;
-	color: #d1d5db;
-	margin: 0 0 0.5rem 0;
-	font-weight: 500;
-`
-
-const SpeakerName = styled.p`
-	font-size: 0.85rem;
-	color: #9ca3af;
-	margin: 0;
-	font-weight: 600;
-`
-
 const ButtonSection = styled.div`
 	margin-top: 3rem;
 	display: flex;
 	justify-content: center;
-`
-
-const ViewAllButton = styled.a`
-	background-color: white;
-	color: black;
-	padding: 15px 30px;
-	border-radius: 0.25rem;
-	text-decoration: none;
-	display: inline-block;
-	font-weight: 600;
-	font-size: 1.1rem;
-	transition: background-color 0.2s ease;
-
-	&:hover {
-		background-color: #e5e5e5;
-	}
 `
 
 const HeroSection = styled.section`
@@ -342,81 +243,6 @@ const FeaturedGrid = styled.div`
 	@media (max-width: 968px) {
 		grid-template-columns: 1fr;
 		gap: 1.5rem;
-	}
-`
-
-const FeaturedCard = styled.div`
-	display: flex;
-	flex-direction: column;
-	background-color: transparent;
-	border-radius: 0.5rem;
-	overflow: hidden;
-	transition: transform 0.2s ease;
-
-	&:hover {
-		transform: translateY(-4px);
-	}
-`
-
-const FeaturedInfo = styled.div`
-	padding: 1rem 0;
-`
-
-const FeaturedTitle = styled.p`
-	font-size: 1rem;
-	line-height: 1.4;
-	color: #d1d5db;
-	margin: 0 0 0.5rem 0;
-	font-weight: 500;
-`
-
-const FeaturedSpeaker = styled.p`
-	font-size: 0.9rem;
-	color: #9ca3af;
-	margin: 0;
-	font-weight: 600;
-`
-
-const HeroThumbnailContainer = styled.div`
-	width: 100%;
-	aspect-ratio: 16/9;
-	position: relative;
-	background-color: rgba(0, 0, 0, 0.8);
-	border-radius: 0.5rem;
-	overflow: hidden;
-`
-
-const HeroThumbnailImage = styled.img`
-	width: 100%;
-	height: 100%;
-	object-fit: cover;
-	transition: opacity 0.2s ease;
-
-	&:hover {
-		opacity: 0.8;
-	}
-`
-
-const HeroPlayButton = styled.div`
-	position: absolute;
-	top: 50%;
-	left: 50%;
-	transform: translate(-50%, -50%);
-	background-color: rgba(255, 255, 255, 0.5);
-	color: black;
-	border-radius: 50%;
-	width: 70px;
-	height: 70px;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	font-size: 1.8rem;
-	font-weight: bold;
-	transition: all 0.2s ease;
-
-	&:hover {
-		background-color: rgba(255, 255, 255, 0.8);
-		transform: translate(-50%, -50%) scale(1.1);
 	}
 `
 
