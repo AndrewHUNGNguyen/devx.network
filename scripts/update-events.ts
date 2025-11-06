@@ -303,8 +303,8 @@ async function scrapeEventPage(
 		// Wait a bit more for dynamic content to fully render
 		await new Promise((resolve) => setTimeout(resolve, 1000))
 
-		rawEvent = await page.evaluate<RawScrapedEvent | null>(
-			(isPast, defaultTimezone) => {
+		rawEvent = await page.evaluate(
+			(isPast: boolean, defaultTimezone: string): RawScrapedEvent | null => {
 				// Extract event ID from URL
 				const url = window.location.href
 				const eventIdMatch = url.match(/\/([a-z0-9]{8,})$/i)
@@ -475,7 +475,7 @@ async function scrapeEventPage(
 				}
 
 				// Extract location
-				let location = null
+				let location: LumaLocation | null = null
 				const locationElement = document.querySelector<HTMLElement>(
 					"[class*='location'], [class*='Location'], a[href*='maps']"
 				)
@@ -535,14 +535,16 @@ async function scrapeEventPage(
 							Number.isFinite(lngFromStructured)
 						const fallbackName =
 							typeof structuredLocationName === "string" ? structuredLocationName.trim() : undefined
+						let coordinates: { lat: number; lng: number } | undefined = undefined
+						if (hasCoords) {
+							coordinates = { lat: latFromStructured!, lng: lngFromStructured! }
+						}
 						location = {
 							type: "physical",
 							address: structuredAddress || fallbackName,
 							city: cityFromStructured || undefined,
 							state: stateFromStructured || undefined,
-							coordinates: hasCoords
-								? { lat: latFromStructured, lng: lngFromStructured }
-								: undefined
+							coordinates
 						}
 					}
 
@@ -842,7 +844,7 @@ async function scrapeCalendarEvents(
 	})
 
 	// Extract event links
-	const eventLinks = await page.evaluate<string[]>(() => {
+	const eventLinks: string[] = await page.evaluate(() => {
 		const links = Array.from(document.querySelectorAll<HTMLAnchorElement>("a[href]"))
 		const eventUrls = new Set<string>()
 
@@ -1010,7 +1012,7 @@ async function scrapeManageCalendarDates(
 		await page.goto(url, { waitUntil: "networkidle2", timeout: 30000 })
 		await page.waitForSelector("a[href]", { timeout: 10000 }).catch(() => {})
 
-		const entries = await page.evaluate<Array<{ href: string; text: string }>>(() => {
+		const entries: Array<{ href: string; text: string }> = await page.evaluate(() => {
 			const links = Array.from(document.querySelectorAll<HTMLAnchorElement>("a[href]"))
 			return links.map((link) => {
 				const hrefAttr = link.getAttribute("href")
@@ -1036,7 +1038,7 @@ async function scrapeManageCalendarDates(
 
 		const dateMap = new Map<string, TimelineEntry>()
 
-		entries.forEach(({ href, text }) => {
+		entries.forEach(({ href, text }: { href: string; text: string }) => {
 			const apiId = extractEventId(href || "")
 			if (!apiId) {
 				return
