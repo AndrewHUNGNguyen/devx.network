@@ -78,9 +78,8 @@ const FooterContainer = styled.footer`
 	align-items: center;
 	justify-content: center;
 	width: 100%;
-	background-color: rgba(0, 0, 0, 0.05);
-	backdrop-filter: blur(38px);
-	border-top: 1px solid rgba(255, 255, 255, 0.1);
+	background-color: rgba(0, 0, 0, 0.1);
+	backdrop-filter: blur(64px);
 	margin-top: auto;
 `
 
