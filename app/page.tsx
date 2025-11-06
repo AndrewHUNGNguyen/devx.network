@@ -2,14 +2,24 @@
 import { useRef, useState, useEffect } from "react"
 import styled from "styled-components"
 import { motion, useInView, AnimatePresence } from "framer-motion"
-import { Header } from "./components/Header"
 import { organizers } from "./info/organizers"
 import { links } from "./siteConfig"
-import { Footer } from "./components/Footer"
-import { GiveATalkCTA } from "./components/GiveATalkCTA"
 import { PotionBackground } from "./components/PotionBackground"
 import { ErrorBoundary } from "./components/ErrorBoundary"
 import { Button } from "./components/Button"
+import { lumaService } from "./services/luma"
+import type { LumaEvent } from "./services/luma"
+
+// Constants //
+
+const sliderImages = [
+	"/images/slides/slide1.webp",
+	"/images/slides/slide2.webp",
+	"/images/slides/slide3.webp",
+	"/images/slides/slide4.webp",
+	"/images/slides/slide5.webp",
+	"/images/slides/slide6.webp"
+]
 
 // Components //
 
@@ -33,14 +43,9 @@ export default function Home() {
 
 	// Image slider state
 	const [currentImageIndex, setCurrentImageIndex] = useState(0)
-	const sliderImages = [
-		"/images/slides/slide1.webp",
-		"/images/slides/slide2.webp",
-		"/images/slides/slide3.webp",
-		"/images/slides/slide4.webp",
-		"/images/slides/slide5.webp",
-		"/images/slides/slide6.webp"
-	]
+
+	// Next event state
+	const [nextEvent, setNextEvent] = useState<LumaEvent | null>(null)
 
 	// Auto-advance slider
 	useEffect(() => {
@@ -50,7 +55,32 @@ export default function Home() {
 
 		return () => clearInterval(interval)
 	}, [])
+
+	// Fetch next upcoming event
+	useEffect(() => {
+		const loadNextEvent = async () => {
+			try {
+				const allEvents = await lumaService.listEvents()
+				const now = new Date()
+				const upcomingEvents = allEvents
+					.filter((event) => new Date(event.start_at) >= now)
+					.sort((a, b) => new Date(a.start_at).getTime() - new Date(b.start_at).getTime())
+
+				if (upcomingEvents.length > 0) {
+					setNextEvent(upcomingEvents[0])
+				}
+			} catch (error) {
+				console.error("Failed to load next event:", error)
+			}
+		}
+
+		loadNextEvent()
+	}, [])
+
 	const joinInView = useInView(joinRef, { amount: 0.3 })
+
+	// Determine the link for the next event button
+	const nextEventLink = nextEvent ? `/events/${nextEvent.api_id}` : "/events"
 
 	return (
 		<>
@@ -86,6 +116,18 @@ export default function Home() {
 							A developer community of events and open-source projects in San Diego, California.
 						</TaglineText>
 					</Tagline>
+					<HeroButtonContainer
+						animate={{
+							opacity: heroInView ? 1 : 0,
+							y: heroInView ? 0 : 20
+						}}
+						transition={{ duration: 0.6, ease: "easeOut", delay: 0.3 }}
+						as={motion.div}
+					>
+						<Button href={nextEventLink} size="default">
+							Join the Next Event
+						</Button>
+					</HeroButtonContainer>
 					<HeroSocialLinks
 						animate={{
 							opacity: heroInView ? 1 : 0,
@@ -330,8 +372,8 @@ export default function Home() {
 							animate={{ opacity: joinInView ? 1 : 0, scale: joinInView ? 1 : 0.9 }}
 							transition={{ duration: 0.6, ease: "easeOut", delay: 0.2 }}
 						>
-							<Button href={links.lumaUrl} target="_blank">
-								View Upcoming Events
+							<Button href={nextEventLink} size="default">
+								Join the Next Event
 							</Button>
 						</ContentText>
 					</ContentWrapper>
@@ -424,6 +466,13 @@ const TaglineText = styled.p`
 	font-size: 1.25rem;
 	text-align: center;
 	max-width: 1024px;
+`
+
+const HeroButtonContainer = styled.div`
+	margin-top: 2rem;
+	display: flex;
+	justify-content: center;
+	align-items: center;
 `
 
 const ScrollFeatureSection = styled.section`
