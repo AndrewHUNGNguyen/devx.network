@@ -37,10 +37,7 @@ export class StaticLumaService implements LumaService {
 			localStorage.setItem("luma_registrations", JSON.stringify(registrations))
 		}
 
-		// Redirect to Luma event page for actual registration
-		if (typeof window !== "undefined") {
-			window.location.href = event.url
-		}
+		// Note: Opening in new tab is handled by the client component
 	}
 
 	async checkRegistration(eventId: string, email: string): Promise<boolean> {

@@ -80,9 +80,12 @@ export default function EventDetailClient() {
 			localStorage.setItem("devx_user_info", JSON.stringify(userInfo))
 			setHasStoredInfo(true)
 
-			// Register for event (will redirect to Luma in static mode)
-			// Note: redirect happens synchronously, so code after this won't execute
+			// Register for event
 			await lumaService.registerForEvent(eventId, userInfo.email)
+
+			// Open Luma event page in new tab
+			window.open(event.url, "_blank", "noopener,noreferrer")
+			setRegistering(false)
 		} catch (error) {
 			console.error("Failed to register:", error)
 			alert("Failed to register for event. Please try again.")
@@ -95,9 +98,12 @@ export default function EventDetailClient() {
 
 		setRegistering(true)
 		try {
-			// Register for event (will redirect to Luma in static mode)
-			// Note: redirect happens synchronously, so code after this won't execute
+			// Register for event
 			await lumaService.registerForEvent(eventId, userInfo.email)
+
+			// Open Luma event page in new tab
+			window.open(event.url, "_blank", "noopener,noreferrer")
+			setRegistering(false)
 		} catch (error) {
 			console.error("Failed to register:", error)
 			alert("Failed to register for event. Please try again.")
