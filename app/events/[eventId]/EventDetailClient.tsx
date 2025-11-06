@@ -148,7 +148,47 @@ export default function EventDetailClient() {
 						<Header>
 							<Title>{event.name}</Title>
 							<DateTime>{formatEventDateTime(event.start_at, event.end_at)}</DateTime>
+							<Button href="#registration-form">Attend This Event</Button>
 						</Header>
+
+						{event.location && event.location.type === "physical" && (
+							<LocationSection>
+								<SectionTitle>Location</SectionTitle>
+								<LocationText>{event.location.address}</LocationText>
+							</LocationSection>
+						)}
+
+						{event.location && event.location.type === "online" && (
+							<LocationSection>
+								<SectionTitle>Location</SectionTitle>
+								<LocationText>Online Event</LocationText>
+							</LocationSection>
+						)}
+
+						<DescriptionSection>
+							<SectionTitle>About This Event</SectionTitle>
+							{event.description_html ? (
+								<Description dangerouslySetInnerHTML={{ __html: event.description_html }} />
+							) : (
+								<Description>{event.description}</Description>
+							)}
+						</DescriptionSection>
+
+						{/* Marker point for scroll linking */}
+						<span id="registration-form" />
+
+						{event.guest_count !== undefined && (
+							<AttendeeSection>
+								<SectionTitle>Attendees</SectionTitle>
+								{event.guest_count === -1 ? (
+									<AttendeeLink href={event.url} target="_blank" rel="noopener noreferrer">
+										Click to see attendees on Luma →
+									</AttendeeLink>
+								) : (
+									<AttendeeCount>{event.guest_count} people attending</AttendeeCount>
+								)}
+							</AttendeeSection>
+						)}
 
 						{!isPastEvent && (
 							<RegistrationSection>
@@ -185,42 +225,6 @@ export default function EventDetailClient() {
 									</RegistrationForm>
 								)}
 							</RegistrationSection>
-						)}
-
-						{event.location && event.location.type === "physical" && (
-							<LocationSection>
-								<SectionTitle>Location</SectionTitle>
-								<LocationText>{event.location.address}</LocationText>
-							</LocationSection>
-						)}
-
-						{event.location && event.location.type === "online" && (
-							<LocationSection>
-								<SectionTitle>Location</SectionTitle>
-								<LocationText>Online Event</LocationText>
-							</LocationSection>
-						)}
-
-						<DescriptionSection>
-							<SectionTitle>About This Event</SectionTitle>
-							{event.description_html ? (
-								<Description dangerouslySetInnerHTML={{ __html: event.description_html }} />
-							) : (
-								<Description>{event.description}</Description>
-							)}
-						</DescriptionSection>
-
-						{event.guest_count !== undefined && (
-							<AttendeeSection>
-								<SectionTitle>Attendees</SectionTitle>
-								{event.guest_count === -1 ? (
-									<AttendeeLink href={event.url} target="_blank" rel="noopener noreferrer">
-										Click to see attendees on Luma →
-									</AttendeeLink>
-								) : (
-									<AttendeeCount>{event.guest_count} people attending</AttendeeCount>
-								)}
-							</AttendeeSection>
 						)}
 
 						{event.location && event.location.type === "physical" && event.location.coordinates && (
@@ -364,6 +368,10 @@ const MapFrame = styled.iframe`
 	width: 100%;
 	height: 100%;
 	border: none;
+	filter: brightness(0.75);
+	&:hover {
+		filter: brightness(0.9);
+	}
 `
 
 const DescriptionSection = styled.section`
@@ -477,11 +485,16 @@ const AttendeeLink = styled.a`
 `
 
 const RegistrationSection = styled.section`
-	background-color: rgba(255, 255, 255, 0.05);
-	backdrop-filter: blur(10px);
+	background-color: rgba(255, 255, 255, 0.01);
+	backdrop-filter: blur(32px);
+	box-shadow: 4px 8px 8px 0 rgba(0, 0, 0, 0.05);
 	padding: 1.5rem;
 	border-radius: 0.5rem;
 	margin: 2rem 0;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
 `
 
 const RegistrationForm = styled.form`
