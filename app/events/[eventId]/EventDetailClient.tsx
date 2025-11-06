@@ -1,0 +1,446 @@
+"use client"
+import { useEffect, useState } from "react"
+import { useParams, useRouter } from "next/navigation"
+import styled from "styled-components"
+import type { LumaEvent } from "@/app/services/luma"
+import { lumaService } from "@/app/services/luma"
+import { PotionBackground } from "@/app/components/PotionBackground"
+import { ErrorBoundary } from "@/app/components/ErrorBoundary"
+import { Button } from "@/app/components/Button"
+import { TextInput } from "@/app/components/TextInput"
+
+// Components //
+
+export default function EventDetailClient() {
+	const params = useParams()
+	const router = useRouter()
+	const eventId = params.eventId as string
+
+	const [event, setEvent] = useState<LumaEvent | null>(null)
+	const [loading, setLoading] = useState(true)
+	const [userInfo, setUserInfo] = useState<{ name: string; email: string }>({ name: "", email: "" })
+	const [registering, setRegistering] = useState(false)
+	const [hasStoredInfo, setHasStoredInfo] = useState(false)
+
+	useEffect(() => {
+		loadEvent()
+		loadSavedInfo()
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [eventId])
+
+	const loadEvent = async () => {
+		try {
+			const eventData = await lumaService.getEvent(eventId)
+			if (!eventData) {
+				router.push("/events")
+				return
+			}
+			setEvent(eventData)
+		} catch (error) {
+			console.error("Failed to load event:", error)
+		} finally {
+			setLoading(false)
+		}
+	}
+
+	const loadSavedInfo = () => {
+		const savedUserInfo = localStorage.getItem("devx_user_info")
+		if (savedUserInfo) {
+			try {
+				const parsed = JSON.parse(savedUserInfo)
+				if (parsed.email) {
+					setUserInfo({ name: parsed.name || "", email: parsed.email })
+					setHasStoredInfo(true)
+				}
+			} catch (error) {
+				// Fallback for old format (just email)
+				const savedEmail = localStorage.getItem("devx_user_email")
+				if (savedEmail) {
+					setUserInfo({ name: "", email: savedEmail })
+					setHasStoredInfo(true)
+				}
+			}
+		} else {
+			// Fallback for old format (just email)
+			const savedEmail = localStorage.getItem("devx_user_email")
+			if (savedEmail) {
+				setUserInfo({ name: "", email: savedEmail })
+				setHasStoredInfo(true)
+			}
+		}
+	}
+
+	const handleRegister = async (e: React.FormEvent) => {
+		e.preventDefault()
+		if (!userInfo.email || !event) return
+
+		setRegistering(true)
+		try {
+			// Save name and email for future use
+			localStorage.setItem("devx_user_info", JSON.stringify(userInfo))
+			setHasStoredInfo(true)
+
+			// Register for event (will redirect to Luma in static mode)
+			// Note: redirect happens synchronously, so code after this won't execute
+			await lumaService.registerForEvent(eventId, userInfo.email)
+		} catch (error) {
+			console.error("Failed to register:", error)
+			alert("Failed to register for event. Please try again.")
+			setRegistering(false)
+		}
+	}
+
+	const handleOneClickRSVP = async () => {
+		if (!userInfo.email || !event) return
+
+		setRegistering(true)
+		try {
+			// Register for event (will redirect to Luma in static mode)
+			// Note: redirect happens synchronously, so code after this won't execute
+			await lumaService.registerForEvent(eventId, userInfo.email)
+		} catch (error) {
+			console.error("Failed to register:", error)
+			alert("Failed to register for event. Please try again.")
+			setRegistering(false)
+		}
+	}
+
+	if (loading) {
+		return (
+			<>
+				<BackgroundContainer>
+					<ErrorBoundary
+						fallback={<div style={{ backgroundColor: "black", width: "100%", height: "100%" }} />}
+					>
+						<PotionBackground />
+					</ErrorBoundary>
+				</BackgroundContainer>
+				<Main>
+					<Container>
+						<LoadingMessage>Loading event details...</LoadingMessage>
+					</Container>
+				</Main>
+			</>
+		)
+	}
+
+	if (!event) {
+		return null
+	}
+
+	const eventDate = new Date(event.start_at)
+	const isPastEvent = eventDate < new Date()
+
+	return (
+		<>
+			<BackgroundContainer>
+				<ErrorBoundary
+					fallback={<div style={{ backgroundColor: "black", width: "100%", height: "100%" }} />}
+				>
+					<PotionBackground />
+				</ErrorBoundary>
+			</BackgroundContainer>
+			<Main>
+				<Container>
+					{event.cover_url && <CoverImage src={event.cover_url} alt={event.name} />}
+
+					<Content>
+						<Header>
+							<Title>{event.name}</Title>
+							<DateTime>{formatEventDateTime(event.start_at, event.end_at)}</DateTime>
+						</Header>
+
+						{!isPastEvent && (
+							<RegistrationSection>
+								<SectionTitle>Registration</SectionTitle>
+								{hasStoredInfo ? (
+									<OneClickRSVPContainer>
+										<StoredInfoDisplay>
+											RSVP as: <NameValue>{userInfo.name}</NameValue>{" "}
+											<EmailValue>{userInfo.email}</EmailValue>
+										</StoredInfoDisplay>
+										<Button onClick={handleOneClickRSVP} disabled={registering}>
+											{registering ? "Redirecting..." : "One-Click RSVP"}
+										</Button>
+									</OneClickRSVPContainer>
+								) : (
+									<RegistrationForm onSubmit={handleRegister}>
+										<TextInput
+											type="text"
+											placeholder="Enter your name"
+											value={userInfo.name}
+											onChange={(e) => setUserInfo({ ...userInfo, name: e.target.value })}
+											required
+										/>
+										<TextInput
+											type="email"
+											placeholder="Enter your email"
+											value={userInfo.email}
+											onChange={(e) => setUserInfo({ ...userInfo, email: e.target.value })}
+											required
+										/>
+										<Button type="submit" disabled={registering}>
+											{registering ? "Registering..." : "Register on Luma"}
+										</Button>
+									</RegistrationForm>
+								)}
+							</RegistrationSection>
+						)}
+
+						{event.location && event.location.type === "physical" && (
+							<LocationSection>
+								<SectionTitle>Location</SectionTitle>
+								<LocationText>{event.location.address}</LocationText>
+							</LocationSection>
+						)}
+
+						{event.location && event.location.type === "online" && (
+							<LocationSection>
+								<SectionTitle>Location</SectionTitle>
+								<LocationText>Online Event</LocationText>
+							</LocationSection>
+						)}
+
+						<DescriptionSection>
+							<SectionTitle>About This Event</SectionTitle>
+							<Description>{event.description}</Description>
+						</DescriptionSection>
+
+						{event.guest_count !== undefined && (
+							<AttendeeSection>
+								<SectionTitle>Attendees</SectionTitle>
+								{event.guest_count === -1 ? (
+									<AttendeeLink href={event.url} target="_blank" rel="noopener noreferrer">
+										Click to see attendees on Luma →
+									</AttendeeLink>
+								) : (
+									<AttendeeCount>{event.guest_count} people attending</AttendeeCount>
+								)}
+							</AttendeeSection>
+						)}
+
+						{event.location && event.location.type === "physical" && event.location.coordinates && (
+							<LocationSection>
+								<SectionTitle>Map</SectionTitle>
+								<MapContainer>
+									<MiniMap
+										lat={event.location.coordinates.lat}
+										lng={event.location.coordinates.lng}
+										address={event.location.address}
+									/>
+								</MapContainer>
+							</LocationSection>
+						)}
+					</Content>
+				</Container>
+			</Main>
+		</>
+	)
+}
+
+// Utility Components //
+
+function MiniMap({ lat, lng, address }: { lat: number; lng: number; address?: string }) {
+	const mapUrl = `https://www.openstreetmap.org/export/embed.html?bbox=${lng - 0.01},${lat - 0.01},${lng + 0.01},${lat + 0.01}&layer=mapnik&marker=${lat},${lng}`
+
+	return <MapFrame src={mapUrl} title={`Map for ${address || "event location"}`} loading="lazy" />
+}
+
+// Utility Functions //
+
+function formatEventDateTime(startAt: string, endAt: string): string {
+	const start = new Date(startAt)
+	const end = new Date(endAt)
+
+	const dateStr = start.toLocaleDateString("en-US", {
+		weekday: "long",
+		year: "numeric",
+		month: "long",
+		day: "numeric"
+	})
+
+	const startTime = start.toLocaleTimeString("en-US", {
+		hour: "numeric",
+		minute: "2-digit"
+	})
+
+	const endTime = end.toLocaleTimeString("en-US", {
+		hour: "numeric",
+		minute: "2-digit"
+	})
+
+	return `${dateStr} • ${startTime} - ${endTime}`
+}
+
+// Styled Components //
+
+const BackgroundContainer = styled.section`
+	background-color: #0a0a0a;
+	position: fixed;
+	height: 100vh;
+	width: 100vw;
+	top: 0;
+	left: 0;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+`
+
+const Main = styled.main`
+	position: relative;
+	z-index: 1;
+	padding-top: 8rem;
+	padding-bottom: 4rem;
+`
+
+const Container = styled.div`
+	max-width: 900px;
+	margin: 0 auto;
+	background-color: rgba(21, 21, 28, 0.75);
+	backdrop-filter: blur(10px);
+	border-radius: 0.5rem;
+	box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+`
+
+const CoverImage = styled.img`
+	width: 100%;
+	height: 400px;
+	object-fit: cover;
+	border-radius: 0.5rem 0.5rem 0 0;
+`
+
+const Content = styled.div`
+	padding: 2rem;
+`
+
+const Header = styled.header`
+	margin-bottom: 2rem;
+	border-bottom: 1px solid #374151;
+	padding-bottom: 1.5rem;
+`
+
+const Title = styled.h1`
+	font-size: 2.25rem;
+	font-weight: bold;
+	color: white;
+	margin-bottom: 0.5rem;
+`
+
+const DateTime = styled.p`
+	font-size: 1.125rem;
+	color: #9ca3af;
+`
+
+const SectionTitle = styled.h2`
+	font-size: 1.5rem;
+	font-weight: bold;
+	color: white;
+	margin-bottom: 1rem;
+`
+
+const LocationSection = styled.section`
+	margin-bottom: 2rem;
+`
+
+const LocationText = styled.p`
+	font-size: 1rem;
+	color: #d1d5db;
+	margin-bottom: 1rem;
+`
+
+const MapContainer = styled.div`
+	width: 100%;
+	height: 300px;
+	border-radius: 0.5rem;
+	overflow: hidden;
+`
+
+const MapFrame = styled.iframe`
+	width: 100%;
+	height: 100%;
+	border: none;
+`
+
+const DescriptionSection = styled.section`
+	margin-bottom: 2rem;
+`
+
+const Description = styled.p`
+	font-size: 1rem;
+	color: #d1d5db;
+	line-height: 1.6;
+	white-space: pre-wrap;
+`
+
+const AttendeeSection = styled.section`
+	margin-bottom: 2rem;
+`
+
+const AttendeeCount = styled.p`
+	font-size: 1rem;
+	color: #8b5cf6;
+	font-weight: 500;
+`
+
+const AttendeeLink = styled.a`
+	font-size: 1rem;
+	color: #8b5cf6;
+	font-weight: 500;
+	text-decoration: none;
+
+	&:hover {
+		text-decoration: underline;
+	}
+`
+
+const RegistrationSection = styled.section`
+	background-color: rgba(255, 255, 255, 0.05);
+	backdrop-filter: blur(10px);
+	padding: 1.5rem;
+	border-radius: 0.5rem;
+	margin: 2rem 0;
+`
+
+const RegistrationForm = styled.form`
+	display: grid;
+	grid-template-columns: 1fr;
+	gap: 1rem;
+
+	@media (min-width: 640px) {
+		grid-template-columns: repeat(2, 1fr);
+	}
+
+	> button {
+		grid-column: 1 / -1;
+	}
+`
+
+const OneClickRSVPContainer = styled.div`
+	display: flex;
+	flex-direction: column;
+	gap: 1rem;
+`
+
+const StoredInfoDisplay = styled.div`
+	font-size: 0.875rem;
+	color: #d1d5db;
+	text-align: center;
+	line-height: 1.6;
+`
+
+const NameValue = styled.span`
+	color: white;
+	font-weight: 900;
+`
+
+const EmailValue = styled.span`
+	color: #aaa;
+`
+
+const LoadingMessage = styled.p`
+	text-align: center;
+	color: #9ca3af;
+	font-size: 1.125rem;
+	padding: 4rem 2rem;
+`

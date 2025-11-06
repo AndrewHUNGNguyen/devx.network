@@ -121,17 +121,11 @@ const NavLinks = () => {
 				<MenuLink href="/">Home</MenuLink>
 			</MenuItem>
 			<MenuItem>
-				<MenuLink target="_blank" href={links.lumaUrl}>
-					Event Calendar
-				</MenuLink>
+				<MenuLink href="/events">Events</MenuLink>
 			</MenuItem>
 			<MenuItem>
 				<MenuLink href="/watch">Watch</MenuLink>
 			</MenuItem>
-			{/* Hide Events until the page design is ready and finalized */}
-			{/* <MenuItem>
-				<MenuLink href="/events">Events</MenuLink>
-			</MenuItem> */}
 			<CTAMenuItem>
 				<GiveATalkCTA />
 			</CTAMenuItem>

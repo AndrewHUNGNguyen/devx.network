@@ -1,0 +1,618 @@
+[
+	{
+		"api_id": "evt-py8urggk",
+		"name": "Weekend Function() { Software Developer Meetup }",
+		"description": "​Join us in a special weekend developer experience! We're long time San Diego developers, looking to foster a community of devs of all skill levels to have fun, network, and learn new things!\n\n​​For this monthly meetup, we gather for lunch to introduce ourselves and enjoy complimentary food and drinks. After, we start a series of presentations from members of the community to share interesting developer and engineering topics.\n\n​​Once presentations are finished, we break into groups to casually network, show off our projects and make exciting new friends.\n\n​​Feel free to ask our organizers for help on some code you're struggling with, if you are! We're happy to help where we can.\n\n​​Please be courteous and respectful to others.\n\n​​Should you be giving a presentation or want to share a project, bring your 💻 laptop! We want to see what you're excited about. Whether it's an app you're building, a new library you found, or what you learned last week about useEffect().\n\n​​We have complimentary 🍕🥕food and 🍺🥤beverages. Please help yourself!\n\n​​12:00 Networking Lunch\n\n​1:00 Speaker Presentations\n\n​2:00 Community Announcements\n\n​2:15 Network / Hangout / Code\n\n​4:00 End\n\n​We typically have three speakers presenting various developer related talks. If you're interested in giving a talk please submit a request using this form: https://forms.gle/VEvKkKPJSgZEhzPN9\n\n​You can find more information about our community at https://devx.network\n\n​Also, join our Discord community to ask what others are interested in learning in the #event-talk channel: https://discord.gg/hyf9KSaKtv\n\n​​Street ($0)\n\n​​San Diego County Waterfront Garage ($20)\n\n​​Fashion Valley Mall ($5)\n\n​​take the green line from Fashion Valley Transit Center to County Center/Little Italy Station\n\n​​costs $2.50 each way\n\n​​Waterfront Park\n\n​​Green and Blue Trolly Lines\n\n​​stop at County Center/Little Italy Station\n\n​​Coaster\n\n​​stop at Santa Fe Depot",
+		"start_at": "2025-11-23T20:00:00.000Z",
+		"end_at": "2025-11-24T00:00:00.000Z",
+		"location": {
+			"type": "physical",
+			"address": "1495 Pacific Hwy #300, San Diego, CA",
+			"city": "San Diego",
+			"state": "CA",
+			"coordinates": {
+				"lat": 32.720728,
+				"lng": -117.170756
+			}
+		},
+		"cover_url": "https://images.lumacdn.com/cdn-cgi/image/format=auto,fit=cover,dpr=2,background=white,quality=75,width=400,height=400/event-covers/zo/e9f50436-063e-486e-91d5-e350311d509b.png",
+		"url": "https://luma.com/py8urggk",
+		"guest_count": -1,
+		"visibility": "public",
+		"timezone": "America/Los_Angeles"
+	},
+	{
+		"api_id": "evt-7jp6q9ja",
+		"name": "Weekend Function() { Software Developer Meetup }",
+		"description": "​Join us in a special weekend developer experience! We're long time San Diego developers, looking to foster a community of devs of all skill levels to have fun, network, and learn new things!\n\n​​For this monthly meetup, we gather for lunch to introduce ourselves and enjoy complimentary food and drinks. After, we start a series of presentations from members of the community to share interesting developer and engineering topics.\n\n​​Once presentations are finished, we break into groups to casually network, show off our projects and make exciting new friends.\n\n​​Feel free to ask our organizers for help on some code you're struggling with, if you are! We're happy to help where we can.\n\n​​Please be courteous and respectful to others.\n\n​​Should you be giving a presentation or want to share a project, bring your 💻 laptop! We want to see what you're excited about. Whether it's an app you're building, a new library you found, or what you learned last week about useEffect().\n\n​​We have complimentary 🍕🥕food and 🍺🥤beverages. Please help yourself!\n\n​​12:00 Networking Lunch\n\n​1:00 Speaker Presentations\n\n​2:00 Community Announcements\n\n​2:15 Network / Hangout / Code\n\n​4:00 End\n\n​We typically have three speakers presenting various developer related talks. If you're interested in giving a talk please submit a request using this form: https://forms.gle/VEvKkKPJSgZEhzPN9\n\n​You can find more information about our community at https://devx.network\n\n​Also, join our Discord community to ask what others are interested in learning in the #event-talk channel: https://discord.gg/hyf9KSaKtv\n\n​​Street ($0)\n\n​​San Diego County Waterfront Garage ($20)\n\n​​Fashion Valley Mall ($5)\n\n​​take the green line from Fashion Valley Transit Center to County Center/Little Italy Station\n\n​​costs $2.50 each way\n\n​​Waterfront Park\n\n​​Green and Blue Trolly Lines\n\n​​stop at County Center/Little Italy Station\n\n​​Coaster\n\n​​stop at Santa Fe Depot",
+		"start_at": "2025-10-19T19:00:00.000Z",
+		"end_at": "2025-10-19T23:00:00.000Z",
+		"location": {
+			"type": "physical",
+			"address": "1495 Pacific Hwy #300, San Diego, CA",
+			"city": "San Diego",
+			"state": "CA",
+			"coordinates": {
+				"lat": 32.720728,
+				"lng": -117.170756
+			}
+		},
+		"cover_url": "https://images.lumacdn.com/cdn-cgi/image/format=auto,fit=cover,dpr=2,background=white,quality=75,width=400,height=400/event-covers/04/2fe97026-0135-4530-859b-b91482963e7d",
+		"url": "https://luma.com/7jp6q9ja",
+		"guest_count": -1,
+		"visibility": "public",
+		"timezone": "America/Los_Angeles"
+	},
+	{
+		"api_id": "evt-7vawzp84",
+		"name": "coworking @ steady state",
+		"description": "​Come out for Friday coworking!",
+		"start_at": "2025-10-17T20:00:00.000Z",
+		"end_at": "2025-10-17T23:00:00.000Z",
+		"location": {
+			"type": "physical",
+			"address": "Steady State Roasting, Carlsbad, CA",
+			"city": "Carlsbad",
+			"state": "CA",
+			"coordinates": {
+				"lat": 33.164606299999996,
+				"lng": -117.3522321
+			}
+		},
+		"cover_url": "https://images.lumacdn.com/cdn-cgi/image/format=auto,fit=cover,dpr=2,background=white,quality=75,width=400,height=400/event-covers/lj/9c433b85-b53d-4ad5-99c1-21d538988612.png",
+		"url": "https://luma.com/7vawzp84",
+		"guest_count": -1,
+		"visibility": "public",
+		"timezone": "America/Los_Angeles"
+	},
+	{
+		"api_id": "evt-wkg3oc6i",
+		"name": "Weekend Function() { Software Developer Meetup }",
+		"description": "​Join us in a special weekend developer experience! We're long time San Diego developers, looking to foster a community of devs of all skill levels to have fun, network, and learn new things!\n\n​​For this monthly meetup, we gather for lunch to introduce ourselves and enjoy complimentary food and drinks. After, we start a series of presentations from members of the community to share interesting developer and engineering topics.\n\n​​Once presentations are finished, we break into groups to casually network, show off our projects and make exciting new friends.\n\n​​Feel free to ask our organizers for help on some code you're struggling with, if you are! We're happy to help where we can.\n\n​​Please be courteous and respectful to others.\n\n​​Should you be giving a presentation or want to share a project, bring your 💻 laptop! We want to see what you're excited about. Whether it's an app you're building, a new library you found, or what you learned last week about useEffect().\n\n​​We have complimentary 🍕🥕food and 🍺🥤beverages. Please help yourself!\n\n​​12:00 Networking Lunch\n\n​1:00 Speaker Presentations\n\n​2:00 Community Announcements\n\n​2:15 Network / Hangout / Code\n\n​4:00 End\n\n​We typically have three speakers presenting various developer related talks. If you're interested in giving a talk please submit a request using this form: https://forms.gle/VEvKkKPJSgZEhzPN9\n\n​You can find more information about our community at https://devx.network\n\n​Also, join our Discord community to ask what others are interested in learning in the #event-talk channel: https://discord.gg/hyf9KSaKtv\n\n​​Street ($0)\n\n​​San Diego County Waterfront Garage ($20)\n\n​​Fashion Valley Mall ($5)\n\n​​take the green line from Fashion Valley Transit Center to County Center/Little Italy Station\n\n​​costs $2.50 each way\n\n​​Waterfront Park\n\n​​Green and Blue Trolly Lines\n\n​​stop at County Center/Little Italy Station\n\n​​Coaster\n\n​​stop at Santa Fe Depot",
+		"start_at": "2025-09-21T19:00:00.000Z",
+		"end_at": "2025-09-21T23:00:00.000Z",
+		"location": {
+			"type": "physical",
+			"address": "1495 Pacific Hwy #300, San Diego, CA",
+			"city": "San Diego",
+			"state": "CA",
+			"coordinates": {
+				"lat": 32.720728,
+				"lng": -117.170756
+			}
+		},
+		"cover_url": "https://images.lumacdn.com/cdn-cgi/image/format=auto,fit=cover,dpr=2,background=white,quality=75,width=400,height=400/event-covers/04/2fe97026-0135-4530-859b-b91482963e7d",
+		"url": "https://luma.com/wkg3oc6i",
+		"guest_count": -1,
+		"visibility": "public",
+		"timezone": "America/Los_Angeles"
+	},
+	{
+		"api_id": "evt-xjjncl8e",
+		"name": "Weekend Function() { Software Developer Meetup }",
+		"description": "​Join us in a special weekend developer experience! We're long time San Diego developers, looking to foster a community of devs of all skill levels to have fun, network, and learn new things!\n\n​​For this monthly meetup, we gather for lunch to introduce ourselves and enjoy complimentary food and drinks. After, we start a series of presentations from members of the community to share interesting developer and engineering topics.\n\n​​Once presentations are finished, we break into groups to casually network, show off our projects and make exciting new friends.\n\n​​Feel free to ask our organizers for help on some code you're struggling with, if you are! We're happy to help where we can.\n\n​​Please be courteous and respectful to others.\n\n​​Should you be giving a presentation or want to share a project, bring your 💻 laptop! We want to see what you're excited about. Whether it's an app you're building, a new library you found, or what you learned last week about useEffect().\n\n​​We have complimentary 🍕🥕food and 🍺🥤beverages. Please help yourself!\n\n​​12:00 Networking Lunch\n\n​1:00 Speaker Presentations\n\n​2:00 Community Announcements\n\n​2:15 Network / Hangout / Code\n\n​4:00 End\n\n​We typically have three speakers presenting various developer related talks. If you're interested in giving a talk please submit a request using this form: https://forms.gle/VEvKkKPJSgZEhzPN9\n\n​You can find more information about our community at https://devx.network\n\n​Also, join our Discord community to ask what others are interested in learning in the #event-talk channel: https://discord.gg/hyf9KSaKtv\n\n​​Street ($0)\n\n​​San Diego County Waterfront Garage ($20)\n\n​​Fashion Valley Mall ($5)\n\n​​take the green line from Fashion Valley Transit Center to County Center/Little Italy Station\n\n​​costs $2.50 each way\n\n​​Waterfront Park\n\n​​Green and Blue Trolly Lines\n\n​​stop at County Center/Little Italy Station\n\n​​Coaster\n\n​​stop at Santa Fe Depot",
+		"start_at": "2025-08-24T19:00:00.000Z",
+		"end_at": "2025-08-24T23:00:00.000Z",
+		"location": {
+			"type": "physical",
+			"address": "1495 Pacific Hwy #300, San Diego, CA",
+			"city": "San Diego",
+			"state": "CA",
+			"coordinates": {
+				"lat": 32.720728,
+				"lng": -117.170756
+			}
+		},
+		"cover_url": "https://images.lumacdn.com/cdn-cgi/image/format=auto,fit=cover,dpr=2,background=white,quality=75,width=400,height=400/event-covers/04/2fe97026-0135-4530-859b-b91482963e7d",
+		"url": "https://luma.com/xjjncl8e",
+		"guest_count": -1,
+		"visibility": "public",
+		"timezone": "America/Los_Angeles"
+	},
+	{
+		"api_id": "evt-dnjd5e8o",
+		"name": "Weekend Function() { Software Developer Meetup }",
+		"description": "​Join us in a special weekend developer experience! We're long time San Diego developers, looking to foster a community of devs of all skill levels to have fun, network, and learn new things!\n\n​​For this monthly meetup, we gather for lunch to introduce ourselves and enjoy complimentary food and drinks. After, we start a series of presentations from members of the community to share interesting developer and engineering topics.\n\n​​Once presentations are finished, we break into groups to casually network, show off our projects and make exciting new friends.\n\n​​Feel free to ask our organizers for help on some code you're struggling with, if you are! We're happy to help where we can.\n\n​​Please be courteous and respectful to others.\n\n​​Should you be giving a presentation or want to share a project, bring your 💻 laptop! We want to see what you're excited about. Whether it's an app you're building, a new library you found, or what you learned last week about useEffect().\n\n​​We have complimentary 🍕🥕food and 🍺🥤beverages. Please help yourself!\n\n​​12:00 Networking Lunch\n\n​1:00 Speaker Presentations\n\n​2:00 Community Announcements\n\n​2:15 Network / Hangout / Code\n\n​4:00 End\n\n​We typically have three speakers presenting various developer related talks. If you're interested in giving a talk please submit a request using this form: https://forms.gle/VEvKkKPJSgZEhzPN9\n\n​You can find more information about our community at https://devx.network\n\n​Also, join our Discord community to ask what others are interested in learning in the #event-talk channel: https://discord.gg/hyf9KSaKtv\n\n​​Street ($0)\n\n​​San Diego County Waterfront Garage ($20)\n\n​​Fashion Valley Mall ($5)\n\n​​take the green line from Fashion Valley Transit Center to County Center/Little Italy Station\n\n​​costs $2.50 each way\n\n​​Waterfront Park\n\n​​Green and Blue Trolly Lines\n\n​​stop at County Center/Little Italy Station\n\n​​Coaster\n\n​​stop at Santa Fe Depot",
+		"start_at": "2025-07-27T19:00:00.000Z",
+		"end_at": "2025-07-27T23:00:00.000Z",
+		"location": {
+			"type": "physical",
+			"address": "1495 Pacific Hwy #300, San Diego, CA",
+			"city": "San Diego",
+			"state": "CA",
+			"coordinates": {
+				"lat": 32.720728,
+				"lng": -117.170756
+			}
+		},
+		"cover_url": "https://images.lumacdn.com/cdn-cgi/image/format=auto,fit=cover,dpr=2,background=white,quality=75,width=400,height=400/event-covers/04/2fe97026-0135-4530-859b-b91482963e7d",
+		"url": "https://luma.com/dnjd5e8o",
+		"guest_count": -1,
+		"visibility": "public",
+		"timezone": "America/Los_Angeles"
+	},
+	{
+		"api_id": "evt-mzbbmq07",
+		"name": "Weekend Function() { Software Developer Meetup }",
+		"description": "​Join us in a special weekend developer experience! We're long time San Diego developers, looking to foster a community of devs of all skill levels to have fun, network, and learn new things!\n\n​​For this monthly meetup, we gather for lunch to introduce ourselves and enjoy complimentary food and drinks. After, we start a series of presentations from members of the community to share interesting developer and engineering topics.\n\n​​Once presentations are finished, we break into groups to casually network, show off our projects and make exciting new friends.\n\n​​Feel free to ask our organizers for help on some code you're struggling with, if you are! We're happy to help where we can.\n\n​​Please be courteous and respectful to others.\n\n​​Should you be giving a presentation or want to share a project, bring your 💻 laptop! We want to see what you're excited about. Whether it's an app you're building, a new library you found, or what you learned last week about useEffect().\n\n​​We have complimentary 🍕🥕food and 🍺🥤beverages. Please help yourself!\n\n​​12:00 Networking Lunch\n\n​1:00 Speaker Presentations\n\n​2:00 Community Announcements\n\n​2:15 Network / Hangout / Code\n\n​4:00 End\n\n​We typically have three speakers presenting various developer related talks. If you're interested in giving a talk please submit a request using this form: https://forms.gle/VEvKkKPJSgZEhzPN9\n\n​You can find more information about our community at https://devx.network\n\n​Also, join our Discord community to ask what others are interested in learning in the #event-talk channel: https://discord.gg/hyf9KSaKtv\n\n​​Street ($0)\n\n​​San Diego County Waterfront Garage ($20)\n\n​​Fashion Valley Mall ($5)\n\n​​take the green line from Fashion Valley Transit Center to County Center/Little Italy Station\n\n​​costs $2.50 each way\n\n​​Waterfront Park\n\n​​Green and Blue Trolly Lines\n\n​​stop at County Center/Little Italy Station\n\n​​Coaster\n\n​​stop at Santa Fe Depot",
+		"start_at": "2025-06-29T19:00:00.000Z",
+		"end_at": "2025-06-29T23:00:00.000Z",
+		"location": {
+			"type": "physical",
+			"address": "1495 Pacific Hwy #300, San Diego, CA",
+			"city": "San Diego",
+			"state": "CA",
+			"coordinates": {
+				"lat": 32.720728,
+				"lng": -117.170756
+			}
+		},
+		"cover_url": "https://images.lumacdn.com/cdn-cgi/image/format=auto,fit=cover,dpr=2,background=white,quality=75,width=400,height=400/event-covers/04/2fe97026-0135-4530-859b-b91482963e7d",
+		"url": "https://luma.com/mzbbmq07",
+		"guest_count": -1,
+		"visibility": "public",
+		"timezone": "America/Los_Angeles"
+	},
+	{
+		"api_id": "evt-j40oxy6k",
+		"name": "Weekend Function() { Software Developer Meetup }",
+		"description": "​Join us in a special weekend developer experience! We're long time San Diego developers, looking to foster a community of devs of all skill levels to have fun, network, and learn new things!\n\n​​For this monthly meetup, we gather for lunch to introduce ourselves and enjoy complimentary food and drinks. After, we start a series of presentations from members of the community to share interesting developer and engineering topics.\n\n​​Once presentations are finished, we break into groups to casually network, show off our projects and make exciting new friends.\n\n​​Feel free to ask our organizers for help on some code you're struggling with, if you are! We're happy to help where we can.\n\n​​Please be courteous and respectful to others.\n\n​​Should you be giving a presentation or want to share a project, bring your 💻 laptop! We want to see what you're excited about. Whether it's an app you're building, a new library you found, or what you learned last week about useEffect().\n\n​​We have complimentary 🍕🥕food and 🍺🥤beverages. Please help yourself!\n\n​​12:00 Networking Lunch\n\n​1:00 Speaker Presentations\n\n​2:00 Community Announcements\n\n​2:15 Network / Hangout / Code\n\n​4:00 End\n\n​We typically have three speakers presenting various developer related talks. If you're interested in giving a talk please submit a request using this form: https://forms.gle/VEvKkKPJSgZEhzPN9\n\n​You can find more information about our community at https://devx.network\n\n​Also, join our Discord community to ask what others are interested in learning in the #event-talk channel: https://discord.gg/hyf9KSaKtv\n\n​​Street ($0)\n\n​​San Diego County Waterfront Garage ($20)\n\n​​Fashion Valley Mall ($5)\n\n​​take the green line from Fashion Valley Transit Center to County Center/Little Italy Station\n\n​​costs $2.50 each way\n\n​​Waterfront Park\n\n​​Green and Blue Trolly Lines\n\n​​stop at County Center/Little Italy Station\n\n​​Coaster\n\n​​stop at Santa Fe Depot",
+		"start_at": "2025-06-01T19:00:00.000Z",
+		"end_at": "2025-06-01T23:00:00.000Z",
+		"location": {
+			"type": "physical",
+			"address": "1495 Pacific Hwy #300, San Diego, CA",
+			"city": "San Diego",
+			"state": "CA",
+			"coordinates": {
+				"lat": 32.720728,
+				"lng": -117.170756
+			}
+		},
+		"cover_url": "https://images.lumacdn.com/cdn-cgi/image/format=auto,fit=cover,dpr=2,background=white,quality=75,width=400,height=400/event-covers/04/2fe97026-0135-4530-859b-b91482963e7d",
+		"url": "https://luma.com/j40oxy6k",
+		"guest_count": -1,
+		"visibility": "public",
+		"timezone": "America/Los_Angeles"
+	},
+	{
+		"api_id": "evt-j9f2wifc",
+		"name": "Weekend Function() { Software Developer Meetup }",
+		"description": "​Join us in a special weekend developer experience! We're long time San Diego developers, looking to foster a community of devs of all skill levels to have fun, network, and learn new things!\n\n​​For this monthly meetup, we gather for lunch to introduce ourselves and enjoy complimentary food and drinks. After, we start a series of presentations from members of the community to share interesting developer and engineering topics.\n\n​​Once presentations are finished, we break into groups to casually network, show off our projects and make exciting new friends.\n\n​​Feel free to ask our organizers for help on some code you're struggling with, if you are! We're happy to help where we can.\n\n​​Please be courteous and respectful to others.\n\n​​Should you be giving a presentation or want to share a project, bring your 💻 laptop! We want to see what you're excited about. Whether it's an app you're building, a new library you found, or what you learned last week about useEffect().\n\n​​We have complimentary 🍕🥕food and 🍺🥤beverages. Please help yourself!\n\n​​12:00 Networking Lunch\n\n​1:00 Speaker Presentations\n\n​2:00 Community Announcements\n\n​2:15 Network / Hangout / Code\n\n​4:00 End\n\n​Johnathan Lewis will show us everything we need to start building games with Godot.\n\n​​Ezekiel Lopez will be sharing the process he takes to bring a project from idea to MVP.\n\n​​We welcome speakers of all skill levels to present. Please submit a request using this form: https://forms.gle/VEvKkKPJSgZEhzPN9\n\n​You can find more information about our community at https://devx.network\n\n​Also, join our Discord community to ask what others are interested in learning in the #event-talk channel: https://discord.gg/hyf9KSaKtv\n\n​​Street ($0)\n\n​​San Diego County Waterfront Garage ($20)\n\n​​Fashion Valley Mall ($5)\n\n​​take the green line from Fashion Valley Transit Center to County Center/Little Italy Station\n\n​​costs $2.50 each way\n\n​​Waterfront Park\n\n​​Green and Blue Trolly Lines\n\n​​stop at County Center/Little Italy Station\n\n​​Coaster\n\n​​stop at Santa Fe Depot",
+		"start_at": "2025-04-27T19:00:00.000Z",
+		"end_at": "2025-04-27T23:00:00.000Z",
+		"location": {
+			"type": "physical",
+			"address": "1495 Pacific Hwy #300, San Diego, CA",
+			"city": "San Diego",
+			"state": "CA",
+			"coordinates": {
+				"lat": 32.720728,
+				"lng": -117.170756
+			}
+		},
+		"cover_url": "https://images.lumacdn.com/cdn-cgi/image/format=auto,fit=cover,dpr=2,background=white,quality=75,width=400,height=400/event-covers/04/2fe97026-0135-4530-859b-b91482963e7d",
+		"url": "https://luma.com/j9f2wifc",
+		"guest_count": -1,
+		"visibility": "public",
+		"timezone": "America/Los_Angeles"
+	},
+	{
+		"api_id": "evt-pxync5xv",
+		"name": "North County Cowork",
+		"description": "​Let's cowork at Oceanside Pannikin for a couple hours!\n\n​​Bring your 💻 laptop. A project, idea, or questions about software, and a thirst for ☕ coffee!\n\n​​Plugs might be hard to come by, so make sure you charge your laptop before you come!\n\n​​We host many types of meetups. This one in particular, is great for meeting new faces and picking each others brains for ideas / help on a problem.\n\n​​We welcome people of all ages, backgrounds and skill levels! We just ask you remain respectful and considerate of peoples time.\n\n​​You can find more information about our community at https://devx.network",
+		"start_at": "2025-04-11T18:00:00.000Z",
+		"end_at": "2025-04-11T21:00:00.000Z",
+		"location": {
+			"type": "physical",
+			"address": "Pannikin Coffee & Tea, Oceanside, CA",
+			"city": "Oceanside",
+			"state": "CA",
+			"coordinates": {
+				"lat": 33.196696,
+				"lng": -117.382199
+			}
+		},
+		"cover_url": "https://images.lumacdn.com/cdn-cgi/image/format=auto,fit=cover,dpr=2,background=white,quality=75,width=400,height=400/event-covers/f2/18ea497c-40ce-4226-b9eb-a8271ce6328c.jpg",
+		"url": "https://luma.com/pxync5xv",
+		"guest_count": -1,
+		"visibility": "public",
+		"timezone": "America/Los_Angeles"
+	},
+	{
+		"api_id": "evt-9l64yt38",
+		"name": "Weekend Function() { Software Developer Meetup }",
+		"description": "​Join us in a special weekend developer experience! We're long time San Diego developers, looking to foster a community of devs of all skill levels to have fun, network, and learn new things!\n\n​​For this monthly meetup, we gather for lunch to introduce ourselves and enjoy complimentary food and drinks. After, we start a series of presentations from members of the community to share interesting developer and engineering topics.\n\n​​Once presentations are finished, we break into groups to casually network, show off our projects and make exciting new friends.\n\n​​Feel free to ask our organizers for help on some code you're struggling with, if you are! We're happy to help where we can.\n\n​​Please be courteous and respectful to others.\n\n​​Should you be giving a presentation or want to share a project, bring your 💻 laptop! We want to see what you're excited about. Whether it's an app you're building, a new library you found, or what you learned last week about useEffect().\n\n​​We have complimentary 🍕🥕food and 🍺🥤beverages. Please help yourself!\n\n​​12:00 Networking Lunch\n\n​1:00 Speaker Presentations\n\n​2:00 Community Announcements\n\n​2:15 Network / Hangout / Code\n\n​4:00 End\n\n​We typically have three speakers presenting various developer related talks. If you're interested in giving a talk please submit a request using this form: https://forms.gle/VEvKkKPJSgZEhzPN9\n\n​You can find more information about our community at https://devx.network\n\n​Also, join our Discord community to ask what others are interested in learning in the #event-talk channel: https://discord.gg/hyf9KSaKtv\n\n​​Street ($0)\n\n​​San Diego County Waterfront Garage ($20)\n\n​​Fashion Valley Mall ($5)\n\n​​take the green line from Fashion Valley Transit Center to County Center/Little Italy Station\n\n​​costs $2.50 each way\n\n​​Waterfront Park\n\n​​Green and Blue Trolly Lines\n\n​​stop at County Center/Little Italy Station\n\n​​Coaster\n\n​​stop at Santa Fe Depot",
+		"start_at": "2025-03-30T19:00:00.000Z",
+		"end_at": "2025-03-30T23:00:00.000Z",
+		"location": {
+			"type": "physical",
+			"address": "1495 Pacific Hwy #300, San Diego, CA",
+			"city": "San Diego",
+			"state": "CA",
+			"coordinates": {
+				"lat": 32.720728,
+				"lng": -117.170756
+			}
+		},
+		"cover_url": "https://images.lumacdn.com/cdn-cgi/image/format=auto,fit=cover,dpr=2,background=white,quality=75,width=400,height=400/event-covers/04/2fe97026-0135-4530-859b-b91482963e7d",
+		"url": "https://luma.com/9l64yt38",
+		"guest_count": -1,
+		"visibility": "public",
+		"timezone": "America/Los_Angeles"
+	},
+	{
+		"api_id": "evt-pygitzd8",
+		"name": "North County Cowork w/ Tryston",
+		"description": "​Let's cowork at Carlsbad Better Buzz for a couple hours!\n\n​Bring your 💻 laptop. A project, idea, or questions about software, and a thirst for ☕ coffee!\n\n​Plugs might be hard to come by, so make sure you charge your laptop before you come!\n\n​I'm Tryston, one of the co-hosts for DEVx San Diego, a meetup aimed at connecting, collaborating and learning from local software developers of all skill ranges.\n\n​We host many types of meetups. This one in particular, is great for meeting new faces and picking each others brains for ideas / help on a problem.\n\n​We welcome people of all ages, backgrounds and skill levels! We just ask you remain respectful and considerate of peoples time.\n\n​Hope to see you there!",
+		"start_at": "2025-03-05T21:00:00.000Z",
+		"end_at": "2025-03-06T00:00:00.000Z",
+		"location": {
+			"type": "physical",
+			"address": "Better Buzz Coffee Carlsbad, Carlsbad, CA",
+			"city": "Carlsbad",
+			"state": "CA",
+			"coordinates": {
+				"lat": 33.157995,
+				"lng": -117.350587
+			}
+		},
+		"cover_url": "https://images.lumacdn.com/cdn-cgi/image/format=auto,fit=cover,dpr=2,background=white,quality=75,width=400,height=400/event-covers/xw/6da82d4d-068c-4f2d-98db-8be76243a1f9.jpg",
+		"url": "https://luma.com/pygitzd8",
+		"guest_count": -1,
+		"visibility": "public",
+		"timezone": "America/Los_Angeles"
+	},
+	{
+		"api_id": "evt-mcqeyyf9",
+		"name": "Weekend Function() {",
+		"description": "​Join us in a special weekend developer experience! We're long time San Diego developers, looking to foster a community of devs of all skill levels to have fun, network, and learn new things!\n\n​​For this monthly meetup, we gather for lunch to introduce ourselves and enjoy complimentary food and drinks. After, we start a series of presentations from members of the community to share interesting developer and engineering topics.\n\n​​Once presentations are finished, we break into groups to casually network, show off our projects and make exciting new friends.\n\n​​Feel free to ask our organizers for help on some code you're struggling with, if you are! We're happy to help where we can.\n\n​​Please be courteous and respectful to others.\n\n​​Should you be giving a presentation or want to share a project, bring your 💻 laptop! We want to see what you're excited about. Whether it's an app you're building, a new library you found, or what you learned last week about useEffect().\n\n​​We have complimentary 🍕🥕food and 🍺🥤beverages. Please help yourself!\n\n​​12:00 Networking Lunch\n\n​1:00 Speaker Presentations\n\n​2:00 Community Announcements\n\n​2:15 Network / Hangout / Code\n\n​4:00 End\n\n​We typically have three speakers presenting various developer related talks. If you're interested in giving a talk please submit a request using this form: https://forms.gle/VEvKkKPJSgZEhzPN9\n\n​You can find more information about our community at https://devx.network\n\n​Also, join our Discord community to ask what others are interested in learning in the #event-talk channel: https://discord.gg/hyf9KSaKtv\n\n​Note: Parking around Waterfront Park is impacted by CRSSD Fest.\n\n​​Street ($0)\n\n​​San Diego County Waterfront Garage ($20)\n\n​​Fashion Valley Mall ($5)\n\n​​take the green line from Fashion Valley Transit Center to County Center/Little Italy Station\n\n​​costs $2.50 each way\n\n​​Waterfront Park\n\n​​Green and Blue Trolly Lines\n\n​​stop at County Center/Little Italy Station\n\n​​Coaster\n\n​​stop at Santa Fe Depot\n\n​\n\n​",
+		"start_at": "2025-03-02T20:00:00.000Z",
+		"end_at": "2025-03-03T00:00:00.000Z",
+		"location": {
+			"type": "physical",
+			"address": "1495 Pacific Hwy #300, San Diego, CA",
+			"city": "San Diego",
+			"state": "CA",
+			"coordinates": {
+				"lat": 32.720728,
+				"lng": -117.170756
+			}
+		},
+		"cover_url": "https://images.lumacdn.com/cdn-cgi/image/format=auto,fit=cover,dpr=2,background=white,quality=75,width=400,height=400/event-covers/04/2fe97026-0135-4530-859b-b91482963e7d",
+		"url": "https://luma.com/mcqeyyf9",
+		"guest_count": -1,
+		"visibility": "public",
+		"timezone": "America/Los_Angeles"
+	},
+	{
+		"api_id": "evt-lh9d22eh",
+		"name": "SD DEVx Indie Founders",
+		"description": "​Are you a solo entrepreneur? An early-stage startup founder? Or simple interested in meeting other inspiring developers? DEVx Indie Founders is the perfect meetup for you.\n\n​What to Expect\n\n​Bring your 💻 laptop, something cool to showcase, and a 🧠 curious mind. We’ll all get to know each other, what we do and what we’re currently working on.\n\n​What to Bring\n\n​Bring your 💻 laptop to hack on your product, a thirst for ☕️, and of course good vibes 😎 to our awesome community!\n\n​Our Community\n\n​You can find more information about our community at https://devx.network",
+		"start_at": "2025-02-24T18:00:00.000Z",
+		"end_at": "2025-02-24T19:30:00.000Z",
+		"location": {
+			"type": "physical",
+			"address": "Barefoot Coffee Roasters, Solana Beach, CA",
+			"city": "Solana Beach",
+			"state": "CA",
+			"coordinates": {
+				"lat": 32.986796,
+				"lng": -117.269631
+			}
+		},
+		"cover_url": "https://images.lumacdn.com/cdn-cgi/image/format=auto,fit=cover,dpr=2,background=white,quality=75,width=400,height=400/gallery-images/x1/11a76033-3f05-479f-97e3-7a140bf272ff",
+		"url": "https://luma.com/lh9d22eh",
+		"guest_count": -1,
+		"visibility": "public",
+		"timezone": "America/Los_Angeles"
+	},
+	{
+		"api_id": "evt-461pigeo",
+		"name": "SD DEVx Indie Founders",
+		"description": "​Are you a solo entrepreneur? An early-stage startup founder? Or simple interested in meeting other inspiring developers? DEVx Indie Founders is the perfect meetup for you.\n\n​What to Expect\n\n​Bring your 💻 laptop, something cool to showcase, and a 🧠 curious mind. We’ll all get to know each other, what we do and what we’re currently working on.\n\n​What to Bring\n\n​Bring your 💻 laptop to hack on your product, a thirst for ☕️, and of course good vibes 😎 to our awesome community!\n\n​Our Community\n\n​You can find more information about our community at https://devx.network",
+		"start_at": "2025-02-03T18:00:00.000Z",
+		"end_at": "2025-02-03T19:30:00.000Z",
+		"location": {
+			"type": "physical",
+			"address": "Barefoot Coffee Roasters, Solana Beach, CA",
+			"city": "Solana Beach",
+			"state": "CA",
+			"coordinates": {
+				"lat": 32.986796,
+				"lng": -117.269631
+			}
+		},
+		"cover_url": "https://images.lumacdn.com/cdn-cgi/image/format=auto,fit=cover,dpr=2,background=white,quality=75,width=400,height=400/gallery-images/x1/11a76033-3f05-479f-97e3-7a140bf272ff",
+		"url": "https://luma.com/461pigeo",
+		"guest_count": -1,
+		"visibility": "public",
+		"timezone": "America/Los_Angeles"
+	},
+	{
+		"api_id": "evt-8w7jeqwe",
+		"name": "Weekend Function() { Meet and Learn from Local Software Developers }",
+		"description": "​Join us in a special weekend developer experience! We're long time San Diego developers, looking to foster a community of devs of all skill levels to have fun, network, and learn new things!\n\n​​For this monthly meetup, we gather for lunch to introduce ourselves and enjoy complimentary food and drinks. After, we start a series of presentations from members of the community to share interesting developer and engineering topics.\n\n​​Once presentations are finished, we break into groups to casually network, show off our projects and make exciting new friends.\n\n​​Feel free to ask our organizers for help on some code you're struggling with, if you are! We're happy to help where we can.\n\n​​Please be courteous and respectful to others.\n\n​​Should you be giving a presentation or want to share a project, bring your 💻 laptop! We want to see what you're excited about. Whether it's an app you're building, a new library you found, or what you learned last week about useEffect().\n\n​​We have complimentary 🍕🥕food and 🍺🥤beverages. Please help yourself!\n\n​​12:00 Networking Lunch\n\n​1:00 Speaker Presentations\n\n​2:00 Community Announcements\n\n​2:15 Network / Hangout / Code\n\n​4:00 End\n\n​David Fridley will showcase the React based UI of Civil Pursuit, a deliberation tool designed to move users beyond polarization and toward productive engagement.\n\n​Keith Chester will present his AI agents framework designed for DIY builders, individuals, and small scale solutions.\n\n​Ezekiel Lopez will explore Stable Diffusion with Automatic1111 and everything you need to be well on your way of mastering AI Image Technology.\n\n​We welcome speakers of all skill levels to present. Please submit a request using this form: https://forms.gle/VEvKkKPJSgZEhzPN9\n\n​You can find more information about our community at https://devx.network\n\n​Also, join our Discord community to ask what others are interested in learning in the #event-talk channel: https://discord.gg/hyf9KSaKtv\n\n​Street ($0)\n\n​San Diego County Waterfront Garage ($20)\n\n​Fashion Valley Mall ($5)\n\n​take the green line from Fashion Valley Transit Center to County Center/Little Italy Station\n\n​costs $2.50 each way\n\n​Waterfront Park\n\n​Green and Blue Trolly Lines\n\n​stop at County Center/Little Italy Station\n\n​Coaster\n\n​stop at Santa Fe Depot\n\n​",
+		"start_at": "2025-02-02T20:00:00.000Z",
+		"end_at": "2025-02-03T00:00:00.000Z",
+		"location": {
+			"type": "physical",
+			"address": "1495 Pacific Hwy #300, San Diego, CA",
+			"city": "San Diego",
+			"state": "CA",
+			"coordinates": {
+				"lat": 32.720728,
+				"lng": -117.170756
+			}
+		},
+		"cover_url": "https://images.lumacdn.com/cdn-cgi/image/format=auto,fit=cover,dpr=2,background=white,quality=75,width=400,height=400/event-covers/04/2fe97026-0135-4530-859b-b91482963e7d",
+		"url": "https://luma.com/8w7jeqwe",
+		"guest_count": -1,
+		"visibility": "public",
+		"timezone": "America/Los_Angeles"
+	},
+	{
+		"api_id": "evt-vapsqhim",
+		"name": "SD DEVx Indie Founders",
+		"description": "​Are you a solo entrepreneur? An early-stage startup founder? Or simple interested in meeting other inspiring developers? DEVx Indie Founders is the perfect meetup for you.\n\n​What to Expect\n\n​Bring your 💻 laptop, something cool to showcase, and a 🧠 curious mind. We’ll all get to know each other, what we do and what we’re currently working on.\n\n​What to Bring\n\n​Bring your 💻 laptop to hack on your product, a thirst for ☕️, and of course good vibes 😎 to our awesome community!\n\n​Our Community\n\n​You can find more information about our community at https://devx.network",
+		"start_at": "2025-01-20T18:00:00.000Z",
+		"end_at": "2025-01-20T19:30:00.000Z",
+		"location": {
+			"type": "physical",
+			"address": "Barefoot Coffee Roasters, Solana Beach, CA",
+			"city": "Solana Beach",
+			"state": "CA",
+			"coordinates": {
+				"lat": 32.986796,
+				"lng": -117.269631
+			}
+		},
+		"cover_url": "https://images.lumacdn.com/cdn-cgi/image/format=auto,fit=cover,dpr=2,background=white,quality=75,width=400,height=400/gallery-images/x1/11a76033-3f05-479f-97e3-7a140bf272ff",
+		"url": "https://luma.com/vapsqhim",
+		"guest_count": -1,
+		"visibility": "public",
+		"timezone": "America/Los_Angeles"
+	},
+	{
+		"api_id": "evt-hdxxwp3e",
+		"name": "Afternoon Cowork @ Green Cheek",
+		"description": "​Open invitation for software engineers, marketers, startup founders or remote workers to come cowork for a few hours at Green Cheek.\n\n​They’ve got great food, good beers, nonalcoholic drinks, and lots of room!\n\n​I’m Tryston, the organizer for the DEVx monthly meetup. I’m a freelance software engineer who likes meeting new faces!",
+		"start_at": "2025-01-15T21:00:00.000Z",
+		"end_at": "2025-01-16T01:00:00.000Z",
+		"location": {
+			"type": "physical",
+			"address": "Green Cheek Beer Co., Oceanside, CA",
+			"city": "Oceanside",
+			"state": "CA",
+			"coordinates": {
+				"lat": 33.189368,
+				"lng": -117.374349
+			}
+		},
+		"cover_url": "https://images.lumacdn.com/cdn-cgi/image/format=auto,fit=cover,dpr=2,background=white,quality=75,width=400,height=400/gallery-images/p0/d412d83f-a5f7-42fb-abf0-d6c4e9fe9c28",
+		"url": "https://luma.com/hdxxwp3e",
+		"guest_count": -1,
+		"visibility": "public",
+		"timezone": "America/Los_Angeles"
+	},
+	{
+		"api_id": "evt-pnc4pmbl",
+		"name": "Weekend Function() { Meet and Learn from Local Software Developers }",
+		"description": "​Join us in a special weekend developer experience! We're long time San Diego developers, looking to foster a community of devs of all skill levels to have fun, network, and learn new things!\n\n​​For this monthly meetup, we gather for lunch to introduce ourselves and enjoy complimentary food and drinks. After, we start a series of presentations from members of the community to share interesting developer and engineering topics.\n\n​​Once presentations are finished, we break into groups to casually network, show off our projects and make exciting new friends.\n\n​​Feel free to ask our organizers for help on some code you're struggling with, if you are! We're happy to help where we can.\n\n​​Please be courteous and respectful to others.\n\n​​Should you be giving a presentation or want to share a project, bring your 💻 laptop! We want to see what you're excited about. Whether it's an app you're building, a new library you found, or what you learned last week about useEffect().\n\n​​We have complimentary 🍕🥕food and 🍺🥤beverages. Please help yourself!\n\n​​12:00 Networking Lunch\n\n​1:00 Speaker Presentations\n\n​2:00 Community Announcements\n\n​2:15 Network / Hangout / Code\n\n​4:00 End\n\n​We typically have three speakers presenting various developer related talks. If you're interested in giving a talk please submit a request using this form: https://forms.gle/VEvKkKPJSgZEhzPN9\n\n​You can find more information about our community at https://devx.network\n\n​Also, join our Discord community to ask what others are interested in learning in the #event-talk channel: https://discord.gg/hyf9KSaKtv",
+		"start_at": "2025-01-12T20:00:00.000Z",
+		"end_at": "2025-01-13T00:00:00.000Z",
+		"location": {
+			"type": "physical",
+			"address": "1495 Pacific Hwy #300, San Diego, CA",
+			"city": "San Diego",
+			"state": "CA",
+			"coordinates": {
+				"lat": 32.720728,
+				"lng": -117.170756
+			}
+		},
+		"cover_url": "https://images.lumacdn.com/cdn-cgi/image/format=auto,fit=cover,dpr=2,background=white,quality=75,width=400,height=400/event-covers/wv/7d7ee9d4-d27e-4eab-b438-23d308343763",
+		"url": "https://luma.com/pnc4pmbl",
+		"guest_count": -1,
+		"visibility": "public",
+		"timezone": "America/Los_Angeles"
+	},
+	{
+		"api_id": "evt-udl0lx0h",
+		"name": "SD DEVx Indie Founders",
+		"description": "​​Are you a solo founder or indie developer? Join us at Barefoot Coffee Roasters to share what you’re working on and meet other interesting founders.\n\n​​What to Expect\n\n​​Get your laptops ready to meet fellow indie founders and build together! Dive deep into hacking on your product and come back up for a round of espresso with your fellow founders.\n\n​​What to Bring\n\n​​Bring your 💻 laptop to hack on your product, a thirst for ☕️, and of course good vibes 😎 to our awesome community!\n\n​​Our Community\n\n​​You can find more information about our community at https://devx.network",
+		"start_at": "2024-12-02T18:00:00.000Z",
+		"end_at": "2024-12-02T19:30:00.000Z",
+		"location": {
+			"type": "physical",
+			"address": "Barefoot Coffee Roasters, Solana Beach, CA",
+			"city": "Solana Beach",
+			"state": "CA",
+			"coordinates": {
+				"lat": 32.986796,
+				"lng": -117.269631
+			}
+		},
+		"cover_url": "https://images.lumacdn.com/cdn-cgi/image/format=auto,fit=cover,dpr=2,background=white,quality=75,width=400,height=400/gallery-images/x1/11a76033-3f05-479f-97e3-7a140bf272ff",
+		"url": "https://luma.com/udl0lx0h",
+		"guest_count": -1,
+		"visibility": "public",
+		"timezone": "America/Los_Angeles"
+	},
+	{
+		"api_id": "evt-hxsmqyat",
+		"name": "SD DEVx Indie Founders",
+		"description": "​​Are you a solo founder or indie developer? Join us at Barefoot Coffee Roasters to share what you’re working on and meet other interesting founders.\n\n​​What to Expect\n\n​​Get your laptops ready to meet fellow indie founders and build together! Dive deep into hacking on your product and come back up for a round of espresso with your fellow founders.\n\n​​What to Bring\n\n​​Bring your 💻 laptop to hack on your product, a thirst for ☕️, and of course good vibes 😎 to our awesome community!\n\n​​Our Community\n\n​​You can find more information about our community at https://devx.network",
+		"start_at": "2024-11-11T18:00:00.000Z",
+		"end_at": "2024-11-11T19:30:00.000Z",
+		"location": {
+			"type": "physical",
+			"address": "Barefoot Coffee Roasters, Solana Beach, CA",
+			"city": "Solana Beach",
+			"state": "CA",
+			"coordinates": {
+				"lat": 32.986796,
+				"lng": -117.269631
+			}
+		},
+		"cover_url": "https://images.lumacdn.com/cdn-cgi/image/format=auto,fit=cover,dpr=2,background=white,quality=75,width=400,height=400/gallery-images/x1/11a76033-3f05-479f-97e3-7a140bf272ff",
+		"url": "https://luma.com/hxsmqyat",
+		"guest_count": -1,
+		"visibility": "public",
+		"timezone": "America/Los_Angeles"
+	},
+	{
+		"api_id": "evt-umtbygci",
+		"name": "Weekend Function() { Meet and Learn from Local Software Developers }",
+		"description": "​Join us in a special weekend developer experience! We're long time San Diego developers, looking to foster a community of devs of all skill levels to have fun, network, and learn new things!\n\n​​For this monthly meetup, we gather for lunch to introduce ourselves and enjoy complimentary food and drinks. After, we start a series of presentations from members of the community to share interesting developer and engineering topics.\n\n​​Once presentations are finished, we break into groups to casually network, show off our projects and make exciting new friends.\n\n​​Feel free to ask our organizers for help on some code you're struggling with, if you are! We're happy to help where we can.\n\n​​Please be courteous and respectful to others.\n\n​​Should you be giving a presentation or want to share a project, bring your 💻 laptop! We want to see what you're excited about. Whether it's an app you're building, a new library you found, or what you learned last week about useEffect().\n\n​​We have complimentary 🍕🥕food and 🍺🥤beverages. Please help yourself!\n\n​​12:00 Networking Lunch\n\n​12:30 Speaker Presentations\n\n​1:30 Community Announcements\n\n​2:00 Network / Hangout / Code\n\n​4:00 End\n\n​We typically have three speakers presenting various developer related talks. If you're interested in giving a talk please submit a request using this form: https://forms.gle/VEvKkKPJSgZEhzPN9\n\n​You can find more information about our community at https://devx.network\n\n​Also, join our Discord community to ask what others are interested in learning in the #event-talk channel: https://discord.gg/hyf9KSaKtv",
+		"start_at": "2024-11-03T20:00:00.000Z",
+		"end_at": "2024-11-04T00:00:00.000Z",
+		"location": {
+			"type": "physical",
+			"address": "1495 Pacific Hwy #300, San Diego, CA",
+			"city": "San Diego",
+			"state": "CA",
+			"coordinates": {
+				"lat": 32.720728,
+				"lng": -117.170756
+			}
+		},
+		"cover_url": "https://images.lumacdn.com/cdn-cgi/image/format=auto,fit=cover,dpr=2,background=white,quality=75,width=400,height=400/event-covers/wv/7d7ee9d4-d27e-4eab-b438-23d308343763",
+		"url": "https://luma.com/umtbygci",
+		"guest_count": -1,
+		"visibility": "public",
+		"timezone": "America/Los_Angeles"
+	},
+	{
+		"api_id": "evt-2l86yho7",
+		"name": "SD DEVx Indie Founders",
+		"description": "​Are you a solo founder or indie developer? Join us at Barefoot Coffee Roasters to share what you’re working on and meet other interesting founders.\n\n​What to Expect\n\n​Get your laptops ready to meet fellow indie founders and build together! Dive deep into hacking on your product and come back up for a round of espresso with your fellow founders.\n\n​What to Bring\n\n​Bring your 💻 laptop to hack on your product, a thirst for ☕️, and of course good vibes 😎 to our awesome community!\n\n​Our Community\n\n​You can find more information about our community at https://devx.network",
+		"start_at": "2024-10-14T17:00:00.000Z",
+		"end_at": "2024-10-14T18:30:00.000Z",
+		"location": {
+			"type": "physical",
+			"address": "Barefoot Coffee Roasters, Solana Beach, CA",
+			"city": "Solana Beach",
+			"state": "CA",
+			"coordinates": {
+				"lat": 32.986796,
+				"lng": -117.269631
+			}
+		},
+		"cover_url": "https://images.lumacdn.com/cdn-cgi/image/format=auto,fit=cover,dpr=2,background=white,quality=75,width=400,height=400/gallery-images/jy/9ddd9608-048c-4de8-88fa-9dbbb0b449c6",
+		"url": "https://luma.com/2l86yho7",
+		"guest_count": -1,
+		"visibility": "public",
+		"timezone": "America/Los_Angeles"
+	},
+	{
+		"api_id": "evt-6y8i2lr9",
+		"name": "Weekend Function() { Meet and Learn from Local Software Developers }",
+		"description": "​Join us in a special weekend developer experience! We're long time San Diego developers, looking to foster a community of devs of all skill levels to have fun, network, and learn new things!\n\n​​For this monthly meetup, we gather for lunch to introduce ourselves and enjoy complimentary food and drinks. After, we start a series of presentations from members of the community to share interesting developer and engineering topics.\n\n​​Once presentations are finished, we break into groups to casually network, show off our projects and make exciting new friends.\n\n​​Feel free to ask our organizers for help on some code you're struggling with, if you are! We're happy to help where we can.\n\n​​Please be courteous and respectful to others.\n\n​​Should you be giving a presentation or want to share a project, bring your 💻 laptop! We want to see what you're excited about. Whether it's an app you're building, a new library you found, or what you learned last week about useEffect().\n\n​​We have complimentary 🍕🥕food and 🍺🥤beverages. Please help yourself!\n\n​​12:00: Networking Lunch\n\n​​12:30: Speaker Presentations\n\n​​1:30: Breakout Sessions\n\n​​4:00 Closing\n\n​We typically have three speakers presenting various developer related talks. If you're interested in giving a talk please submit a request using this form: https://forms.gle/VEvKkKPJSgZEhzPN9\n\n​You can find more information about our community at https://devx.network\n\n​Also, join our Discord community to ask what others are interested in learning in the #event-talk channel: https://discord.gg/hyf9KSaKtv",
+		"start_at": "2024-09-29T19:00:00.000Z",
+		"end_at": "2024-09-29T23:00:00.000Z",
+		"location": {
+			"type": "physical",
+			"address": "1495 Pacific Hwy #300, San Diego, CA",
+			"city": "San Diego",
+			"state": "CA",
+			"coordinates": {
+				"lat": 32.720728,
+				"lng": -117.170756
+			}
+		},
+		"cover_url": "https://images.lumacdn.com/cdn-cgi/image/format=auto,fit=cover,dpr=2,background=white,quality=75,width=400,height=400/event-covers/wv/7d7ee9d4-d27e-4eab-b438-23d308343763",
+		"url": "https://luma.com/6y8i2lr9",
+		"guest_count": -1,
+		"visibility": "public",
+		"timezone": "America/Los_Angeles"
+	},
+	{
+		"api_id": "evt-94vk2jot",
+		"name": "Weekend Function() { Meet and Learn from Local Software Developers }",
+		"description": "​Join us in a special weekend developer experience! We're long time San Diego developers, looking to foster a community of devs of all skill levels to have fun, network, and learn new things!\n\n​​For this monthly meetup, we gather for lunch to introduce ourselves and enjoy complimentary food and drinks. After, we start a series of presentations from members of the community to share interesting developer and engineering topics.\n\n​​Once presentations are finished, we break into groups to casually network, show off our projects and make exciting new friends.\n\n​​Feel free to ask our organizers for help on some code you're struggling with, if you are! We're happy to help where we can.\n\n​​Please be courteous and respectful to others.\n\n​​Should you be giving a presentation or want to share a project, bring your 💻 laptop! We want to see what you're excited about. Whether it's an app you're building, a new library you found, or what you learned last week about useEffect().\n\n​​We have complimentary 🍕🥕food and 🍺🥤beverages. Please help yourself!\n\n​​12:00: Networking Lunch\n\n​​12:30: Speaker Presentations\n\n​​1:30: Breakout Sessions\n\n​​4:00 Closing\n\n​We typically have three speakers presenting various developer related talks. If you're interested in giving a talk please submit a request using this form: https://forms.gle/VEvKkKPJSgZEhzPN9\n\n​You can also join our Discord community to ask what others are interested in learning in the #event-talk channel: https://discord.gg/hyf9KSaKtv",
+		"start_at": "2024-09-01T19:00:00.000Z",
+		"end_at": "2024-09-01T23:00:00.000Z",
+		"location": {
+			"type": "physical",
+			"address": "1495 Pacific Hwy #300, San Diego, CA",
+			"city": "San Diego",
+			"state": "CA",
+			"coordinates": {
+				"lat": 32.720728,
+				"lng": -117.170756
+			}
+		},
+		"cover_url": "https://images.lumacdn.com/cdn-cgi/image/format=auto,fit=cover,dpr=2,background=white,quality=75,width=400,height=400/event-covers/wv/7d7ee9d4-d27e-4eab-b438-23d308343763",
+		"url": "https://luma.com/94vk2jot",
+		"guest_count": -1,
+		"visibility": "public",
+		"timezone": "America/Los_Angeles"
+	},
+	{
+		"api_id": "evt-ps6le90n",
+		"name": "Last Call Stack: at Novo (<dev.x>:8:15)",
+		"description": "​Join us for last call brew and intoxicating coding sessions at Novo Brewery!\n\n​We're long time San Diego developers, looking to foster a community of devs of all skill levels to have fun, network, and learn new things!\n\n​Get your laptops ready for an engaging social event for developers, coders, technology enthusiast of all levels! Grab a drink to reach that Balmer Peak while our Coding Constructor instantiates a new developer experience, one instruction at a time.\n\n​We will be exploring how to develop and deploy/launch your very own meme token on an Ethereum L2! You'll learn the fundamentals of Solidity programming and tooling as well as exploring the basics of the Ethereum Virtual Machine (EVM).\n\n​Bring your 💻 laptop to join the coding session, your taste buds for some delicious beverages🍻, and of course good vibes 😎 to our awesome community!\n\n​Software Requirements:\n\n​VSCode/equivalent editor\n\n​Unix-like shell (WSL if your on Windows)\n\n​Foundry for Solidity development\n\n​MetaMask browser extension\n\n​ETH mainnet funds (if you wish to deploy your meme token live) or testnet funds if you wish to save $money\n\n​Note: There may be a \"winner\" of some kind for the event participants! 🏆",
+		"start_at": "2024-08-16T01:00:00.000Z",
+		"end_at": "2024-08-16T04:00:00.000Z",
+		"location": {
+			"type": "physical",
+			"address": "Novo Brazil Brewing Mission Valley, San Diego, CA",
+			"city": "San Diego",
+			"state": "CA",
+			"coordinates": {
+				"lat": 32.768448,
+				"lng": -117.146783
+			}
+		},
+		"cover_url": "https://images.lumacdn.com/cdn-cgi/image/format=auto,fit=cover,dpr=2,background=white,quality=75,width=400,height=400/event-covers/rp/bd15727a-8798-4209-b857-02605b94db8f",
+		"url": "https://luma.com/ps6le90n",
+		"guest_count": -1,
+		"visibility": "public",
+		"timezone": "America/Los_Angeles"
+	},
+	{
+		"api_id": "evt-ypgn0qm6",
+		"name": "Weekend Function() { Meet and Learn from Local Software Developers }",
+		"description": "​Join us in a special weekend developer experience! We're long time San Diego developers, looking to foster a community of devs of all skill levels to have fun, network, and learn new things!\n\n​For this monthly meetup, we gather for lunch to introduce ourselves and enjoy complimentary food and drinks. After, we start a series of presentations from members of the community to share interesting developer and engineering topics.\n\n​Once presentations are finished, we break into groups to casually network, show off our projects and make exciting new friends.\n\n​Feel free to ask our organizers for help on some code you're struggling with, if you are! We're happy to help (if it's in C, you're on your own tho lol).\n\n​Please be courteous and respectful to others.\n\n​Should you be giving a presentation or want to share a project, bring your 💻 laptop! We want to see what you're excited about. Whether it's an app you're building, a new library you found, or what you learned last week about useEffect().\n\n​We have complimentary 🍕pizza and 🍺🥤beverages. Please help yourself!\n\n​12:00: Networking Lunch\n\n​12:30: Speaker Presentations\n\n​1:30: Networking / Sessions\n\n​4:00 Closing\n\n​AJ will show how to build native apps for the ReMarkable (an E-Ink tablet) using Svelte 5 and rmkit.\n\n​Ade Fadey will discuss the fundamentals of AI and introduce practical tools for Front and Back End engineers. He will demonstrate how these AI tools can enhance workflow efficiency and increase engineers' value to their organizations.\n\n​Learn how to build web browser extensions for Chrome and other compatible browser.\n\n​\n\n​P.S. Want to give a talk? Reach out to us on Discord/Meetup or at the event.https://discord.gg/hyf9KSaKtv",
+		"start_at": "2024-08-04T19:00:00.000Z",
+		"end_at": "2024-08-04T23:00:00.000Z",
+		"location": {
+			"type": "physical",
+			"address": "1495 Pacific Hwy #300, San Diego, CA",
+			"city": "San Diego",
+			"state": "CA",
+			"coordinates": {
+				"lat": 32.720728,
+				"lng": -117.170756
+			}
+		},
+		"cover_url": "https://images.lumacdn.com/cdn-cgi/image/format=auto,fit=cover,dpr=2,background=white,quality=75,width=400,height=400/event-covers/wv/7d7ee9d4-d27e-4eab-b438-23d308343763",
+		"url": "https://luma.com/ypgn0qm6",
+		"guest_count": -1,
+		"visibility": "public",
+		"timezone": "America/Los_Angeles"
+	},
+	{
+		"api_id": "evt-r03fymg5",
+		"name": "Weekend Function() { Meet and Learn from Local Software Developers }",
+		"description": "​Join us in a special weekend developer experience! We're long time San Diego developers, looking to foster a community of devs of all skill levels to have fun, network, and learn new things!\n\n​What to ExpectFor this monthly meetup, we gather for lunch to introduce ourselves and enjoy complimentary food and drinks. After, we start a series of presentations from members of the community to share interesting developer and engineering topics.\n\n​Once presentations are finished, we break into groups to casually network, show off our projects and make exciting new friends.\n\n​Feel free to ask our organizers for help on some code you're struggling with, if you are! We're happy to help (if it's in C, you're on your own tho lol).\n\n​Please be courteous and respectful to others.\n\n​What to BringShould you be giving a presentation or want to share a project, bring your 💻 laptop! We want to see what you're excited about. Whether it's an app you're building, a new library you found, or what you learned last week about useEffect().\n\n​FoodWe have complimentary 🍕pizza, 🍺alcoholic, and 🥤non-alcoholic beverages. Please help yourself!\n\n​Agenda12:00: Networking Lunch12:30: Speaker Presentations1:30: Networking / Sessions4:00 Closing\n\n​Speaker Topics\n\n​NextJS: It’s React but better! – Colin CasonAn intro to NextJS, the framework that makes React development a breeze.\n\n​Video Game Development: The ultimate convergence of art and science – Brandon JackThis talk explores how artistic creativity and scientific precision merge in the gaming industry. This talk highlights the harmony between storytelling, visual arts, music, and character design with programming, physics simulations, and AI.\n\n​Three words that will make your apps much better – Jay MeistrichA deep dive into performance, Proxy, local first, sync systems, and the quest for the best possible DX with Legend-State\n\n​P.S. Want to give a talk? Reach out to us on Discord/Meetup",
+		"start_at": "2024-07-07T19:00:00.000Z",
+		"end_at": "2024-07-07T23:00:00.000Z",
+		"location": {
+			"type": "physical",
+			"address": "1495 Pacific Hwy #300, San Diego, CA",
+			"city": "San Diego",
+			"state": "CA",
+			"coordinates": {
+				"lat": 32.720728,
+				"lng": -117.170756
+			}
+		},
+		"cover_url": "https://images.lumacdn.com/cdn-cgi/image/format=auto,fit=cover,dpr=2,background=white,quality=75,width=400,height=400/event-covers/wv/7d7ee9d4-d27e-4eab-b438-23d308343763",
+		"url": "https://luma.com/r03fymg5",
+		"guest_count": -1,
+		"visibility": "public",
+		"timezone": "America/Los_Angeles"
+	}
+]
