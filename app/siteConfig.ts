@@ -15,5 +15,6 @@ export const links = {
 	discord: "https://discord.gg/J3YrrErwjc",
 	github: "https://github.com/DEVxNetwork",
 	youtube: "https://www.youtube.com/@DEVxNetwork",
-	x: "https://x.com/DEVxNetworking"
+	x: "https://x.com/DEVxNetworking",
+	tiktok: "https://www.tiktok.com/@devx.network"
 }
