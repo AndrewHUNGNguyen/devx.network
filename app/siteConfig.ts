@@ -14,5 +14,6 @@ export const links = {
 	lumaUrl: "https://lu.ma/DEVxNetwork",
 	discord: "https://discord.gg/J3YrrErwjc",
 	github: "https://github.com/DEVxNetwork",
-	youtube: "https://www.youtube.com/@DEVxNetwork"
+	youtube: "https://www.youtube.com/@DEVxNetwork",
+	x: "https://x.com/DEVxNetworking"
 }
