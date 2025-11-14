@@ -10,8 +10,7 @@ Follow these instructions to set up the development environment and run the proj
 
 Make sure you have the following installed on your machine:
 
-- [Node.js](https://nodejs.org/) (v14 or later)
-- [npm](https://www.npmjs.com/)
+- [Bun](https://bun.sh/) (latest version recommended)
 
 ### Installation
 
@@ -25,13 +24,13 @@ cd san-diego-devx
 2. **Install dependencies**:
 
 ```sh
-npm install
+bun install
 ```
 
 3. **Start the development server with the following command:**:
 
 ```sh
-npm run dev
+bun run dev
 ```
 
 The site will be running at http://localhost:3000.
@@ -51,7 +50,7 @@ use [the ESLint extension](https://github.com/Microsoft/vscode-eslint).
 
 Pre-commit hooks are in place to ensure that the code is properly formatted
 before a commit is added to the repo. The pre-commit hook runs the precommit
-script (`npm run precommit`).
+script (`bun run precommit`).
 
 For detailed code style and organization guidelines:
 

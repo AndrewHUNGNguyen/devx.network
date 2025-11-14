@@ -2,11 +2,11 @@
 
 ## Build/Lint/Test Commands
 
-- **Dev server**: `npm run dev` (starts Next.js dev server on port 3000)
-- **Build**: `npm run build` (creates production build)
-- **Lint**: `npm run lint` (runs ESLint with Next.js rules)
-- **Format**: `npm run format` (auto-formats with Prettier)
-- **Type check**: `npx tsc --noEmit` (no test framework configured)
+- **Dev server**: `bun run dev` (starts Next.js dev server on port 3000)
+- **Build**: `bun run build` (creates production build)
+- **Lint**: `bun run lint` (runs ESLint with Next.js rules)
+- **Format**: `bun run format` (auto-formats with Prettier)
+- **Type check**: `bunx tsc --noEmit` (no test framework configured)
 
 ## Code Style Guidelines
 
