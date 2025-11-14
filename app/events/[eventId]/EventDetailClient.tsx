@@ -74,6 +74,16 @@ export default function EventDetailClient() {
 		e.preventDefault()
 		if (!userInfo.email || !event) return
 
+		try {
+			gtag("event", "register_button_click", {
+				event_category: "engagement",
+				event_label: "Register Event Form Button",
+				luma_event_id: eventId
+			})
+		} catch (error) {
+			console.error("Failed to track event:", error)
+		}
+
 		setRegistering(true)
 		try {
 			// Save name and email for future use
