@@ -438,7 +438,7 @@ const HeroSocialLinks = styled.div`
 	position: absolute;
 	bottom: 4rem;
 	display: flex;
-	gap: 1.5rem;
+	gap: 5vw;
 	align-items: center;
 	justify-content: center;
 
