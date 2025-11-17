@@ -209,7 +209,7 @@ export default function Home() {
 				<ScrollFeatureSection ref={firstLineRef}>
 					<ScrollFeatureTitle
 						animate={{
-							x: firstLineView ? 0 : "-40vw",
+							x: firstLineView ? 0 : "-100%",
 							opacity: firstLineView ? 1 : 0
 						}}
 						transition={{ duration: 0.9, ease: "easeOut" }}
@@ -230,7 +230,7 @@ export default function Home() {
 				<ScrollFeatureSection ref={secondLineRef}>
 					<ScrollFeatureTitle
 						animate={{
-							x: secondLineView ? 0 : "40vw",
+							x: secondLineView ? 0 : "100%",
 							opacity: secondLineView ? 1 : 0
 						}}
 						transition={{ duration: 0.9, ease: "easeOut" }}
@@ -251,7 +251,7 @@ export default function Home() {
 				<ScrollFeatureSection ref={thirdLineRef}>
 					<ScrollFeatureTitle
 						animate={{
-							x: thirdLineView ? 0 : "-40vw",
+							x: thirdLineView ? 0 : "-100%",
 							opacity: thirdLineView ? 1 : 0
 						}}
 						transition={{ duration: 0.9, ease: "easeOut" }}
@@ -495,7 +495,7 @@ const HeroButtonContainer = styled.div`
 `
 
 const ScrollFeatureSection = styled.section`
-	width: 100vw;
+	width: 100%;
 	min-height: 80vh;
 	display: flex;
 	flex-direction: column;
@@ -505,6 +505,8 @@ const ScrollFeatureSection = styled.section`
 	gap: 1.5rem;
 	box-sizing: border-box;
 	margin: 4rem 0;
+	overflow: hidden;
+	position: relative;
 
 	@media (max-width: 768px) {
 		min-height: 70vh;
