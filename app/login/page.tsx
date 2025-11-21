@@ -11,14 +11,28 @@ export default function Login() {
 	const router = useRouter()
 
 	useEffect(() => {
-		// Redirect if already logged in
-		const checkUser = async () => {
-			const { data } = (await supabaseClient?.auth.getUser()) || {}
-			if (data?.user) {
+		// Handle OAuth callback and check for existing session
+		const checkAuth = async () => {
+			if (!supabaseClient) return
+
+			// Check for OAuth callback in URL hash
+			const hashParams = new URLSearchParams(window.location.hash.substring(1))
+			if (hashParams.get("access_token") || hashParams.get("error")) {
+				// OAuth callback detected - Supabase will handle it automatically
+				// Wait a moment for session to be restored
+				await new Promise((resolve) => setTimeout(resolve, 500))
+			}
+
+			// Check for existing session
+			const {
+				data: { session }
+			} = await supabaseClient.auth.getSession()
+
+			if (session?.user) {
 				router.push("/profile")
 			}
 		}
-		checkUser()
+		checkAuth()
 	}, [router])
 
 	const handleLogin = async (provider: "google" | "github") => {

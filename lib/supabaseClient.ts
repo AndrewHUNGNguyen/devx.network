@@ -11,7 +11,10 @@ export const supabaseClient =
 	supabaseUrl && supabaseAnonKey
 		? createClient(supabaseUrl, supabaseAnonKey, {
 				auth: {
-					persistSession: false
+					persistSession: true,
+					autoRefreshToken: true,
+					detectSessionInUrl: true,
+					storage: typeof window !== "undefined" ? window.localStorage : undefined
 				},
 				global: {
 					headers: {

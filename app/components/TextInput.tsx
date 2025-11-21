@@ -1,5 +1,6 @@
 "use client"
 import styled from "styled-components"
+import { forwardRef } from "react"
 
 // Types //
 
@@ -12,9 +13,13 @@ interface TextInputProps extends BaseInputProps {
 
 // Components //
 
-export const TextInput = ({ variant = "secondary", size = "small", ...props }: TextInputProps) => {
-	return <StyledInput $variant={variant} $size={size} {...props} />
-}
+export const TextInput = forwardRef<HTMLInputElement, TextInputProps>(
+	({ variant = "secondary", size = "small", ...props }, ref) => {
+		return <StyledInput ref={ref} $variant={variant} $size={size} {...props} />
+	}
+)
+
+TextInput.displayName = "TextInput"
 
 // Styled Components //
 

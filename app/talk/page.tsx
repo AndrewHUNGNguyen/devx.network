@@ -2,6 +2,7 @@
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import styled from "styled-components"
+import { TextInput } from "../components/TextInput"
 
 // Components //
 
@@ -40,8 +41,22 @@ export default function Talk() {
 	return (
 		<Main>
 			<FormContainer onSubmit={handleSubmit}>
-				<Input type="text" placeholder="Speaker Name" name="speaker" required />
-				<Input type="text" placeholder="Talk Title" name="title" required />
+				<TextInput
+					type="text"
+					placeholder="Speaker Name"
+					name="speaker"
+					variant="secondary"
+					size="default"
+					required
+				/>
+				<TextInput
+					type="text"
+					placeholder="Talk Title"
+					name="title"
+					variant="secondary"
+					size="default"
+					required
+				/>
 				<TextArea placeholder="Talk Description..." name="description" required></TextArea>
 				<ButtonContainer>
 					<ResetButton type="reset" value="Reset" disabled={isSubmitting} />
@@ -77,31 +92,6 @@ const FormContainer = styled.form`
 
 	@media (min-width: 768px) {
 		padding: 3rem;
-	}
-`
-
-const Input = styled.input`
-	padding: 0.75rem;
-	border-radius: 0.375rem;
-	background-color: rgba(0, 0, 0, 0.8);
-	color: white;
-	border: 1px solid rgba(255, 255, 255, 0.2);
-	font-size: 1rem;
-	transition: all 0.2s;
-
-	&:focus {
-		outline: none;
-		border-color: rgba(147, 51, 234, 0.5);
-		box-shadow: 0 0 0 3px rgba(147, 51, 234, 0.1);
-	}
-
-	&::placeholder {
-		color: rgba(255, 255, 255, 0.5);
-	}
-
-	&:disabled {
-		opacity: 0.5;
-		cursor: not-allowed;
 	}
 `
 

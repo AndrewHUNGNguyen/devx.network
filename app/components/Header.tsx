@@ -1,5 +1,6 @@
 "use client"
 import { useState, useEffect } from "react"
+import { useRouter } from "next/navigation"
 import styled from "styled-components"
 import { links } from "../siteConfig"
 import { GiveATalkCTA } from "./GiveATalkCTA"
@@ -9,6 +10,7 @@ import { supabaseClient } from "../../lib/supabaseClient"
 // Components //
 
 export const Header = () => {
+	const router = useRouter()
 	const [isMenuOpen, setIsMenuOpen] = useState(false)
 	const [user, setUser] = useState<any>(null)
 
@@ -31,6 +33,11 @@ export const Header = () => {
 			subscription.unsubscribe()
 		}
 	}, [])
+
+	const handleSignOut = async () => {
+		await supabaseClient?.auth.signOut()
+		router.push("/")
+	}
 
 	const toggleMenu = () => {
 		setIsMenuOpen(!isMenuOpen)
@@ -105,9 +112,14 @@ export const Header = () => {
 					<NavEnd>
 						<ButtonGroup>
 							{user ? (
-								<Button href="/profile" variant="secondary">
-									Profile
-								</Button>
+								<>
+									<Button href="/profile" variant="secondary">
+										Profile
+									</Button>
+									<Button onClick={handleSignOut} variant="secondary">
+										Sign Out
+									</Button>
+								</>
 							) : (
 								<Button href="/login" variant="secondary">
 									Sign In
@@ -143,9 +155,14 @@ export const Header = () => {
 					<NavLinks />
 					<MobileAuthItem>
 						{user ? (
-							<Button href="/profile" variant="secondary" size="default">
-								Profile
-							</Button>
+							<>
+								<Button href="/profile" variant="secondary" size="default">
+									Profile
+								</Button>
+								<Button onClick={handleSignOut} variant="secondary" size="default">
+									Sign Out
+								</Button>
+							</>
 						) : (
 							<Button href="/login" variant="secondary" size="default">
 								Sign In
@@ -368,5 +385,7 @@ const MenuLink = styled.a`
 const MobileAuthItem = styled.li`
 	margin: 1rem 0;
 	display: flex;
+	flex-direction: column;
+	gap: 0.75rem;
 	justify-content: center;
 `

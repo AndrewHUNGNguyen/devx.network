@@ -4,13 +4,28 @@ import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { supabaseClient } from "../../lib/supabaseClient"
 import { PotionBackground } from "../components/PotionBackground"
-import { Button } from "../components/Button"
-import { TextInput } from "../components/TextInput"
+import { Nametag } from "../components/Nametag"
+import { TagCloudSection } from "../components/TagCloudSection"
 
 type ProfileData = {
-	memberId: number
+	id: number
 	fullName: string
 	email: string
+	title: string
+	affiliation: string
+	profilePhoto: string
+	interests: Tag[]
+	skills: Tag[]
+}
+
+type Tag = {
+	id: number
+	name: string
+	approved: boolean
+}
+
+type NametagData = {
+	fullName: string
 	title: string
 	affiliation: string
 	profilePhoto: string
@@ -19,8 +34,10 @@ type ProfileData = {
 export default function Profile() {
 	const [loading, setLoading] = useState(true)
 	const [saving, setSaving] = useState(false)
+	const [uploading, setUploading] = useState(false)
+	const [profileId, setProfileId] = useState<number | null>(null)
 	const [profile, setProfile] = useState<ProfileData | null>(null)
-	const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null)
+	const [email, setEmail] = useState("")
 	const router = useRouter()
 
 	useEffect(() => {
@@ -36,86 +53,363 @@ export default function Profile() {
 				return
 			}
 
-			// Fetch member and profile data
-			// relying on email linking since we don't have UUID in member table yet
-			const { data: memberData, error: memberError } = await supabaseClient
-				.from("member")
-				.select(
-					`
-					id,
-					full_name,
-					email,
-					member_profile (
-						title,
-						affiliation,
-						profile_photo
-					)
-				`
-				)
-				.eq("email", user.email)
+			setEmail(user.email || "")
+
+			const { data: profileData, error: profileError } = await supabaseClient
+				.from("profiles")
+				.select("*")
+				.eq("user_id", user.id)
 				.single()
 
-			if (memberError || !memberData) {
-				console.error("Error fetching profile:", memberError)
-				setLoading(false)
-				return
+			if (profileError && profileError.code !== "PGRST116") {
+				console.error("Error fetching profile:", profileError)
 			}
 
-			const profileData = memberData.member_profile as any
+			if (profileData) {
+				setProfileId(profileData.id)
 
-			setProfile({
-				memberId: memberData.id,
-				fullName: memberData.full_name,
-				email: memberData.email,
-				title: profileData?.title || "",
-				affiliation: profileData?.affiliation || "",
-				profilePhoto: profileData?.profile_photo || user.user_metadata.avatar_url || ""
-			})
+				// Load interests
+				const { data: interestsData } = await supabaseClient
+					.from("profile_interests")
+					.select(
+						`
+						interest_id,
+						interests (
+							id,
+							name,
+							approved
+						)
+					`
+					)
+					.eq("profile_id", profileData.id)
+
+				const interests: Tag[] =
+					interestsData?.map((item: any) => ({
+						id: item.interests.id,
+						name: item.interests.name,
+						approved: item.interests.approved
+					})) || []
+
+				// Load skills
+				const { data: skillsData } = await supabaseClient
+					.from("profile_skills")
+					.select(
+						`
+						skill_id,
+						skills (
+							id,
+							name,
+							approved
+						)
+					`
+					)
+					.eq("profile_id", profileData.id)
+
+				const skills: Tag[] =
+					skillsData?.map((item: any) => ({
+						id: item.skills.id,
+						name: item.skills.name,
+						approved: item.skills.approved
+					})) || []
+
+				setProfile({
+					id: profileData.id,
+					fullName: profileData.full_name,
+					email: profileData.email,
+					title: profileData.title || "",
+					affiliation: profileData.affiliation || "",
+					profilePhoto: profileData.profile_photo || "",
+					interests,
+					skills
+				})
+			} else {
+				// New profile - populate from OAuth
+				setProfile({
+					id: 0,
+					fullName:
+						user.user_metadata?.full_name ||
+						user.user_metadata?.name ||
+						user.user_metadata?.display_name ||
+						user.email?.split("@")[0] ||
+						"",
+					email: user.email || "",
+					title: "",
+					affiliation: "",
+					profilePhoto: "", // Default to empty so camera icon shows
+					interests: [],
+					skills: []
+				})
+			}
 			setLoading(false)
 		}
 
 		loadProfile()
 	}, [router])
 
-	const handleSave = async (e: React.FormEvent) => {
-		e.preventDefault()
-		if (!profile || !supabaseClient) return
+	const handleImageUpload = async (file: File): Promise<string> => {
+		if (!supabaseClient) throw new Error("Supabase client not initialized")
 
-		setSaving(true)
-		setMessage(null)
+		setUploading(true)
 
 		try {
-			// Update member_profile
-			const { error } = await supabaseClient
-				.from("member_profile")
-				.update({
-					title: profile.title,
-					affiliation: profile.affiliation,
-					profile_photo: profile.profilePhoto
-				})
-				.eq("member_id", profile.memberId)
+			const fileExt = file.name.split(".").pop()
+			const fileName = `${Math.random().toString(36).substring(2)}.${fileExt}`
+			const filePath = `${fileName}`
 
+			const { error: uploadError } = await supabaseClient.storage
+				.from("avatars")
+				.upload(filePath, file)
+
+			if (uploadError) throw uploadError
+
+			const {
+				data: { publicUrl }
+			} = supabaseClient.storage.from("avatars").getPublicUrl(filePath)
+
+			return publicUrl
+		} catch (error: any) {
+			console.error("Error uploading image:", error)
+			throw error
+		} finally {
+			setUploading(false)
+		}
+	}
+
+	const saveTags = async (tags: Tag[], tableName: "interests" | "skills", profileId: number) => {
+		if (!supabaseClient) return
+
+		const junctionTable = tableName === "interests" ? "profile_interests" : "profile_skills"
+		const foreignKey = tableName === "interests" ? "interest_id" : "skill_id"
+
+		// Delete existing links
+		await supabaseClient.from(junctionTable).delete().eq("profile_id", profileId)
+
+		if (tags.length === 0) return
+
+		// Get or create tags and collect their IDs
+		const tagIds: number[] = []
+
+		for (const tag of tags) {
+			let tagId = tag.id
+
+			// If tag has a temporary ID (negative or very large), it's new - create it
+			if (tag.id > 1000000000 || tag.id < 0) {
+				// Check if tag already exists by name
+				const { data: existing } = await supabaseClient
+					.from(tableName)
+					.select("id")
+					.eq("name", tag.name)
+					.single()
+
+				if (existing) {
+					tagId = existing.id
+				} else {
+					// Create new tag (not approved)
+					const { data: newTag, error } = await supabaseClient
+						.from(tableName)
+						.insert({ name: tag.name, approved: false })
+						.select("id")
+						.single()
+
+					if (error) throw error
+					tagId = newTag.id
+				}
+			}
+
+			tagIds.push(tagId)
+		}
+
+		// Create links
+		if (tagIds.length > 0) {
+			const links = tagIds.map((tagId) => ({
+				profile_id: profileId,
+				[foreignKey]: tagId
+			}))
+
+			const { error } = await supabaseClient.from(junctionTable).insert(links)
 			if (error) throw error
+		}
+	}
 
-			// Also update full name in member table if changed
-			const { error: memberError } = await supabaseClient
-				.from("member")
-				.update({ full_name: profile.fullName })
-				.eq("id", profile.memberId)
+	const handleSave = async (data: NametagData) => {
+		if (!supabaseClient) return
 
-			if (memberError) throw memberError
+		if (!data.profilePhoto) {
+			return
+		}
 
-			setMessage({ type: "success", text: "Profile updated successfully!" })
+		setSaving(true)
+
+		try {
+			const {
+				data: { user }
+			} = await supabaseClient.auth.getUser()
+
+			if (!user) throw new Error("User not authenticated")
+
+			const profileDataToSave = {
+				user_id: user.id,
+				email: email,
+				full_name: data.fullName,
+				profile_photo: data.profilePhoto,
+				title: data.title,
+				affiliation: data.affiliation
+			}
+
+			let currentProfileId = profileId
+
+			if (profileId) {
+				const { error } = await supabaseClient
+					.from("profiles")
+					.update(profileDataToSave)
+					.eq("id", profileId)
+				if (error) throw error
+			} else {
+				const { data: newProfile, error } = await supabaseClient
+					.from("profiles")
+					.insert(profileDataToSave)
+					.select()
+					.single()
+				if (error) throw error
+				if (newProfile) {
+					currentProfileId = newProfile.id
+					setProfileId(newProfile.id)
+				}
+			}
+
+			// Reload profile
+			if (currentProfileId) {
+				const { data: profileData } = await supabaseClient
+					.from("profiles")
+					.select("*")
+					.eq("id", currentProfileId)
+					.single()
+
+				if (profileData) {
+					// Reload interests and skills
+					const { data: interestsData } = await supabaseClient
+						.from("profile_interests")
+						.select(
+							`
+							interest_id,
+							interests (
+								id,
+								name,
+								approved
+							)
+						`
+						)
+						.eq("profile_id", currentProfileId)
+
+					const interests: Tag[] =
+						interestsData?.map((item: any) => ({
+							id: item.interests.id,
+							name: item.interests.name,
+							approved: item.interests.approved
+						})) || []
+
+					const { data: skillsData } = await supabaseClient
+						.from("profile_skills")
+						.select(
+							`
+							skill_id,
+							skills (
+								id,
+								name,
+								approved
+							)
+						`
+						)
+						.eq("profile_id", currentProfileId)
+
+					const skills: Tag[] =
+						skillsData?.map((item: any) => ({
+							id: item.skills.id,
+							name: item.skills.name,
+							approved: item.skills.approved
+						})) || []
+
+					setProfile({
+						id: profileData.id,
+						fullName: profileData.full_name,
+						email: profileData.email,
+						title: profileData.title || "",
+						affiliation: profileData.affiliation || "",
+						profilePhoto: profileData.profile_photo || "",
+						interests,
+						skills
+					})
+				}
+			}
 		} catch (err: any) {
-			setMessage({ type: "error", text: err.message || "Failed to update profile" })
+			throw err
 		} finally {
 			setSaving(false)
 		}
 	}
 
-	const handleSignOut = async () => {
-		await supabaseClient?.auth.signOut()
-		router.push("/")
+	const handleSaveInterests = async (tags: Tag[]) => {
+		if (!profileId || !supabaseClient) return
+
+		await saveTags(tags, "interests", profileId)
+
+		// Reload interests
+		const { data: interestsData } = await supabaseClient
+			.from("profile_interests")
+			.select(
+				`
+				interest_id,
+				interests (
+					id,
+					name,
+					approved
+				)
+			`
+			)
+			.eq("profile_id", profileId)
+
+		const interests: Tag[] =
+			interestsData?.map((item: any) => ({
+				id: item.interests.id,
+				name: item.interests.name,
+				approved: item.interests.approved
+			})) || []
+
+		if (profile) {
+			setProfile({ ...profile, interests })
+		}
+	}
+
+	const handleSaveSkills = async (tags: Tag[]) => {
+		if (!profileId || !supabaseClient) return
+
+		await saveTags(tags, "skills", profileId)
+
+		// Reload skills
+		const { data: skillsData } = await supabaseClient
+			.from("profile_skills")
+			.select(
+				`
+				skill_id,
+				skills (
+					id,
+					name,
+					approved
+				)
+			`
+			)
+			.eq("profile_id", profileId)
+
+		const skills: Tag[] =
+			skillsData?.map((item: any) => ({
+				id: item.skills.id,
+				name: item.skills.name,
+				approved: item.skills.approved
+			})) || []
+
+		if (profile) {
+			setProfile({ ...profile, skills })
+		}
 	}
 
 	if (loading) {
@@ -125,10 +419,21 @@ export default function Profile() {
 					<PotionBackground />
 				</BackgroundContainer>
 				<Container>
-					<LoadingText>Loading profile...</LoadingText>
+					<LoadingText>Loading...</LoadingText>
 				</Container>
 			</>
 		)
+	}
+
+	if (!profile) {
+		return null
+	}
+
+	const nametagData: NametagData = {
+		fullName: profile.fullName,
+		title: profile.title,
+		affiliation: profile.affiliation,
+		profilePhoto: profile.profilePhoto
 	}
 
 	return (
@@ -137,70 +442,50 @@ export default function Profile() {
 				<PotionBackground />
 			</BackgroundContainer>
 			<Container>
-				<ProfileCard>
-					<HeaderRow>
-						<Title>Your Profile</Title>
-						<Button onClick={handleSignOut} variant="secondary" size="small">
-							Sign Out
-						</Button>
-					</HeaderRow>
+				<ContentWrapper>
+					{!profileId && (
+						<>
+							<HeaderRow>
+								<Title>Welcome to DEVx</Title>
+							</HeaderRow>
+							<InstructionText>Get your nametag</InstructionText>
+						</>
+					)}
 
-					{message && <Message $type={message.type}>{message.text}</Message>}
+					<Nametag
+						data={nametagData}
+						onSave={handleSave}
+						onImageUpload={handleImageUpload}
+						uploading={uploading}
+						saving={saving}
+						initialEditing={!profileId}
+					/>
 
-					<Form onSubmit={handleSave}>
-						<AvatarContainer>
-							{profile?.profilePhoto && <Avatar src={profile.profilePhoto} alt="Profile" />}
-						</AvatarContainer>
-
-						<InputGroup>
-							<Label>Full Name</Label>
-							<TextInput
-								value={profile?.fullName || ""}
-								onChange={(e) =>
-									setProfile((prev) => (prev ? { ...prev, fullName: e.target.value } : null))
-								}
-								placeholder="Your Full Name"
+					{profileId && (
+						<>
+							<TagCloudSection
+								title="Interests"
+								selectedTags={profile.interests || []}
+								onTagsChange={handleSaveInterests}
+								tableName="interests"
+								profileId={profileId}
 							/>
-						</InputGroup>
-
-						<InputGroup>
-							<Label>Email</Label>
-							<TextInput value={profile?.email || ""} disabled style={{ opacity: 0.7 }} />
-						</InputGroup>
-
-						<InputGroup>
-							<Label>Title</Label>
-							<TextInput
-								value={profile?.title || ""}
-								onChange={(e) =>
-									setProfile((prev) => (prev ? { ...prev, title: e.target.value } : null))
-								}
-								placeholder="e.g. Senior Software Engineer"
+							<TagCloudSection
+								title="Skills"
+								selectedTags={profile.skills || []}
+								onTagsChange={handleSaveSkills}
+								tableName="skills"
+								profileId={profileId}
 							/>
-						</InputGroup>
-
-						<InputGroup>
-							<Label>Affiliation</Label>
-							<TextInput
-								value={profile?.affiliation || ""}
-								onChange={(e) =>
-									setProfile((prev) => (prev ? { ...prev, affiliation: e.target.value } : null))
-								}
-								placeholder="e.g. Company Name, University, or Freelance"
-							/>
-						</InputGroup>
-
-						<ButtonContainer>
-							<Button type="submit" disabled={saving} variant="primary" size="default">
-								{saving ? "Saving..." : "Save Profile"}
-							</Button>
-						</ButtonContainer>
-					</Form>
-				</ProfileCard>
+						</>
+					)}
+				</ContentWrapper>
 			</Container>
 		</>
 	)
 }
+
+// Styled Components
 
 const BackgroundContainer = styled.section`
 	background-color: #0a0a0a;
@@ -217,7 +502,15 @@ const Container = styled.main`
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	padding: 6rem 1rem 2rem;
+	padding: 2rem;
+`
+
+const ContentWrapper = styled.div`
+	width: 100%;
+	max-width: 700px;
+	display: flex;
+	flex-direction: column;
+	gap: 2rem;
 `
 
 const LoadingText = styled.div`
@@ -225,75 +518,22 @@ const LoadingText = styled.div`
 	font-size: 1.2rem;
 `
 
-const ProfileCard = styled.div`
-	background-color: rgba(0, 0, 0, 0.75);
-	backdrop-filter: blur(8px);
-	padding: 3rem;
-	border-radius: 1rem;
-	width: 100%;
-	max-width: 600px;
-	display: flex;
-	flex-direction: column;
-	gap: 2rem;
-	box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
-`
-
 const HeaderRow = styled.div`
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
+	width: 100%;
 `
 
 const Title = styled.h1`
-	font-size: 2rem;
+	font-size: 2.5rem;
 	font-weight: 700;
 	color: white;
 	margin: 0;
 `
 
-const Form = styled.form`
-	display: flex;
-	flex-direction: column;
-	gap: 1.5rem;
-`
-
-const InputGroup = styled.div`
-	display: flex;
-	flex-direction: column;
-	gap: 0.5rem;
-`
-
-const Label = styled.label`
+const InstructionText = styled.p`
 	color: rgba(255, 255, 255, 0.9);
-	font-size: 0.9rem;
-	font-weight: 500;
-`
-
-const ButtonContainer = styled.div`
-	margin-top: 1rem;
-	display: flex;
-	justify-content: flex-end;
-`
-
-const Message = styled.div<{ $type: "success" | "error" }>`
-	padding: 1rem;
-	border-radius: 0.5rem;
-	background-color: ${(props) =>
-		props.$type === "success" ? "rgba(75, 181, 67, 0.2)" : "rgba(255, 107, 107, 0.2)"};
-	color: ${(props) => (props.$type === "success" ? "#4bb543" : "#ff6b6b")};
-	border: 1px solid ${(props) => (props.$type === "success" ? "#4bb543" : "#ff6b6b")};
-`
-
-const AvatarContainer = styled.div`
-	display: flex;
-	justify-content: center;
-	margin-bottom: 1rem;
-`
-
-const Avatar = styled.img`
-	width: 100px;
-	height: 100px;
-	border-radius: 50%;
-	object-fit: cover;
-	border: 3px solid rgba(255, 255, 255, 0.2);
+	font-size: 1.25rem;
+	margin: -1rem 0 1rem 0;
 `
