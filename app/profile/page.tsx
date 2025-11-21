@@ -44,6 +44,15 @@ export default function Profile() {
 		const loadProfile = async () => {
 			if (!supabaseClient) return
 
+			// Clean up OAuth callback tokens from URL
+			if (typeof window !== "undefined") {
+				const hashParams = new URLSearchParams(window.location.hash.substring(1))
+				if (hashParams.get("access_token") || hashParams.get("error")) {
+					// Remove the hash from URL after Supabase processes it
+					window.history.replaceState(null, "", window.location.pathname + window.location.search)
+				}
+			}
+
 			const {
 				data: { user }
 			} = await supabaseClient.auth.getUser()
