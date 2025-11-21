@@ -12,6 +12,7 @@ import { supabaseClient } from "@/lib/supabaseClient"
 
 export default function Doorbell() {
 	const [isRinging, setIsRinging] = useState(false)
+	const [ringCount, setRingCount] = useState(0)
 	const channelRef = useRef<RealtimeChannel | null>(null)
 	const lastRingIdRef = useRef<string | null>(null)
 
@@ -45,6 +46,7 @@ export default function Doorbell() {
 		lastRingIdRef.current = ringId
 		triggerLocalRing()
 		void broadcastRing(ringId)
+		setRingCount((prev) => prev + 1)
 	}
 
 	useEffect(() => {
@@ -122,6 +124,14 @@ export default function Doorbell() {
 							</Button>
 						)}
 					</ButtonSection>
+					{ringCount >= 3 && (
+						<CallSection>
+							<CallMessage>No one answered?</CallMessage>
+							<Button href="tel:+17608775333" size="default" variant="primary">
+								Call Us
+							</Button>
+						</CallSection>
+					)}
 				</Hero>
 			</Main>
 		</>
@@ -206,6 +216,23 @@ const AnimatedButtonContent = styled(motion.span)`
 	display: inline-block;
 	font-size: 2rem;
 	line-height: 1.5;
+`
+
+const CallSection = styled.section`
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: 1rem;
+	padding: 0 3rem;
+	margin-top: 2rem;
+`
+
+const CallMessage = styled.p`
+	font-size: 1.25rem;
+	text-align: center;
+	margin: 0;
+	color: white;
 `
 
 // Constants //

@@ -41,12 +41,13 @@ export const Button = ({
 
 	if (href) {
 		const isExternal = href.startsWith("http://") || href.startsWith("https://")
-		if (isExternal) {
+		const isTelLink = href.startsWith("tel:")
+		if (isExternal || isTelLink) {
 			return (
 				<StyledExternalLink
 					href={href}
-					target={target || "_blank"}
-					rel={rel || "noopener noreferrer"}
+					target={isTelLink ? target : target || "_blank"}
+					rel={isTelLink ? rel : rel || "noopener noreferrer"}
 					{...commonProps}
 				>
 					{children}
