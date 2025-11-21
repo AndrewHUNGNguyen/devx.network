@@ -4,11 +4,33 @@ import styled from "styled-components"
 import { links } from "../siteConfig"
 import { GiveATalkCTA } from "./GiveATalkCTA"
 import { Button } from "./Button"
+import { supabaseClient } from "../../lib/supabaseClient"
 
 // Components //
 
 export const Header = () => {
 	const [isMenuOpen, setIsMenuOpen] = useState(false)
+	const [user, setUser] = useState<any>(null)
+
+	useEffect(() => {
+		if (!supabaseClient) return
+
+		// Check initial session
+		supabaseClient.auth.getUser().then(({ data: { user } }) => {
+			setUser(user)
+		})
+
+		// Listen for auth changes
+		const {
+			data: { subscription }
+		} = supabaseClient.auth.onAuthStateChange((_event, session) => {
+			setUser(session?.user ?? null)
+		})
+
+		return () => {
+			subscription.unsubscribe()
+		}
+	}, [])
 
 	const toggleMenu = () => {
 		setIsMenuOpen(!isMenuOpen)
@@ -81,7 +103,18 @@ export const Header = () => {
 						</MenuList>
 					</NavCenter>
 					<NavEnd>
-						<Button href={links.discord}>Join Us on Discord</Button>
+						<ButtonGroup>
+							{user ? (
+								<Button href="/profile" variant="secondary">
+									Profile
+								</Button>
+							) : (
+								<Button href="/login" variant="secondary">
+									Sign In
+								</Button>
+							)}
+							<Button href={links.discord}>Join Us on Discord</Button>
+						</ButtonGroup>
 					</NavEnd>
 				</Nav>
 			</Container>
@@ -108,6 +141,17 @@ export const Header = () => {
 				</SidebarHeader>
 				<SidebarContent>
 					<NavLinks />
+					<MobileAuthItem>
+						{user ? (
+							<Button href="/profile" variant="secondary" size="default">
+								Profile
+							</Button>
+						) : (
+							<Button href="/login" variant="secondary" size="default">
+								Sign In
+							</Button>
+						)}
+					</MobileAuthItem>
 				</SidebarContent>
 			</MobileSidebar>
 		</>
@@ -170,6 +214,12 @@ const NavCenter = styled.div`
 const NavEnd = styled.div`
 	display: flex;
 	justify-content: flex-end;
+`
+
+const ButtonGroup = styled.div`
+	display: flex;
+	align-items: center;
+	gap: 1rem;
 `
 
 const MenuButton = styled.button`
@@ -313,4 +363,10 @@ const MenuLink = styled.a`
 			text-decoration: underline;
 		}
 	}
+`
+
+const MobileAuthItem = styled.li`
+	margin: 1rem 0;
+	display: flex;
+	justify-content: center;
 `
