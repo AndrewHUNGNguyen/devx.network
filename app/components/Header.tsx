@@ -16,8 +16,7 @@ export const Header = () => {
 	const [userHandle, setUserHandle] = useState<string | null>(null)
 
 	useEffect(() => {
-		if (!supabaseClient) return
-
+		// Check initial session and load handle and photo
 		// Check initial session and load handle
 		const loadUserAndHandle = async () => {
 			const {

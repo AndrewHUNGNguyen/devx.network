@@ -53,8 +53,6 @@ export const TagInput = ({
 	}, [isAdding])
 
 	const loadInitialSuggestions = async () => {
-		if (!supabaseClient) return
-
 		setIsSearching(true)
 		try {
 			const selectedIds = new Set(selectedTags.map((t) => t.id))
@@ -92,8 +90,6 @@ export const TagInput = ({
 				}
 				return
 			}
-
-			if (!supabaseClient) return
 
 			setIsSearching(true)
 			try {

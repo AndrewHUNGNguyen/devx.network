@@ -13,8 +13,6 @@ export default function Login() {
 	useEffect(() => {
 		// Handle OAuth callback and check for existing session
 		const checkAuth = async () => {
-			if (!supabaseClient) return
-
 			// Check for OAuth callback in URL hash
 			const hashParams = new URLSearchParams(window.location.hash.substring(1))
 			if (hashParams.get("access_token") || hashParams.get("error")) {

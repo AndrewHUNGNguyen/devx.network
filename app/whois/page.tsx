@@ -54,8 +54,6 @@ export default function Who() {
 
 	useEffect(() => {
 		const loadProfile = async () => {
-			if (!supabaseClient) return
-
 			// Extract handle from query string
 			// Format: /whois?sam or /whois?sam&other=params
 			const extractedHandle = getHandleFromUrl()

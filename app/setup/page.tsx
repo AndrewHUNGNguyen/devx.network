@@ -32,8 +32,6 @@ export default function Setup() {
 
 	useEffect(() => {
 		const checkAuth = async () => {
-			if (!supabaseClient) return
-
 			// Clean up OAuth callback tokens from URL
 			if (typeof window !== "undefined") {
 				const hashParams = new URLSearchParams(window.location.hash.substring(1))
@@ -140,8 +138,6 @@ export default function Setup() {
 	}, [handle])
 
 	const handleImageUpload = async (file: File): Promise<string> => {
-		if (!supabaseClient) throw new Error("Supabase client not initialized")
-
 		setUploading(true)
 
 		try {
@@ -170,8 +166,6 @@ export default function Setup() {
 
 	const handleFinishSetup = async (e: React.FormEvent) => {
 		e.preventDefault()
-
-		if (!supabaseClient) return
 
 		// Validate form
 		if (!handle.trim() || !handleAvailable) {

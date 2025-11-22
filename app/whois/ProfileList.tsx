@@ -26,8 +26,6 @@ export function ProfileList() {
 	const [hasMore, setHasMore] = useState(true)
 
 	const loadProfiles = async (pageNum: number, append: boolean = false) => {
-		if (!supabaseClient) return
-
 		try {
 			if (append) {
 				setLoadingMore(true)

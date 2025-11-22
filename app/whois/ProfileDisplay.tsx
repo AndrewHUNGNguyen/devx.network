@@ -56,8 +56,6 @@ export function ProfileDisplay({
 	const [uploading, setUploading] = useState(false)
 
 	const handleImageUpload = async (file: File): Promise<string> => {
-		if (!supabaseClient) throw new Error("Supabase client not initialized")
-
 		setUploading(true)
 
 		try {
@@ -85,8 +83,6 @@ export function ProfileDisplay({
 	}
 
 	const saveTags = async (tags: Tag[], tableName: "interests" | "skills", profileId: number) => {
-		if (!supabaseClient || !isOwner) return
-
 		const junctionTable = tableName === "interests" ? "profile_interests" : "profile_skills"
 		const foreignKey = tableName === "interests" ? "interest_id" : "skill_id"
 
@@ -141,7 +137,7 @@ export function ProfileDisplay({
 	}
 
 	const handleSave = async (data: NametagData) => {
-		if (!supabaseClient || !isOwner) return
+		if (!isOwner) return
 
 		if (!data.profilePhoto) {
 			return
@@ -256,7 +252,7 @@ export function ProfileDisplay({
 	}
 
 	const handleSaveInterests = async (tags: Tag[]) => {
-		if (!profileId || !supabaseClient || !isOwner) return
+		if (!profileId || !isOwner) return
 
 		await saveTags(tags, "interests", profileId)
 
@@ -286,7 +282,7 @@ export function ProfileDisplay({
 	}
 
 	const handleSaveSkills = async (tags: Tag[]) => {
-		if (!profileId || !supabaseClient || !isOwner) return
+		if (!profileId || !isOwner) return
 
 		await saveTags(tags, "skills", profileId)
 
@@ -316,7 +312,7 @@ export function ProfileDisplay({
 	}
 
 	const handleSaveLinks = async (links: Link[]) => {
-		if (!profileId || !supabaseClient || !isOwner) return
+		if (!profileId || !isOwner) return
 
 		// Delete existing links
 		await supabaseClient.from("profile_links").delete().eq("profile_id", profileId)
