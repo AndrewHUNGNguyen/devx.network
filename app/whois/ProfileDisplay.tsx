@@ -1,7 +1,6 @@
 "use client"
 import styled from "styled-components"
-import { useState, useEffect } from "react"
-import { useRouter } from "next/navigation"
+import { useState } from "react"
 import { supabaseClient } from "../../lib/supabaseClient"
 import { PotionBackground } from "../components/PotionBackground"
 import { Nametag } from "../components/Nametag"
@@ -38,130 +37,23 @@ type NametagData = {
 	profilePhoto: string
 }
 
-export default function Profile() {
-	const [loading, setLoading] = useState(true)
+type ProfileDisplayProps = {
+	profile: ProfileData
+	profileId: number
+	isOwner: boolean
+	email: string
+	onProfileUpdate: (updatedProfile: ProfileData) => void
+}
+
+export function ProfileDisplay({
+	profile,
+	profileId,
+	isOwner,
+	email,
+	onProfileUpdate
+}: ProfileDisplayProps) {
 	const [saving, setSaving] = useState(false)
 	const [uploading, setUploading] = useState(false)
-	const [profileId, setProfileId] = useState<number | null>(null)
-	const [profile, setProfile] = useState<ProfileData | null>(null)
-	const [email, setEmail] = useState("")
-	const router = useRouter()
-
-	useEffect(() => {
-		const loadProfile = async () => {
-			if (!supabaseClient) return
-
-			// Clean up OAuth callback tokens from URL
-			if (typeof window !== "undefined") {
-				const hashParams = new URLSearchParams(window.location.hash.substring(1))
-				if (hashParams.get("access_token") || hashParams.get("error")) {
-					// Remove the hash from URL after Supabase processes it
-					window.history.replaceState(null, "", window.location.pathname + window.location.search)
-				}
-			}
-
-			const {
-				data: { user }
-			} = await supabaseClient.auth.getUser()
-
-			if (!user) {
-				router.push("/login")
-				return
-			}
-
-			setEmail(user.email || "")
-
-			const { data: profileData, error: profileError } = await supabaseClient
-				.from("profiles")
-				.select("*")
-				.eq("user_id", user.id)
-				.single()
-
-			if (profileError && profileError.code !== "PGRST116") {
-				console.error("Error fetching profile:", profileError)
-			}
-
-			if (profileData) {
-				setProfileId(profileData.id)
-
-				// Load interests
-				const { data: interestsData } = await supabaseClient
-					.from("profile_interests")
-					.select(
-						`
-						interest_id,
-						interests (
-							id,
-							name,
-							approved
-						)
-					`
-					)
-					.eq("profile_id", profileData.id)
-
-				const interests: Tag[] =
-					interestsData?.map((item: any) => ({
-						id: item.interests.id,
-						name: item.interests.name,
-						approved: item.interests.approved
-					})) || []
-
-				// Load skills
-				const { data: skillsData } = await supabaseClient
-					.from("profile_skills")
-					.select(
-						`
-						skill_id,
-						skills (
-							id,
-							name,
-							approved
-						)
-					`
-					)
-					.eq("profile_id", profileData.id)
-
-				const skills: Tag[] =
-					skillsData?.map((item: any) => ({
-						id: item.skills.id,
-						name: item.skills.name,
-						approved: item.skills.approved
-					})) || []
-
-				// Load links
-				const { data: linksData } = await supabaseClient
-					.from("profile_links")
-					.select("id, url")
-					.eq("profile_id", profileData.id)
-					.order("created_at", { ascending: true })
-
-				const links: Link[] =
-					linksData?.map((item: any) => ({
-						id: item.id,
-						url: item.url
-					})) || []
-
-				setProfile({
-					id: profileData.id,
-					fullName: profileData.full_name,
-					email: profileData.email,
-					title: profileData.title || "",
-					affiliation: profileData.affiliation || "",
-					profilePhoto: profileData.profile_photo || "",
-					interests,
-					skills,
-					links
-				})
-			} else {
-				// No profile exists - redirect to setup
-				router.push("/setup")
-				return
-			}
-			setLoading(false)
-		}
-
-		loadProfile()
-	}, [router])
 
 	const handleImageUpload = async (file: File): Promise<string> => {
 		if (!supabaseClient) throw new Error("Supabase client not initialized")
@@ -193,7 +85,7 @@ export default function Profile() {
 	}
 
 	const saveTags = async (tags: Tag[], tableName: "interests" | "skills", profileId: number) => {
-		if (!supabaseClient) return
+		if (!supabaseClient || !isOwner) return
 
 		const junctionTable = tableName === "interests" ? "profile_interests" : "profile_skills"
 		const foreignKey = tableName === "interests" ? "interest_id" : "skill_id"
@@ -249,7 +141,7 @@ export default function Profile() {
 	}
 
 	const handleSave = async (data: NametagData) => {
-		if (!supabaseClient) return
+		if (!supabaseClient || !isOwner) return
 
 		if (!data.profilePhoto) {
 			return
@@ -265,7 +157,6 @@ export default function Profile() {
 			if (!user) throw new Error("User not authenticated")
 
 			const profileDataToSave = {
-				user_id: user.id,
 				email: email,
 				full_name: data.fullName,
 				profile_photo: data.profilePhoto,
@@ -273,33 +164,18 @@ export default function Profile() {
 				affiliation: data.affiliation
 			}
 
-			let currentProfileId = profileId
-
 			if (profileId) {
 				const { error } = await supabaseClient
 					.from("profiles")
 					.update(profileDataToSave)
 					.eq("id", profileId)
 				if (error) throw error
-			} else {
-				const { data: newProfile, error } = await supabaseClient
-					.from("profiles")
-					.insert(profileDataToSave)
-					.select()
-					.single()
-				if (error) throw error
-				if (newProfile) {
-					currentProfileId = newProfile.id
-					setProfileId(newProfile.id)
-				}
-			}
 
-			// Reload profile
-			if (currentProfileId) {
+				// Reload profile
 				const { data: profileData } = await supabaseClient
 					.from("profiles")
 					.select("*")
-					.eq("id", currentProfileId)
+					.eq("id", profileId)
 					.single()
 
 				if (profileData) {
@@ -316,7 +192,7 @@ export default function Profile() {
 							)
 						`
 						)
-						.eq("profile_id", currentProfileId)
+						.eq("profile_id", profileId)
 
 					const interests: Tag[] =
 						interestsData?.map((item: any) => ({
@@ -337,7 +213,7 @@ export default function Profile() {
 							)
 						`
 						)
-						.eq("profile_id", currentProfileId)
+						.eq("profile_id", profileId)
 
 					const skills: Tag[] =
 						skillsData?.map((item: any) => ({
@@ -350,7 +226,7 @@ export default function Profile() {
 					const { data: linksData } = await supabaseClient
 						.from("profile_links")
 						.select("id, url")
-						.eq("profile_id", currentProfileId)
+						.eq("profile_id", profileId)
 						.order("created_at", { ascending: true })
 
 					const links: Link[] =
@@ -359,7 +235,7 @@ export default function Profile() {
 							url: item.url
 						})) || []
 
-					setProfile({
+					onProfileUpdate({
 						id: profileData.id,
 						fullName: profileData.full_name,
 						email: profileData.email,
@@ -380,7 +256,7 @@ export default function Profile() {
 	}
 
 	const handleSaveInterests = async (tags: Tag[]) => {
-		if (!profileId || !supabaseClient) return
+		if (!profileId || !supabaseClient || !isOwner) return
 
 		await saveTags(tags, "interests", profileId)
 
@@ -406,13 +282,11 @@ export default function Profile() {
 				approved: item.interests.approved
 			})) || []
 
-		if (profile) {
-			setProfile({ ...profile, interests })
-		}
+		onProfileUpdate({ ...profile, interests })
 	}
 
 	const handleSaveSkills = async (tags: Tag[]) => {
-		if (!profileId || !supabaseClient) return
+		if (!profileId || !supabaseClient || !isOwner) return
 
 		await saveTags(tags, "skills", profileId)
 
@@ -438,13 +312,11 @@ export default function Profile() {
 				approved: item.skills.approved
 			})) || []
 
-		if (profile) {
-			setProfile({ ...profile, skills })
-		}
+		onProfileUpdate({ ...profile, skills })
 	}
 
 	const handleSaveLinks = async (links: Link[]) => {
-		if (!profileId || !supabaseClient) return
+		if (!profileId || !supabaseClient || !isOwner) return
 
 		// Delete existing links
 		await supabaseClient.from("profile_links").delete().eq("profile_id", profileId)
@@ -473,26 +345,7 @@ export default function Profile() {
 				url: item.url
 			})) || []
 
-		if (profile) {
-			setProfile({ ...profile, links: updatedLinks })
-		}
-	}
-
-	if (loading) {
-		return (
-			<>
-				<BackgroundContainer>
-					<PotionBackground />
-				</BackgroundContainer>
-				<Container>
-					<LoadingText>Loading...</LoadingText>
-				</Container>
-			</>
-		)
-	}
-
-	if (!profile) {
-		return null
+		onProfileUpdate({ ...profile, links: updatedLinks })
 	}
 
 	const nametagData: NametagData = {
@@ -509,55 +362,43 @@ export default function Profile() {
 			</BackgroundContainer>
 			<Container>
 				<ContentWrapper>
-					{!profileId && (
-						<>
-							<HeaderRow>
-								<Title>Welcome to DEVx</Title>
-							</HeaderRow>
-							<InstructionText>Get your nametag</InstructionText>
-						</>
-					)}
-
 					<Nametag
 						data={nametagData}
 						onSave={handleSave}
 						onImageUpload={handleImageUpload}
 						uploading={uploading}
 						saving={saving}
-						initialEditing={!profileId}
+						initialEditing={false}
+						readOnly={!isOwner}
 					/>
-
-					{profileId && (
-						<>
-							<LinkCloudSection
-								title="Links"
-								selectedLinks={profile.links || []}
-								onLinksChange={handleSaveLinks}
-								profileId={profileId}
-							/>
-							<TagCloudSection
-								title="Interests"
-								selectedTags={profile.interests || []}
-								onTagsChange={handleSaveInterests}
-								tableName="interests"
-								profileId={profileId}
-							/>
-							<TagCloudSection
-								title="Skills"
-								selectedTags={profile.skills || []}
-								onTagsChange={handleSaveSkills}
-								tableName="skills"
-								profileId={profileId}
-							/>
-						</>
-					)}
+					<LinkCloudSection
+						title="Links"
+						selectedLinks={profile.links || []}
+						onLinksChange={handleSaveLinks}
+						profileId={profileId}
+						disabled={!isOwner}
+					/>
+					<TagCloudSection
+						title="Interests"
+						selectedTags={profile.interests || []}
+						onTagsChange={handleSaveInterests}
+						tableName="interests"
+						profileId={profileId}
+						disabled={!isOwner}
+					/>
+					<TagCloudSection
+						title="Skills"
+						selectedTags={profile.skills || []}
+						onTagsChange={handleSaveSkills}
+						tableName="skills"
+						profileId={profileId}
+						disabled={!isOwner}
+					/>
 				</ContentWrapper>
 			</Container>
 		</>
 	)
 }
-
-// Styled Components
 
 const BackgroundContainer = styled.section`
 	background-color: #0a0a0a;
@@ -584,29 +425,4 @@ const ContentWrapper = styled.div`
 	display: flex;
 	flex-direction: column;
 	gap: 2rem;
-`
-
-const LoadingText = styled.div`
-	color: white;
-	font-size: 1.2rem;
-`
-
-const HeaderRow = styled.div`
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-	width: 100%;
-`
-
-const Title = styled.h1`
-	font-size: 2.5rem;
-	font-weight: 700;
-	color: white;
-	margin: 0;
-`
-
-const InstructionText = styled.p`
-	color: rgba(255, 255, 255, 0.9);
-	font-size: 1.25rem;
-	margin: -1rem 0 1rem 0;
 `

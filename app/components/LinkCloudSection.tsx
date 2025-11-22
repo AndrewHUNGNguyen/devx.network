@@ -13,13 +13,15 @@ type LinkCloudSectionProps = {
 	selectedLinks: Link[]
 	onLinksChange: (links: Link[]) => Promise<void>
 	profileId: number
+	disabled?: boolean
 }
 
 export const LinkCloudSection = ({
 	title,
 	selectedLinks,
 	onLinksChange,
-	profileId
+	profileId,
+	disabled = false
 }: LinkCloudSectionProps) => {
 	const [localLinks, setLocalLinks] = useState<Link[]>(selectedLinks)
 	const [saving, setSaving] = useState(false)
@@ -65,7 +67,7 @@ export const LinkCloudSection = ({
 				<SectionTitle>{title}</SectionTitle>
 				{saving && <SavingIndicator>Saving...</SavingIndicator>}
 			</SectionHeader>
-			<LinkInput selectedLinks={localLinks} onLinksChange={handleLinksChange} disabled={false} />
+			<LinkInput selectedLinks={localLinks} onLinksChange={handleLinksChange} disabled={disabled} />
 		</Section>
 	)
 }

@@ -29,7 +29,18 @@ export default function Login() {
 			} = await supabaseClient.auth.getSession()
 
 			if (session?.user) {
-				router.push("/profile")
+				// Get handle and redirect to handle-based URL
+				const { data: profile } = await supabaseClient
+					.from("profiles")
+					.select("handle")
+					.eq("user_id", session.user.id)
+					.single()
+
+				if (profile?.handle) {
+					router.push(`/whois?${profile.handle}`)
+				} else {
+					router.push("/setup")
+				}
 			}
 		}
 		checkAuth()
@@ -40,7 +51,7 @@ export default function Login() {
 			const { error } = await supabaseClient!.auth.signInWithOAuth({
 				provider,
 				options: {
-					redirectTo: `${window.location.origin}/profile`
+					redirectTo: `${window.location.origin}/login`
 				}
 			})
 			if (error) throw error

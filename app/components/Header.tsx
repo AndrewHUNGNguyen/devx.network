@@ -13,20 +13,54 @@ export const Header = () => {
 	const router = useRouter()
 	const [isMenuOpen, setIsMenuOpen] = useState(false)
 	const [user, setUser] = useState<any>(null)
+	const [userHandle, setUserHandle] = useState<string | null>(null)
 
 	useEffect(() => {
 		if (!supabaseClient) return
 
-		// Check initial session
-		supabaseClient.auth.getUser().then(({ data: { user } }) => {
+		// Check initial session and load handle
+		const loadUserAndHandle = async () => {
+			const {
+				data: { user }
+			} = await supabaseClient.auth.getUser()
 			setUser(user)
-		})
+
+			if (user) {
+				const { data: profile } = await supabaseClient
+					.from("profiles")
+					.select("handle")
+					.eq("user_id", user.id)
+					.single()
+
+				if (profile?.handle) {
+					setUserHandle(profile.handle)
+				}
+			}
+		}
+
+		loadUserAndHandle()
 
 		// Listen for auth changes
 		const {
 			data: { subscription }
-		} = supabaseClient.auth.onAuthStateChange((_event, session) => {
+		} = supabaseClient.auth.onAuthStateChange(async (_event, session) => {
 			setUser(session?.user ?? null)
+
+			if (session?.user) {
+				const { data: profile } = await supabaseClient
+					.from("profiles")
+					.select("handle")
+					.eq("user_id", session.user.id)
+					.single()
+
+				if (profile?.handle) {
+					setUserHandle(profile.handle)
+				} else {
+					setUserHandle(null)
+				}
+			} else {
+				setUserHandle(null)
+			}
 		})
 
 		return () => {
@@ -113,9 +147,15 @@ export const Header = () => {
 						<ButtonGroup>
 							{user ? (
 								<>
-									<Button href="/profile" variant="secondary">
-										Profile
-									</Button>
+									{userHandle ? (
+										<Button href={`/whois?${userHandle}`} variant="secondary">
+											Profile
+										</Button>
+									) : (
+										<Button href="/setup" variant="secondary">
+											Profile
+										</Button>
+									)}
 									<Button onClick={handleSignOut} variant="secondary">
 										Sign Out
 									</Button>
@@ -156,9 +196,15 @@ export const Header = () => {
 					<MobileAuthItem>
 						{user ? (
 							<>
-								<Button href="/profile" variant="secondary" size="default">
-									Profile
-								</Button>
+								{userHandle ? (
+									<Button href={`/whois?${userHandle}`} variant="secondary" size="default">
+										Profile
+									</Button>
+								) : (
+									<Button href="/setup" variant="secondary" size="default">
+										Profile
+									</Button>
+								)}
 								<Button onClick={handleSignOut} variant="secondary" size="default">
 									Sign Out
 								</Button>

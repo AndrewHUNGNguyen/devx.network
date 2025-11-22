@@ -59,7 +59,19 @@ export default function Setup() {
 				.single()
 
 			if (existingProfile) {
-				router.push("/profile")
+				// Get handle and redirect to handle-based URL
+				const { data: profileWithHandle } = await supabaseClient
+					.from("profiles")
+					.select("handle")
+					.eq("user_id", user.id)
+					.single()
+
+				if (profileWithHandle?.handle) {
+					router.push(`/whois?${profileWithHandle.handle}`)
+				} else {
+					// User has profile but no handle - stay on setup to create handle
+					setLoading(false)
+				}
 				return
 			}
 
@@ -195,8 +207,8 @@ export default function Setup() {
 
 			if (error) throw error
 
-			// Redirect to profile page
-			router.push("/profile")
+			// Redirect to handle-based profile page
+			router.push(`/whois?${handle.toLowerCase().trim()}`)
 		} catch (err: any) {
 			console.error("Failed to create profile:", err)
 			// TODO: Show error message to user

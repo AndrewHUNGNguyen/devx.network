@@ -21,6 +21,7 @@ type NametagProps = {
 	initialEditing?: boolean
 	forcedEditMode?: boolean
 	onDataChange?: (data: NametagData) => void
+	readOnly?: boolean
 }
 
 export const Nametag = ({
@@ -31,7 +32,8 @@ export const Nametag = ({
 	saving = false,
 	initialEditing = false,
 	forcedEditMode = false,
-	onDataChange
+	onDataChange,
+	readOnly = false
 }: NametagProps) => {
 	const [isEditing, setIsEditing] = useState(initialEditing || forcedEditMode)
 	const [formData, setFormData] = useState<NametagData>(data)
@@ -41,8 +43,9 @@ export const Nametag = ({
 	const containerRef = useRef<HTMLDivElement>(null)
 	const tooltipRefs = useRef<{ [key: string]: HTMLDivElement | null }>({})
 
-	// In forced edit mode, always keep editing enabled
-	const effectiveEditing = forcedEditMode ? true : isEditing
+	// In forced edit mode, always keep editing enabled (unless readOnly)
+	// In readOnly mode, never allow editing
+	const effectiveEditing = readOnly ? false : forcedEditMode ? true : isEditing
 
 	// Notify parent of data changes in forced edit mode
 	useEffect(() => {
@@ -171,12 +174,14 @@ export const Nametag = ({
 					}}
 				>
 					<NametagHole />
-					<EditButtonWrapper>
-						<Button variant="tertiary" size="small" onClick={() => setIsEditing(true)}>
-							<EditIcon />
-							Edit
-						</Button>
-					</EditButtonWrapper>
+					{!readOnly && (
+						<EditButtonWrapper>
+							<Button variant="tertiary" size="small" onClick={() => setIsEditing(true)}>
+								<EditIcon />
+								Edit
+							</Button>
+						</EditButtonWrapper>
+					)}
 					<NametagLeft>
 						<PhotoFrame>
 							{formData.profilePhoto ? (
@@ -232,7 +237,7 @@ export const Nametag = ({
 					</SaveButtonWrapper>
 				)}
 				<NametagLeft>
-					<PhotoFrame onClick={() => fileInputRef.current?.click()}>
+					<PhotoFrame onClick={readOnly ? undefined : () => fileInputRef.current?.click()}>
 						{uploading ? (
 							<PlaceholderAvatar>Loading...</PlaceholderAvatar>
 						) : formData.profilePhoto ? (
@@ -242,17 +247,21 @@ export const Nametag = ({
 								<CameraIcon color="rgba(255, 255, 255, 0.5)" />
 							</PlaceholderAvatar>
 						)}
-						<PhotoOverlay>
-							<CameraIcon color="white" />
-						</PhotoOverlay>
+						{!readOnly && (
+							<PhotoOverlay>
+								<CameraIcon color="white" />
+							</PhotoOverlay>
+						)}
 					</PhotoFrame>
-					<input
-						type="file"
-						ref={fileInputRef}
-						onChange={handleImageUpload}
-						accept="image/*"
-						style={{ display: "none" }}
-					/>
+					{!readOnly && (
+						<input
+							type="file"
+							ref={fileInputRef}
+							onChange={handleImageUpload}
+							accept="image/*"
+							style={{ display: "none" }}
+						/>
+					)}
 				</NametagLeft>
 
 				<NametagRight>

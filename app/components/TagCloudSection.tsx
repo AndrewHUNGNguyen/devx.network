@@ -15,6 +15,7 @@ type TagCloudSectionProps = {
 	onTagsChange: (tags: Tag[]) => Promise<void>
 	tableName: "interests" | "skills"
 	profileId: number
+	disabled?: boolean
 }
 
 export const TagCloudSection = ({
@@ -22,7 +23,8 @@ export const TagCloudSection = ({
 	selectedTags,
 	onTagsChange,
 	tableName,
-	profileId
+	profileId,
+	disabled = false
 }: TagCloudSectionProps) => {
 	const [localTags, setLocalTags] = useState<Tag[]>(selectedTags)
 	const [saving, setSaving] = useState(false)
@@ -72,7 +74,7 @@ export const TagCloudSection = ({
 				selectedTags={localTags}
 				onTagsChange={handleTagsChange}
 				tableName={tableName}
-				disabled={false}
+				disabled={disabled}
 			/>
 		</Section>
 	)
