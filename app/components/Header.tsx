@@ -247,6 +247,11 @@ export const Header = () => {
 							</AccountMenuLink>
 						</AccountMenuItem>
 					)}
+					<AccountMenuItem>
+						<AccountMenuLink href="/whois" onClick={closeAccountMenu}>
+							All Members
+						</AccountMenuLink>
+					</AccountMenuItem>
 					<AccountMenuDivider />
 					<AccountMenuItem>
 						<AccountMenuButton onClick={handleSignOut}>Sign Out</AccountMenuButton>
