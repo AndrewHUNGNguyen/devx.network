@@ -3,6 +3,7 @@ import styled from "styled-components"
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { supabaseClient } from "../../lib/supabaseClient"
+import { updateProfileCache } from "../../lib/profileCache"
 import { PotionBackground } from "../components/PotionBackground"
 import { Button } from "../components/Button"
 
@@ -27,15 +28,22 @@ export default function Login() {
 			} = await supabaseClient.auth.getSession()
 
 			if (session?.user) {
-				// Get handle and redirect to handle-based URL
+				// Get handle and profile photo, cache in metadata, then redirect
 				const { data: profile } = await supabaseClient
 					.from("profiles")
-					.select("handle")
+					.select("handle, profile_photo")
 					.eq("user_id", session.user.id)
 					.single()
 
-				if (profile?.handle) {
-					router.push(`/whois?${profile.handle}`)
+				if (profile) {
+					// Cache profile info in user metadata
+					await updateProfileCache(profile.handle || null, profile.profile_photo || null)
+
+					if (profile.handle) {
+						router.push(`/whois?${profile.handle}`)
+					} else {
+						router.push("/setup")
+					}
 				} else {
 					router.push("/setup")
 				}

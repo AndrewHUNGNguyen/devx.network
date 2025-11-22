@@ -2,6 +2,7 @@
 import styled from "styled-components"
 import { useState } from "react"
 import { supabaseClient } from "../../lib/supabaseClient"
+import { updateProfileCache } from "../../lib/profileCache"
 import { PotionBackground } from "../components/PotionBackground"
 import { Nametag } from "../components/Nametag"
 import { TagCloudSection } from "../components/TagCloudSection"
@@ -175,6 +176,8 @@ export function ProfileDisplay({
 					.single()
 
 				if (profileData) {
+					// Update cache with latest profile info
+					await updateProfileCache(profileData.handle || null, profileData.profile_photo || null)
 					// Reload interests and skills
 					const { data: interestsData } = await supabaseClient
 						.from("profile_interests")

@@ -3,6 +3,7 @@ import styled from "styled-components"
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { supabaseClient } from "../../lib/supabaseClient"
+import { updateProfileCache } from "../../lib/profileCache"
 import { PotionBackground } from "../components/PotionBackground"
 import { Nametag } from "../components/Nametag"
 import { TextInput } from "../components/TextInput"
@@ -185,12 +186,13 @@ export default function Setup() {
 
 			if (!user) throw new Error("User not authenticated")
 
+			const handleValue = handle.toLowerCase().trim()
 			const { data: newProfile, error } = await supabaseClient
 				.from("profiles")
 				.insert({
 					user_id: user.id,
 					email: user.email,
-					handle: handle.toLowerCase().trim(),
+					handle: handleValue,
 					full_name: nametagData.fullName,
 					profile_photo: nametagData.profilePhoto,
 					title: nametagData.title || null,
@@ -201,8 +203,11 @@ export default function Setup() {
 
 			if (error) throw error
 
+			// Cache profile info in user metadata
+			await updateProfileCache(handleValue, nametagData.profilePhoto)
+
 			// Redirect to handle-based profile page
-			router.push(`/whois?${handle.toLowerCase().trim()}`)
+			router.push(`/whois?${handleValue}`)
 		} catch (err: any) {
 			console.error("Failed to create profile:", err)
 			// TODO: Show error message to user
