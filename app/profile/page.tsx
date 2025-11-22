@@ -6,6 +6,7 @@ import { supabaseClient } from "../../lib/supabaseClient"
 import { PotionBackground } from "../components/PotionBackground"
 import { Nametag } from "../components/Nametag"
 import { TagCloudSection } from "../components/TagCloudSection"
+import { LinkCloudSection } from "../components/LinkCloudSection"
 
 type ProfileData = {
 	id: number
@@ -16,12 +17,18 @@ type ProfileData = {
 	profilePhoto: string
 	interests: Tag[]
 	skills: Tag[]
+	links: Link[]
 }
 
 type Tag = {
 	id: number
 	name: string
 	approved: boolean
+}
+
+type Link = {
+	id: number
+	url: string
 }
 
 type NametagData = {
@@ -121,6 +128,19 @@ export default function Profile() {
 						approved: item.skills.approved
 					})) || []
 
+				// Load links
+				const { data: linksData } = await supabaseClient
+					.from("profile_links")
+					.select("id, url")
+					.eq("profile_id", profileData.id)
+					.order("created_at", { ascending: true })
+
+				const links: Link[] =
+					linksData?.map((item: any) => ({
+						id: item.id,
+						url: item.url
+					})) || []
+
 				setProfile({
 					id: profileData.id,
 					fullName: profileData.full_name,
@@ -129,7 +149,8 @@ export default function Profile() {
 					affiliation: profileData.affiliation || "",
 					profilePhoto: profileData.profile_photo || "",
 					interests,
-					skills
+					skills,
+					links
 				})
 			} else {
 				// No profile exists - redirect to setup
@@ -325,6 +346,19 @@ export default function Profile() {
 							approved: item.skills.approved
 						})) || []
 
+					// Reload links
+					const { data: linksData } = await supabaseClient
+						.from("profile_links")
+						.select("id, url")
+						.eq("profile_id", currentProfileId)
+						.order("created_at", { ascending: true })
+
+					const links: Link[] =
+						linksData?.map((item: any) => ({
+							id: item.id,
+							url: item.url
+						})) || []
+
 					setProfile({
 						id: profileData.id,
 						fullName: profileData.full_name,
@@ -333,7 +367,8 @@ export default function Profile() {
 						affiliation: profileData.affiliation || "",
 						profilePhoto: profileData.profile_photo || "",
 						interests,
-						skills
+						skills,
+						links
 					})
 				}
 			}
@@ -408,6 +443,41 @@ export default function Profile() {
 		}
 	}
 
+	const handleSaveLinks = async (links: Link[]) => {
+		if (!profileId || !supabaseClient) return
+
+		// Delete existing links
+		await supabaseClient.from("profile_links").delete().eq("profile_id", profileId)
+
+		// Insert new links
+		if (links.length > 0) {
+			const linksToInsert = links.map((link) => ({
+				profile_id: profileId,
+				url: link.url
+			}))
+
+			const { error } = await supabaseClient.from("profile_links").insert(linksToInsert)
+			if (error) throw error
+		}
+
+		// Reload links
+		const { data: linksData } = await supabaseClient
+			.from("profile_links")
+			.select("id, url")
+			.eq("profile_id", profileId)
+			.order("created_at", { ascending: true })
+
+		const updatedLinks: Link[] =
+			linksData?.map((item: any) => ({
+				id: item.id,
+				url: item.url
+			})) || []
+
+		if (profile) {
+			setProfile({ ...profile, links: updatedLinks })
+		}
+	}
+
 	if (loading) {
 		return (
 			<>
@@ -459,6 +529,12 @@ export default function Profile() {
 
 					{profileId && (
 						<>
+							<LinkCloudSection
+								title="Links"
+								selectedLinks={profile.links || []}
+								onLinksChange={handleSaveLinks}
+								profileId={profileId}
+							/>
 							<TagCloudSection
 								title="Interests"
 								selectedTags={profile.interests || []}
