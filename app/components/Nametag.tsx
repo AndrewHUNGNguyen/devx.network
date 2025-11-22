@@ -19,6 +19,8 @@ type NametagProps = {
 	uploading?: boolean
 	saving?: boolean
 	initialEditing?: boolean
+	forcedEditMode?: boolean
+	onDataChange?: (data: NametagData) => void
 }
 
 export const Nametag = ({
@@ -27,15 +29,27 @@ export const Nametag = ({
 	onImageUpload,
 	uploading = false,
 	saving = false,
-	initialEditing = false
+	initialEditing = false,
+	forcedEditMode = false,
+	onDataChange
 }: NametagProps) => {
-	const [isEditing, setIsEditing] = useState(initialEditing)
+	const [isEditing, setIsEditing] = useState(initialEditing || forcedEditMode)
 	const [formData, setFormData] = useState<NametagData>(data)
 	const [rotation, setRotation] = useState({ x: 0, y: 0 })
 	const [openTooltip, setOpenTooltip] = useState<string | null>(null)
 	const fileInputRef = useRef<HTMLInputElement>(null)
 	const containerRef = useRef<HTMLDivElement>(null)
 	const tooltipRefs = useRef<{ [key: string]: HTMLDivElement | null }>({})
+
+	// In forced edit mode, always keep editing enabled
+	const effectiveEditing = forcedEditMode ? true : isEditing
+
+	// Notify parent of data changes in forced edit mode
+	useEffect(() => {
+		if (forcedEditMode && onDataChange) {
+			onDataChange(formData)
+		}
+	}, [formData, forcedEditMode, onDataChange])
 
 	// Update formData when data prop changes (e.g., after save)
 	// Use a ref to track if we have a local photo upload that shouldn't be overwritten
@@ -116,7 +130,11 @@ export const Nametag = ({
 		try {
 			const url = await onImageUpload(file)
 			hasLocalPhotoRef.current = true
-			setFormData((prev) => ({ ...prev, profilePhoto: url }))
+			const newData = { ...formData, profilePhoto: url }
+			setFormData(newData)
+			if (forcedEditMode && onDataChange) {
+				onDataChange(newData)
+			}
 		} catch (error) {
 			console.error("Error uploading image:", error)
 			// Don't re-throw - just log the error
@@ -140,8 +158,8 @@ export const Nametag = ({
 		setIsEditing(false)
 	}
 
-	// Read-only mode
-	if (!isEditing) {
+	// Read-only mode (skip if forced edit mode)
+	if (!effectiveEditing) {
 		return (
 			<>
 				<NametagContainer
@@ -198,19 +216,21 @@ export const Nametag = ({
 
 	// Edit mode
 	return (
-		<Form onSubmit={handleSave}>
+		<Form onSubmit={forcedEditMode ? undefined : handleSave}>
 			<NametagContainer ref={containerRef}>
 				<NametagHole />
-				<SaveButtonWrapper>
-					<Button
-						type="submit"
-						variant="tertiary"
-						size="small"
-						disabled={saving || uploading || !formData.profilePhoto || !formData.fullName.trim()}
-					>
-						{saving ? "Saving..." : "Save"}
-					</Button>
-				</SaveButtonWrapper>
+				{!forcedEditMode && (
+					<SaveButtonWrapper>
+						<Button
+							type="submit"
+							variant="tertiary"
+							size="small"
+							disabled={saving || uploading || !formData.profilePhoto || !formData.fullName.trim()}
+						>
+							{saving ? "Saving..." : "Save"}
+						</Button>
+					</SaveButtonWrapper>
+				)}
 				<NametagLeft>
 					<PhotoFrame onClick={() => fileInputRef.current?.click()}>
 						{uploading ? (
@@ -244,7 +264,13 @@ export const Nametag = ({
 									variant="secondary"
 									size="default"
 									value={formData.fullName}
-									onChange={(e) => setFormData((prev) => ({ ...prev, fullName: e.target.value }))}
+									onChange={(e) => {
+										const newData = { ...formData, fullName: e.target.value }
+										setFormData(newData)
+										if (forcedEditMode && onDataChange) {
+											onDataChange(newData)
+										}
+									}}
 									placeholder="Your Name"
 									required
 								/>
@@ -259,7 +285,13 @@ export const Nametag = ({
 									variant="secondary"
 									size="default"
 									value={formData.title}
-									onChange={(e) => setFormData((prev) => ({ ...prev, title: e.target.value }))}
+									onChange={(e) => {
+										const newData = { ...formData, title: e.target.value }
+										setFormData(newData)
+										if (forcedEditMode && onDataChange) {
+											onDataChange(newData)
+										}
+									}}
 									placeholder="Title"
 									required
 								/>
@@ -286,9 +318,13 @@ export const Nametag = ({
 									variant="secondary"
 									size="default"
 									value={formData.affiliation}
-									onChange={(e) =>
-										setFormData((prev) => ({ ...prev, affiliation: e.target.value }))
-									}
+									onChange={(e) => {
+										const newData = { ...formData, affiliation: e.target.value }
+										setFormData(newData)
+										if (forcedEditMode && onDataChange) {
+											onDataChange(newData)
+										}
+									}}
 									placeholder="Affiliation"
 									required
 								/>

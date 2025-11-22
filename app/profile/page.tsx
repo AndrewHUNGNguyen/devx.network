@@ -132,22 +132,9 @@ export default function Profile() {
 					skills
 				})
 			} else {
-				// New profile - populate from OAuth
-				setProfile({
-					id: 0,
-					fullName:
-						user.user_metadata?.full_name ||
-						user.user_metadata?.name ||
-						user.user_metadata?.display_name ||
-						user.email?.split("@")[0] ||
-						"",
-					email: user.email || "",
-					title: "",
-					affiliation: "",
-					profilePhoto: "", // Default to empty so camera icon shows
-					interests: [],
-					skills: []
-				})
+				// No profile exists - redirect to setup
+				router.push("/setup")
+				return
 			}
 			setLoading(false)
 		}
