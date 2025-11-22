@@ -7,9 +7,16 @@ import { updateProfileCache } from "../../lib/profileCache"
 import { PotionBackground } from "../components/PotionBackground"
 import { Button } from "../components/Button"
 import { PageContainer } from "../components/PageContainer"
+import { TextInput } from "../components/TextInput"
+import { SuccessMessage } from "../components/SuccessMessage"
 
 export default function Login() {
 	const [error, setError] = useState<string | null>(null)
+	const [email, setEmail] = useState("")
+	const [password, setPassword] = useState("")
+	const [signingIn, setSigningIn] = useState(false)
+	const [signingUp, setSigningUp] = useState(false)
+	const [signupSuccess, setSignupSuccess] = useState(false)
 	const router = useRouter()
 
 	useEffect(() => {
@@ -76,6 +83,7 @@ export default function Login() {
 
 	const handleLogin = async (provider: "google" | "github") => {
 		try {
+			setError(null)
 			// Get redirect URL from query params to preserve it through OAuth flow
 			const searchParams = new URLSearchParams(window.location.search)
 			const redirectUrl = searchParams.get("redirect")
@@ -102,6 +110,94 @@ export default function Login() {
 		}
 	}
 
+	const handleEmailSignIn = async (e: React.FormEvent) => {
+		e.preventDefault()
+		setError(null)
+		setSigningIn(true)
+
+		try {
+			// Get redirect URL from query params
+			const searchParams = new URLSearchParams(window.location.search)
+			const redirectUrl = searchParams.get("redirect")
+
+			// Sign in with email and password
+			const { data, error: signInError } = await supabaseClient.auth.signInWithPassword({
+				email,
+				password
+			})
+
+			if (signInError) throw signInError
+
+			// Get handle and profile photo, cache in metadata, then redirect
+			if (data.user) {
+				const { data: profile } = await supabaseClient
+					.from("profiles")
+					.select("handle, profile_photo")
+					.eq("user_id", data.user.id)
+					.maybeSingle()
+
+				if (profile) {
+					// Cache profile info in user metadata
+					await updateProfileCache(profile.handle || null, profile.profile_photo || null)
+
+					// If redirect URL is provided, use it (user has profile, so they can go to redirect)
+					// Otherwise, redirect to setup if no handle, or to profile if handle exists
+					if (redirectUrl) {
+						router.push(decodeURIComponent(redirectUrl))
+					} else if (profile.handle) {
+						router.push(`/whois?${profile.handle}`)
+					} else {
+						// No handle - redirect to setup
+						router.push("/setup")
+					}
+				} else {
+					// No profile - redirect to setup with redirect URL
+					const setupUrl = redirectUrl
+						? `/setup?redirect=${encodeURIComponent(redirectUrl)}`
+						: "/setup"
+					router.push(setupUrl)
+				}
+			}
+		} catch (err: any) {
+			setError(err.message)
+		} finally {
+			setSigningIn(false)
+		}
+	}
+
+	const handleEmailSignUp = async (e: React.FormEvent | React.MouseEvent) => {
+		e.preventDefault()
+		setError(null)
+		setSigningUp(true)
+
+		try {
+			// Get redirect URL from query params
+			const searchParams = new URLSearchParams(window.location.search)
+			const redirectUrl = searchParams.get("redirect")
+
+			// Sign up with email and password
+			const { data, error: signUpError } = await supabaseClient.auth.signUp({
+				email,
+				password,
+				options: {
+					emailRedirectTo: redirectUrl
+						? `${window.location.origin}/setup?redirect=${encodeURIComponent(redirectUrl)}`
+						: `${window.location.origin}/setup`
+				}
+			})
+
+			if (signUpError) throw signUpError
+
+			// Email confirmation required - show success message
+			setError(null)
+			setSignupSuccess(true)
+		} catch (err: any) {
+			setError(err.message)
+		} finally {
+			setSigningUp(false)
+		}
+	}
+
 	return (
 		<>
 			<BackgroundContainer>
@@ -109,20 +205,96 @@ export default function Login() {
 			</BackgroundContainer>
 			<Container>
 				<PageContainer alignItems="center">
-					<Title>Sign In</Title>
-					<Subtitle>Join the DEVx community</Subtitle>
+					{signupSuccess ? (
+						<SuccessContainer>
+							<SuccessMessage
+								title="Check your email"
+								message="We've sent you a verification email. Please check your inbox and click the link to verify your account and complete the signup process."
+							/>
+						</SuccessContainer>
+					) : (
+						<>
+							<Title>Sign In</Title>
+							<Subtitle>Join the DEVx community</Subtitle>
 
-					{error && <ErrorMessage>{error}</ErrorMessage>}
+							{error && <ErrorMessage>{error}</ErrorMessage>}
 
-					<ButtonContainer>
-						<Button onClick={() => handleLogin("google")} size="default" variant="primary">
-							Continue with Google
-						</Button>
+							<ButtonContainer>
+								<Button onClick={() => handleLogin("google")} size="default" variant="primary">
+									Continue with Google
+								</Button>
 
-						<Button onClick={() => handleLogin("github")} size="default" variant="secondary">
-							Continue with GitHub
-						</Button>
-					</ButtonContainer>
+								<Button onClick={() => handleLogin("github")} size="default" variant="secondary">
+									Continue with GitHub
+								</Button>
+							</ButtonContainer>
+
+							<Divider />
+
+							<EmailForm
+								onSubmit={(e) => {
+									e.preventDefault()
+									handleEmailSignIn(e)
+								}}
+							>
+								<FormTitle>Sign In with Email</FormTitle>
+								<InputGroup>
+									<TextInput
+										type="email"
+										variant="secondary"
+										size="default"
+										value={email}
+										onChange={(e) => setEmail(e.target.value)}
+										placeholder="Email"
+										required
+										disabled={signingIn || signingUp}
+									/>
+								</InputGroup>
+								<InputGroup>
+									<TextInput
+										type="password"
+										variant="secondary"
+										size="default"
+										value={password}
+										onChange={(e) => setPassword(e.target.value)}
+										placeholder="Password"
+										required
+										minLength={6}
+										disabled={signingIn || signingUp}
+									/>
+									<PasswordHelpText>
+										Password must be at least 6 characters with lowercase, uppercase, digits, and
+										symbols
+									</PasswordHelpText>
+								</InputGroup>
+								<ButtonWrapper>
+									<Button
+										type="submit"
+										size="default"
+										variant="primary"
+										disabled={signingIn || signingUp || !email || !password}
+									>
+										{signingIn ? "Signing in..." : "Sign In"}
+									</Button>
+									<Button
+										type="button"
+										size="default"
+										variant="secondary"
+										disabled={signingIn || signingUp || !email || !password}
+										onClick={(e) => {
+											if (e) {
+												e.preventDefault()
+												e.stopPropagation()
+											}
+											handleEmailSignUp(e!)
+										}}
+									>
+										{signingUp ? "Signing up..." : "Sign Up"}
+									</Button>
+								</ButtonWrapper>
+							</EmailForm>
+						</>
+					)}
 				</PageContainer>
 			</Container>
 		</>
@@ -179,5 +351,58 @@ const ErrorMessage = styled.div`
 	border-radius: 0.5rem;
 	font-size: 0.875rem;
 	text-align: center;
+	width: 100%;
+`
+
+const Divider = styled.hr`
+	border: none;
+	border-top: 1px solid rgba(255, 255, 255, 0.2);
+	width: 100%;
+`
+
+const EmailForm = styled.form`
+	display: flex;
+	flex-direction: column;
+	gap: 1rem;
+	width: 100%;
+`
+
+const ButtonWrapper = styled.div`
+	display: flex;
+	flex-direction: row;
+	gap: 1rem;
+	justify-content: center;
+	width: 100%;
+	margin-top: 1rem;
+
+	button {
+		flex: 1;
+		justify-content: center;
+	}
+`
+
+const FormTitle = styled.h2`
+	font-size: 1.25rem;
+	font-weight: 600;
+	color: rgba(255, 255, 255, 0.9);
+	margin: 0;
+	text-align: center;
+`
+
+const InputGroup = styled.div`
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+	gap: 0.5rem;
+`
+
+const PasswordHelpText = styled.p`
+	color: rgba(255, 255, 255, 0.5);
+	font-size: 0.75rem;
+	margin: 0;
+	line-height: 1.4;
+`
+
+const SuccessContainer = styled.div`
 	width: 100%;
 `

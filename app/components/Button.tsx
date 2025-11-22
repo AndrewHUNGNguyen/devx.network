@@ -14,7 +14,7 @@ interface ButtonProps {
 	rel?: string
 	type?: "button" | "submit" | "reset"
 	disabled?: boolean
-	onClick?: () => void
+	onClick?: (e?: React.MouseEvent<HTMLButtonElement | HTMLAnchorElement>) => void
 }
 
 // Components //

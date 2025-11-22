@@ -152,17 +152,15 @@ export const Header = () => {
 							{!userLoading && (
 								<>
 									{user ? (
-										<>
-											{userHandle && profilePhoto ? (
-												<ProfileButton onClick={toggleAccountMenu}>
-													<ProfileImage src={profilePhoto} alt="Profile" />
-												</ProfileButton>
+										<ProfileButton onClick={toggleAccountMenu}>
+											{profilePhoto ? (
+												<ProfileImage src={profilePhoto} alt="Profile" />
 											) : (
-												<Button href="/setup" variant="secondary">
-													Get Nametag
-												</Button>
+												<ProfilePlaceholder>
+													{userHandle ? userHandle.charAt(0).toUpperCase() : "?"}
+												</ProfilePlaceholder>
 											)}
-										</>
+										</ProfileButton>
 									) : (
 										<Button href="/login" variant="tertiary">
 											Sign In
@@ -234,25 +232,13 @@ export const Header = () => {
 					</CloseButton>
 				</RightSidebarHeader>
 				<AccountMenuContent>
-					{userHandle ? (
-						<AccountMenuItem>
-							<AccountMenuLink href={`/whois?${userHandle}`} onClick={closeAccountMenu}>
-								Nametag
-							</AccountMenuLink>
-						</AccountMenuItem>
-					) : (
+					{!userHandle && (
 						<AccountMenuItem>
 							<AccountMenuLink href="/setup" onClick={closeAccountMenu}>
 								Get Nametag
 							</AccountMenuLink>
 						</AccountMenuItem>
 					)}
-					<AccountMenuItem>
-						<AccountMenuLink href="/whois" onClick={closeAccountMenu}>
-							All Members
-						</AccountMenuLink>
-					</AccountMenuItem>
-					<AccountMenuDivider />
 					<AccountMenuItem>
 						<AccountMenuButton onClick={handleSignOut}>Sign Out</AccountMenuButton>
 					</AccountMenuItem>
@@ -375,6 +361,20 @@ const ProfileImage = styled.img`
 	object-fit: cover;
 	border-radius: 50%;
 	border: 2px solid rgba(255, 255, 255, 0.2);
+`
+
+const ProfilePlaceholder = styled.div`
+	width: 100%;
+	height: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background-color: rgba(255, 255, 255, 0.1);
+	border-radius: 50%;
+	border: 2px solid rgba(255, 255, 255, 0.2);
+	color: white;
+	font-size: 1rem;
+	font-weight: 600;
 `
 
 const AccountMenuContent = styled.ul`
