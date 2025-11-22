@@ -91,7 +91,7 @@ export default function Home() {
 					<PotionBackground />
 				</ErrorBoundary>
 			</BackgroundContainer>
-			<Main $ignoreHeader>
+			<Main>
 				<Hero>
 					<HeroSection
 						ref={heroRef}
@@ -394,8 +394,7 @@ export default function Home() {
 	)
 }
 
-const Main = styled.main<{ $ignoreHeader?: boolean }>`
-	margin-top: ${({ $ignoreHeader = false }) => ($ignoreHeader ? "-72px" : "0")};
+const Main = styled.main`
 	color: white;
 	display: flex;
 	flex-direction: column;

@@ -496,8 +496,9 @@ const BackgroundContainer = styled.section`
 const Container = styled.main`
 	min-height: 100vh;
 	display: flex;
+	flex-direction: column;
 	align-items: center;
-	justify-content: center;
+	justify-content: flex-start;
 	padding: 2rem;
 `
 

@@ -94,7 +94,7 @@ export default function Doorbell() {
 					<PotionBackground />
 				</ErrorBoundary>
 			</BackgroundContainer>
-			<Main $ignoreHeader>
+			<Main>
 				<Hero>
 					<HeadingSection>
 						<Heading>Welcome to</Heading>
@@ -140,8 +140,7 @@ export default function Doorbell() {
 
 // Styled Components //
 
-const Main = styled.main<{ $ignoreHeader?: boolean }>`
-	margin-top: ${({ $ignoreHeader = false }) => ($ignoreHeader ? "-72px" : "0")};
+const Main = styled.main`
 	color: white;
 	display: flex;
 	flex-direction: column;
