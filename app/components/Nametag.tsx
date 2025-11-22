@@ -220,142 +220,148 @@ export const Nametag = ({
 	}
 
 	// Edit mode
-	return (
-		<Form onSubmit={forcedEditMode ? undefined : handleSave}>
-			<NametagContainer ref={containerRef}>
-				<NametagHole />
-				{!forcedEditMode && (
-					<SaveButtonWrapper>
-						<Button
-							type="submit"
-							variant="tertiary"
-							size="small"
-							disabled={saving || uploading || !formData.profilePhoto || !formData.fullName.trim()}
-						>
-							{saving ? "Saving..." : "Save"}
-						</Button>
-					</SaveButtonWrapper>
-				)}
-				<NametagLeft>
-					<PhotoFrame onClick={readOnly ? undefined : () => fileInputRef.current?.click()}>
-						{uploading ? (
-							<PlaceholderAvatar>Loading...</PlaceholderAvatar>
-						) : formData.profilePhoto ? (
-							<Avatar src={formData.profilePhoto} alt="Profile" />
-						) : (
-							<PlaceholderAvatar>
-								<CameraIcon color="rgba(255, 255, 255, 0.5)" />
-							</PlaceholderAvatar>
-						)}
-						{!readOnly && (
-							<PhotoOverlay>
-								<CameraIcon color="white" />
-							</PhotoOverlay>
-						)}
-					</PhotoFrame>
-					{!readOnly && (
-						<input
-							type="file"
-							ref={fileInputRef}
-							onChange={handleImageUpload}
-							accept="image/*"
-							style={{ display: "none" }}
-						/>
+	const content = (
+		<NametagContainer ref={containerRef}>
+			<NametagHole />
+			{!forcedEditMode && (
+				<SaveButtonWrapper>
+					<Button
+						type="submit"
+						variant="tertiary"
+						size="small"
+						disabled={saving || uploading || !formData.profilePhoto || !formData.fullName.trim()}
+					>
+						{saving ? "Saving..." : "Save"}
+					</Button>
+				</SaveButtonWrapper>
+			)}
+			<NametagLeft>
+				<PhotoFrame onClick={readOnly ? undefined : () => fileInputRef.current?.click()}>
+					{uploading ? (
+						<PlaceholderAvatar>Loading...</PlaceholderAvatar>
+					) : formData.profilePhoto ? (
+						<Avatar src={formData.profilePhoto} alt="Profile" />
+					) : (
+						<PlaceholderAvatar>
+							<CameraIcon color="rgba(255, 255, 255, 0.5)" />
+						</PlaceholderAvatar>
 					)}
-				</NametagLeft>
+					{!readOnly && (
+						<PhotoOverlay>
+							<CameraIcon color="white" />
+						</PhotoOverlay>
+					)}
+				</PhotoFrame>
+				{!readOnly && (
+					<input
+						type="file"
+						ref={fileInputRef}
+						onChange={handleImageUpload}
+						accept="image/*"
+						style={{ display: "none" }}
+					/>
+				)}
+			</NametagLeft>
 
-				<NametagRight>
-					<NametagInputGroup>
-						<NametagLabel>HELLO my name is</NametagLabel>
-						<InputWithHelpContainer>
-							<NametagInputWrapper $fontSize="1.5rem" $fontWeight="700">
-								<TextInput
-									variant="secondary"
-									size="default"
-									value={formData.fullName}
-									onChange={(e) => {
-										const newData = { ...formData, fullName: e.target.value }
-										setFormData(newData)
-										if (forcedEditMode && onDataChange) {
-											onDataChange(newData)
-										}
-									}}
-									placeholder="Your Name"
-									required
-								/>
-							</NametagInputWrapper>
-						</InputWithHelpContainer>
-					</NametagInputGroup>
+			<NametagRight>
+				<NametagInputGroup>
+					<NametagLabel>HELLO my name is</NametagLabel>
+					<InputWithHelpContainer>
+						<NametagInputWrapper $fontSize="1.5rem" $fontWeight="700">
+							<TextInput
+								variant="secondary"
+								size="default"
+								value={formData.fullName}
+								onChange={(e) => {
+									const newData = { ...formData, fullName: e.target.value }
+									setFormData(newData)
+									if (forcedEditMode && onDataChange) {
+										onDataChange(newData)
+									}
+								}}
+								placeholder="Your Name"
+								required
+							/>
+						</NametagInputWrapper>
+					</InputWithHelpContainer>
+				</NametagInputGroup>
 
-					<NametagInputGroup>
-						<InputWithHelpContainer>
-							<NametagInputWrapper $fontSize="1.1rem" $fontWeight="500">
-								<TextInput
-									variant="secondary"
-									size="default"
-									value={formData.title}
-									onChange={(e) => {
-										const newData = { ...formData, title: e.target.value }
-										setFormData(newData)
-										if (forcedEditMode && onDataChange) {
-											onDataChange(newData)
-										}
+				<NametagInputGroup>
+					<InputWithHelpContainer>
+						<NametagInputWrapper $fontSize="1.1rem" $fontWeight="500">
+							<TextInput
+								variant="secondary"
+								size="default"
+								value={formData.title}
+								onChange={(e) => {
+									const newData = { ...formData, title: e.target.value }
+									setFormData(newData)
+									if (forcedEditMode && onDataChange) {
+										onDataChange(newData)
+									}
+								}}
+								placeholder="Title"
+								required
+							/>
+						</NametagInputWrapper>
+						<HelpIconWrapper onClick={() => toggleTooltip("title")}>
+							<QuestionIcon />
+							{openTooltip === "title" && (
+								<Tooltip
+									ref={(el) => {
+										tooltipRefs.current["title"] = el
 									}}
-									placeholder="Title"
-									required
-								/>
-							</NametagInputWrapper>
-							<HelpIconWrapper onClick={() => toggleTooltip("title")}>
-								<QuestionIcon />
-								{openTooltip === "title" && (
-									<Tooltip
-										ref={(el) => {
-											tooltipRefs.current["title"] = el
-										}}
-									>
-										Your job title or role.
-									</Tooltip>
-								)}
-							</HelpIconWrapper>
-						</InputWithHelpContainer>
-					</NametagInputGroup>
+								>
+									Your job title or role.
+								</Tooltip>
+							)}
+						</HelpIconWrapper>
+					</InputWithHelpContainer>
+				</NametagInputGroup>
 
-					<NametagInputGroup>
-						<InputWithHelpContainer>
-							<NametagInputWrapper $fontSize="1.1rem" $fontWeight="400">
-								<TextInput
-									variant="secondary"
-									size="default"
-									value={formData.affiliation}
-									onChange={(e) => {
-										const newData = { ...formData, affiliation: e.target.value }
-										setFormData(newData)
-										if (forcedEditMode && onDataChange) {
-											onDataChange(newData)
-										}
+				<NametagInputGroup>
+					<InputWithHelpContainer>
+						<NametagInputWrapper $fontSize="1.1rem" $fontWeight="400">
+							<TextInput
+								variant="secondary"
+								size="default"
+								value={formData.affiliation}
+								onChange={(e) => {
+									const newData = { ...formData, affiliation: e.target.value }
+									setFormData(newData)
+									if (forcedEditMode && onDataChange) {
+										onDataChange(newData)
+									}
+								}}
+								placeholder="Affiliation"
+								required
+							/>
+						</NametagInputWrapper>
+						<HelpIconWrapper onClick={() => toggleTooltip("affiliation")}>
+							<QuestionIcon />
+							{openTooltip === "affiliation" && (
+								<Tooltip
+									ref={(el) => {
+										tooltipRefs.current["affiliation"] = el
 									}}
-									placeholder="Affiliation"
-									required
-								/>
-							</NametagInputWrapper>
-							<HelpIconWrapper onClick={() => toggleTooltip("affiliation")}>
-								<QuestionIcon />
-								{openTooltip === "affiliation" && (
-									<Tooltip
-										ref={(el) => {
-											tooltipRefs.current["affiliation"] = el
-										}}
-									>
-										Your company, organization, or school name.
-									</Tooltip>
-								)}
-							</HelpIconWrapper>
-						</InputWithHelpContainer>
-					</NametagInputGroup>
-				</NametagRight>
-			</NametagContainer>
-		</Form>
+								>
+									Your company, organization, or school name.
+								</Tooltip>
+							)}
+						</HelpIconWrapper>
+					</InputWithHelpContainer>
+				</NametagInputGroup>
+			</NametagRight>
+		</NametagContainer>
 	)
+
+	// When forcedEditMode is true, don't wrap in form (parent form handles submission)
+	if (forcedEditMode) {
+		return content
+	}
+
+	// Otherwise, wrap in form for standalone editing
+	return <Form onSubmit={handleSave}>{content}</Form>
 }
 
 // Styled Components

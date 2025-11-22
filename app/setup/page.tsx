@@ -126,19 +126,20 @@ export default function Setup() {
 			setCheckingHandle(true)
 
 			try {
-				const { data, error } = await supabaseClient!
+				const { data, error } = await supabaseClient
 					.from("profiles")
 					.select("handle")
 					.eq("handle", handle.toLowerCase())
-					.single()
+					.maybeSingle()
 
-				if (error && error.code === "PGRST116") {
+				if (error) {
+					// If there's an error (other than not found), mark as unavailable
+					setHandleAvailable(false)
+				} else if (!data) {
 					// No profile found with this handle - available
 					setHandleAvailable(true)
-				} else if (data) {
-					// Handle already exists
-					setHandleAvailable(false)
 				} else {
+					// Handle already exists
 					setHandleAvailable(false)
 				}
 			} catch (err) {
@@ -202,21 +203,51 @@ export default function Setup() {
 			if (!user) throw new Error("User not authenticated")
 
 			const handleValue = handle.toLowerCase().trim()
-			const { data: newProfile, error } = await supabaseClient
-				.from("profiles")
-				.insert({
-					user_id: user.id,
-					email: user.email,
-					handle: handleValue,
-					full_name: nametagData.fullName,
-					profile_photo: nametagData.profilePhoto,
-					title: nametagData.title || null,
-					affiliation: nametagData.affiliation || null
-				})
-				.select()
-				.single()
 
-			if (error) throw error
+			// Check if profile already exists for this user
+			const { data: existingProfile } = await supabaseClient
+				.from("profiles")
+				.select("id, handle")
+				.eq("user_id", user.id)
+				.maybeSingle()
+
+			let profileData
+			if (existingProfile) {
+				// Update existing profile
+				const { data, error } = await supabaseClient
+					.from("profiles")
+					.update({
+						handle: handleValue,
+						full_name: nametagData.fullName,
+						profile_photo: nametagData.profilePhoto,
+						title: nametagData.title || null,
+						affiliation: nametagData.affiliation || null
+					})
+					.eq("user_id", user.id)
+					.select()
+					.single()
+
+				if (error) throw error
+				profileData = data
+			} else {
+				// Create new profile
+				const { data, error } = await supabaseClient
+					.from("profiles")
+					.insert({
+						user_id: user.id,
+						email: user.email,
+						handle: handleValue,
+						full_name: nametagData.fullName,
+						profile_photo: nametagData.profilePhoto,
+						title: nametagData.title || null,
+						affiliation: nametagData.affiliation || null
+					})
+					.select()
+					.single()
+
+				if (error) throw error
+				profileData = data
+			}
 
 			// Cache profile info in user metadata
 			await updateProfileCache(handleValue, nametagData.profilePhoto)
@@ -274,7 +305,7 @@ export default function Setup() {
 									onChange={(e) => setHandle(e.target.value.toLowerCase())}
 									placeholder="your-handle"
 									required
-									pattern="[a-z0-9_-]+"
+									pattern="[a-z0-9_-]{3,30}"
 									minLength={3}
 									maxLength={30}
 								/>
