@@ -33,11 +33,18 @@ export default function Setup() {
 
 	useEffect(() => {
 		const checkAuth = async () => {
+			// Get redirect URL from query params
+			const searchParams = new URLSearchParams(window.location.search)
+			const redirectUrl = searchParams.get("redirect")
+
 			// Clean up OAuth callback tokens from URL
 			if (typeof window !== "undefined") {
 				const hashParams = new URLSearchParams(window.location.hash.substring(1))
 				if (hashParams.get("access_token") || hashParams.get("error")) {
-					window.history.replaceState(null, "", window.location.pathname + window.location.search)
+					const newUrl = redirectUrl
+						? `${window.location.pathname}?redirect=${encodeURIComponent(redirectUrl)}`
+						: window.location.pathname
+					window.history.replaceState(null, "", newUrl)
 				}
 			}
 
@@ -46,7 +53,10 @@ export default function Setup() {
 			} = await supabaseClient.auth.getUser()
 
 			if (!user) {
-				router.push("/login")
+				const loginUrl = redirectUrl
+					? `/login?redirect=${encodeURIComponent(redirectUrl)}`
+					: "/login"
+				router.push(loginUrl)
 				return
 			}
 
@@ -58,7 +68,7 @@ export default function Setup() {
 				.single()
 
 			if (existingProfile) {
-				// Get handle and redirect to handle-based URL
+				// Get handle and redirect to handle-based URL or redirect URL
 				const { data: profileWithHandle } = await supabaseClient
 					.from("profiles")
 					.select("handle")
@@ -66,7 +76,12 @@ export default function Setup() {
 					.single()
 
 				if (profileWithHandle?.handle) {
-					router.push(`/whois?${profileWithHandle.handle}`)
+					// If redirect URL is provided, use it; otherwise go to profile
+					if (redirectUrl) {
+						router.push(decodeURIComponent(redirectUrl))
+					} else {
+						router.push(`/whois?${profileWithHandle.handle}`)
+					}
 				} else {
 					// User has profile but no handle - stay on setup to create handle
 					setLoading(false)
@@ -206,8 +221,16 @@ export default function Setup() {
 			// Cache profile info in user metadata
 			await updateProfileCache(handleValue, nametagData.profilePhoto)
 
-			// Redirect to handle-based profile page
-			router.push(`/whois?${handleValue}`)
+			// Get redirect URL from query params
+			const searchParams = new URLSearchParams(window.location.search)
+			const redirectUrl = searchParams.get("redirect")
+
+			// Redirect to redirect URL if provided, otherwise to profile page
+			if (redirectUrl) {
+				router.push(decodeURIComponent(redirectUrl))
+			} else {
+				router.push(`/whois?${handleValue}`)
+			}
 		} catch (err: any) {
 			console.error("Failed to create profile:", err)
 			// TODO: Show error message to user

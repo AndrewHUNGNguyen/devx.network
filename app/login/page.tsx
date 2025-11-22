@@ -6,6 +6,7 @@ import { supabaseClient } from "../../lib/supabaseClient"
 import { updateProfileCache } from "../../lib/profileCache"
 import { PotionBackground } from "../components/PotionBackground"
 import { Button } from "../components/Button"
+import { PageContainer } from "../components/PageContainer"
 
 export default function Login() {
 	const [error, setError] = useState<string | null>(null)
@@ -14,6 +15,18 @@ export default function Login() {
 	useEffect(() => {
 		// Handle OAuth callback and check for existing session
 		const checkAuth = async () => {
+			// Get redirect URL from query params or localStorage (stored before OAuth)
+			const searchParams = new URLSearchParams(window.location.search)
+			let redirectUrl = searchParams.get("redirect")
+
+			// If no redirect in URL, check localStorage (might have been stored before OAuth)
+			if (!redirectUrl && typeof window !== "undefined") {
+				redirectUrl = localStorage.getItem("auth_redirect") || null
+				if (redirectUrl) {
+					localStorage.removeItem("auth_redirect")
+				}
+			}
+
 			// Check for OAuth callback in URL hash
 			const hashParams = new URLSearchParams(window.location.hash.substring(1))
 			if (hashParams.get("access_token") || hashParams.get("error")) {
@@ -39,13 +52,22 @@ export default function Login() {
 					// Cache profile info in user metadata
 					await updateProfileCache(profile.handle || null, profile.profile_photo || null)
 
-					if (profile.handle) {
+					// If redirect URL is provided, use it (user has profile, so they can go to redirect)
+					// Otherwise, redirect to setup if no handle, or to profile if handle exists
+					if (redirectUrl) {
+						router.push(decodeURIComponent(redirectUrl))
+					} else if (profile.handle) {
 						router.push(`/whois?${profile.handle}`)
 					} else {
+						// No handle - redirect to setup
 						router.push("/setup")
 					}
 				} else {
-					router.push("/setup")
+					// No profile - redirect to setup with redirect URL
+					const setupUrl = redirectUrl
+						? `/setup?redirect=${encodeURIComponent(redirectUrl)}`
+						: "/setup"
+					router.push(setupUrl)
 				}
 			}
 		}
@@ -54,10 +76,24 @@ export default function Login() {
 
 	const handleLogin = async (provider: "google" | "github") => {
 		try {
+			// Get redirect URL from query params to preserve it through OAuth flow
+			const searchParams = new URLSearchParams(window.location.search)
+			const redirectUrl = searchParams.get("redirect")
+
+			// Store redirect URL in localStorage before OAuth (in case query params get lost)
+			if (redirectUrl && typeof window !== "undefined") {
+				localStorage.setItem("auth_redirect", redirectUrl)
+			}
+
+			// Include redirect in the OAuth callback URL
+			const loginUrl = redirectUrl
+				? `${window.location.origin}/login?redirect=${encodeURIComponent(redirectUrl)}`
+				: `${window.location.origin}/login`
+
 			const { error } = await supabaseClient!.auth.signInWithOAuth({
 				provider,
 				options: {
-					redirectTo: `${window.location.origin}/login`
+					redirectTo: loginUrl
 				}
 			})
 			if (error) throw error
@@ -72,7 +108,7 @@ export default function Login() {
 				<PotionBackground />
 			</BackgroundContainer>
 			<Container>
-				<LoginCard>
+				<PageContainer alignItems="center">
 					<Title>Sign In</Title>
 					<Subtitle>Join the DEVx community</Subtitle>
 
@@ -87,7 +123,7 @@ export default function Login() {
 							Continue with GitHub
 						</Button>
 					</ButtonContainer>
-				</LoginCard>
+				</PageContainer>
 			</Container>
 		</>
 	)
@@ -109,20 +145,6 @@ const Container = styled.main`
 	align-items: center;
 	justify-content: center;
 	padding: 1rem;
-`
-
-const LoginCard = styled.div`
-	background-color: rgba(0, 0, 0, 0.75);
-	backdrop-filter: blur(8px);
-	padding: 3rem;
-	border-radius: 1rem;
-	width: 100%;
-	max-width: 400px;
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	gap: 2rem;
-	box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
 `
 
 const Title = styled.h1`
