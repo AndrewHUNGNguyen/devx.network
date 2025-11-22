@@ -1,12 +1,13 @@
 "use client"
 import styled from "styled-components"
-import { useState, useEffect, useRef } from "react"
+import { useState, useEffect, useRef, useCallback } from "react"
 import { supabaseClient } from "../../lib/supabaseClient"
 
 type Tag = {
 	id: number
 	name: string
 	approved: boolean
+	sort_order?: number
 }
 
 type TagInputProps = {
@@ -27,6 +28,8 @@ export const TagInput = ({
 	const [suggestions, setSuggestions] = useState<Tag[]>([])
 	const [isSearching, setIsSearching] = useState(false)
 	const [highlightedIndex, setHighlightedIndex] = useState(-1)
+	const [draggedTagId, setDraggedTagId] = useState<number | null>(null)
+	const [dragOverIndex, setDragOverIndex] = useState<number | null>(null)
 	const inputRef = useRef<HTMLInputElement>(null)
 	const containerRef = useRef<HTMLDivElement>(null)
 
@@ -44,15 +47,7 @@ export const TagInput = ({
 		return () => document.removeEventListener("mousedown", handleClickOutside)
 	}, [])
 
-	useEffect(() => {
-		if (isAdding && inputRef.current) {
-			inputRef.current.focus()
-			// Load initial suggestions when adding starts
-			loadInitialSuggestions()
-		}
-	}, [isAdding])
-
-	const loadInitialSuggestions = async () => {
+	const loadInitialSuggestions = useCallback(async () => {
 		setIsSearching(true)
 		try {
 			const selectedIds = new Set(selectedTags.map((t) => t.id))
@@ -76,7 +71,15 @@ export const TagInput = ({
 		} finally {
 			setIsSearching(false)
 		}
-	}
+	}, [selectedTags, tableName])
+
+	useEffect(() => {
+		if (isAdding && inputRef.current) {
+			inputRef.current.focus()
+			// Load initial suggestions when adding starts
+			loadInitialSuggestions()
+		}
+	}, [isAdding, loadInitialSuggestions])
 
 	useEffect(() => {
 		const searchTags = async () => {
@@ -170,7 +173,7 @@ export const TagInput = ({
 
 		const debounceTimer = setTimeout(searchTags, 300)
 		return () => clearTimeout(debounceTimer)
-	}, [searchQuery, tableName, selectedTags, isAdding])
+	}, [searchQuery, tableName, selectedTags, isAdding, loadInitialSuggestions])
 
 	const handleAddTag = (tag: Tag) => {
 		if (selectedTags.find((t) => t.id === tag.id)) return
@@ -199,6 +202,55 @@ export const TagInput = ({
 
 	const handleRemoveTag = (tagId: number) => {
 		onTagsChange(selectedTags.filter((t) => t.id !== tagId))
+	}
+
+	const handleDragStart = (e: React.DragEvent, tagId: number) => {
+		if (disabled) return
+		setDraggedTagId(tagId)
+		e.dataTransfer.effectAllowed = "move"
+		e.dataTransfer.setData("text/html", "")
+	}
+
+	const handleDragOver = (e: React.DragEvent, index: number) => {
+		if (disabled || draggedTagId === null) return
+		e.preventDefault()
+		e.dataTransfer.dropEffect = "move"
+		setDragOverIndex(index)
+	}
+
+	const handleDragLeave = () => {
+		setDragOverIndex(null)
+	}
+
+	const handleDrop = (e: React.DragEvent, dropIndex: number) => {
+		if (disabled || draggedTagId === null) return
+		e.preventDefault()
+
+		const draggedIndex = selectedTags.findIndex((t) => t.id === draggedTagId)
+		if (draggedIndex === -1 || draggedIndex === dropIndex) {
+			setDraggedTagId(null)
+			setDragOverIndex(null)
+			return
+		}
+
+		const newTags = [...selectedTags]
+		const [draggedTag] = newTags.splice(draggedIndex, 1)
+		newTags.splice(dropIndex, 0, draggedTag)
+
+		// Update sort_order based on new position
+		const tagsWithSortOrder = newTags.map((tag, index) => ({
+			...tag,
+			sort_order: index
+		}))
+
+		onTagsChange(tagsWithSortOrder)
+		setDraggedTagId(null)
+		setDragOverIndex(null)
+	}
+
+	const handleDragEnd = () => {
+		setDraggedTagId(null)
+		setDragOverIndex(null)
 	}
 
 	const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -235,8 +287,19 @@ export const TagInput = ({
 	return (
 		<Container ref={containerRef}>
 			<TagCloud>
-				{selectedTags.map((tag) => (
-					<TagPill key={tag.id} $approved={tag.approved}>
+				{selectedTags.map((tag, index) => (
+					<TagPill
+						key={tag.id}
+						$approved={tag.approved}
+						$isDragging={draggedTagId === tag.id}
+						$dragOver={dragOverIndex === index}
+						draggable={!disabled}
+						onDragStart={(e) => handleDragStart(e, tag.id)}
+						onDragOver={(e) => handleDragOver(e, index)}
+						onDragLeave={handleDragLeave}
+						onDrop={(e) => handleDrop(e, index)}
+						onDragEnd={handleDragEnd}
+					>
 						{tag.name}
 						{!disabled && (
 							<RemoveButton
@@ -316,7 +379,7 @@ const TagCloud = styled.div`
 	align-items: center;
 `
 
-const TagPill = styled.div<{ $approved: boolean }>`
+const TagPill = styled.div<{ $approved: boolean; $isDragging?: boolean; $dragOver?: boolean }>`
 	display: inline-flex;
 	align-items: center;
 	gap: 0.375rem;
@@ -330,10 +393,25 @@ const TagPill = styled.div<{ $approved: boolean }>`
 	color: white;
 	font-weight: 500;
 	transition: all 0.2s ease;
+	cursor: ${(props) => (props.draggable ? "grab" : "default")};
+	opacity: ${(props) => (props.$isDragging ? 0.5 : 1)};
+	transform: ${(props) => (props.$isDragging ? "scale(0.95)" : "scale(1)")};
+	border-color: ${(props) =>
+		props.$dragOver
+			? props.$approved
+				? "rgba(255, 255, 255, 0.6)"
+				: "rgba(255, 193, 7, 0.8)"
+			: props.$approved
+				? "rgba(255, 255, 255, 0.3)"
+				: "rgba(255, 193, 7, 0.5)"};
 
 	&:hover {
 		background-color: ${(props) =>
 			props.$approved ? "rgba(255, 255, 255, 0.25)" : "rgba(255, 243, 205, 0.4)"};
+	}
+
+	&:active {
+		cursor: ${(props) => (props.draggable ? "grabbing" : "default")};
 	}
 `
 

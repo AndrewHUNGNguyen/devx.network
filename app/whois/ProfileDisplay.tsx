@@ -24,6 +24,7 @@ type Tag = {
 	id: number
 	name: string
 	approved: boolean
+	sort_order?: number
 }
 
 type Link = {
@@ -125,11 +126,12 @@ export function ProfileDisplay({
 			tagIds.push(tagId)
 		}
 
-		// Create links
+		// Create links with sort_order
 		if (tagIds.length > 0) {
-			const links = tagIds.map((tagId) => ({
+			const links = tagIds.map((tagId, index) => ({
 				profile_id: profileId,
-				[foreignKey]: tagId
+				[foreignKey]: tagId,
+				sort_order: tags[index]?.sort_order ?? index
 			}))
 
 			const { error } = await supabaseClient.from(junctionTable).insert(links)
@@ -184,6 +186,7 @@ export function ProfileDisplay({
 						.select(
 							`
 							interest_id,
+							sort_order,
 							interests (
 								id,
 								name,
@@ -192,12 +195,14 @@ export function ProfileDisplay({
 						`
 						)
 						.eq("profile_id", profileId)
+						.order("sort_order", { ascending: true })
 
 					const interests: Tag[] =
 						interestsData?.map((item: any) => ({
 							id: item.interests.id,
 							name: item.interests.name,
-							approved: item.interests.approved
+							approved: item.interests.approved,
+							sort_order: item.sort_order
 						})) || []
 
 					const { data: skillsData } = await supabaseClient
@@ -205,6 +210,7 @@ export function ProfileDisplay({
 						.select(
 							`
 							skill_id,
+							sort_order,
 							skills (
 								id,
 								name,
@@ -213,12 +219,14 @@ export function ProfileDisplay({
 						`
 						)
 						.eq("profile_id", profileId)
+						.order("sort_order", { ascending: true })
 
 					const skills: Tag[] =
 						skillsData?.map((item: any) => ({
 							id: item.skills.id,
 							name: item.skills.name,
-							approved: item.skills.approved
+							approved: item.skills.approved,
+							sort_order: item.sort_order
 						})) || []
 
 					// Reload links

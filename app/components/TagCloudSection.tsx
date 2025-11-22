@@ -7,6 +7,7 @@ type Tag = {
 	id: number
 	name: string
 	approved: boolean
+	sort_order?: number
 }
 
 type TagCloudSectionProps = {

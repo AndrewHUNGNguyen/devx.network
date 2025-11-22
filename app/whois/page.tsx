@@ -24,6 +24,7 @@ type Tag = {
 	id: number
 	name: string
 	approved: boolean
+	sort_order?: number
 }
 
 type Link = {
@@ -123,6 +124,7 @@ export default function Who() {
 					.select(
 						`
 						interest_id,
+						sort_order,
 						interests (
 							id,
 							name,
@@ -131,12 +133,14 @@ export default function Who() {
 					`
 					)
 					.eq("profile_id", profileData.id)
+					.order("sort_order", { ascending: true })
 
 				const interests: Tag[] =
 					interestsData?.map((item: any) => ({
 						id: item.interests.id,
 						name: item.interests.name,
-						approved: item.interests.approved
+						approved: item.interests.approved,
+						sort_order: item.sort_order
 					})) || []
 
 				// Load skills
@@ -145,6 +149,7 @@ export default function Who() {
 					.select(
 						`
 						skill_id,
+						sort_order,
 						skills (
 							id,
 							name,
@@ -153,12 +158,14 @@ export default function Who() {
 					`
 					)
 					.eq("profile_id", profileData.id)
+					.order("sort_order", { ascending: true })
 
 				const skills: Tag[] =
 					skillsData?.map((item: any) => ({
 						id: item.skills.id,
 						name: item.skills.name,
-						approved: item.skills.approved
+						approved: item.skills.approved,
+						sort_order: item.sort_order
 					})) || []
 
 				// Load links
