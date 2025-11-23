@@ -48,6 +48,9 @@ export const LinkInput = ({ selectedLinks, onLinksChange, disabled = false }: Li
 	const [isAdding, setIsAdding] = useState(false)
 	const [inputValue, setInputValue] = useState("")
 	const [error, setError] = useState<string | null>(null)
+	const [draggedLinkId, setDraggedLinkId] = useState<number | null>(null)
+	const [dragOverIndex, setDragOverIndex] = useState<number | null>(null)
+	const hasDraggedRef = useRef(false)
 	const inputRef = useRef<HTMLInputElement>(null)
 	const containerRef = useRef<HTMLDivElement>(null)
 
@@ -124,15 +127,84 @@ export const LinkInput = ({ selectedLinks, onLinksChange, disabled = false }: Li
 		setError(null)
 	}
 
-	const handleLinkClick = (url: string) => {
+	const handleDragStart = (e: React.DragEvent, linkId: number) => {
+		if (disabled) return
+		setDraggedLinkId(linkId)
+		hasDraggedRef.current = false
+		e.dataTransfer.effectAllowed = "move"
+		e.dataTransfer.setData("text/html", "")
+	}
+
+	const handleDragOver = (e: React.DragEvent, index: number) => {
+		if (disabled || draggedLinkId === null) return
+		e.preventDefault()
+		e.dataTransfer.dropEffect = "move"
+		setDragOverIndex(index)
+		hasDraggedRef.current = true
+	}
+
+	const handleDragLeave = () => {
+		setDragOverIndex(null)
+	}
+
+	const handleDrop = (e: React.DragEvent, dropIndex: number) => {
+		if (disabled || draggedLinkId === null) return
+		e.preventDefault()
+
+		const draggedIndex = selectedLinks.findIndex((l) => l.id === draggedLinkId)
+		if (draggedIndex === -1 || draggedIndex === dropIndex) {
+			setDraggedLinkId(null)
+			setDragOverIndex(null)
+			hasDraggedRef.current = false
+			return
+		}
+
+		const newLinks = [...selectedLinks]
+		const [draggedLink] = newLinks.splice(draggedIndex, 1)
+		newLinks.splice(dropIndex, 0, draggedLink)
+
+		onLinksChange(newLinks)
+		setDraggedLinkId(null)
+		setDragOverIndex(null)
+		hasDraggedRef.current = false
+	}
+
+	const handleDragEnd = () => {
+		setDraggedLinkId(null)
+		setDragOverIndex(null)
+		// Reset hasDragged after a short delay to allow click handler to check it
+		setTimeout(() => {
+			hasDraggedRef.current = false
+		}, 0)
+	}
+
+	const handleLinkClick = (url: string, e: React.MouseEvent) => {
+		// Prevent click if we just dragged
+		if (hasDraggedRef.current) {
+			e.preventDefault()
+			e.stopPropagation()
+			return
+		}
 		window.open(url, "_blank", "noopener,noreferrer")
 	}
 
 	return (
 		<Container ref={containerRef}>
 			<LinkCloud>
-				{selectedLinks.map((link) => (
-					<LinkPill key={link.id} onClick={() => handleLinkClick(link.url)} title={link.url}>
+				{selectedLinks.map((link, index) => (
+					<LinkPill
+						key={link.id}
+						$isDragging={draggedLinkId === link.id}
+						$dragOver={dragOverIndex === index}
+						draggable={!disabled}
+						onDragStart={(e) => handleDragStart(e, link.id)}
+						onDragOver={(e) => handleDragOver(e, index)}
+						onDragLeave={handleDragLeave}
+						onDrop={(e) => handleDrop(e, index)}
+						onDragEnd={handleDragEnd}
+						onClick={(e) => handleLinkClick(link.url, e)}
+						title={link.url}
+					>
 						{getDomainFromUrl(link.url)}
 						{!disabled && (
 							<RemoveButton
@@ -188,7 +260,7 @@ const LinkCloud = styled.div`
 	align-items: center;
 `
 
-const LinkPill = styled.div`
+const LinkPill = styled.div<{ $isDragging?: boolean; $dragOver?: boolean }>`
 	display: inline-flex;
 	align-items: center;
 	gap: 0.375rem;
@@ -200,10 +272,18 @@ const LinkPill = styled.div`
 	color: white;
 	font-weight: 500;
 	transition: all 0.2s ease;
-	cursor: pointer;
+	cursor: ${(props) => (props.draggable ? "grab" : "pointer")};
+	opacity: ${(props) => (props.$isDragging ? 0.5 : 1)};
+	transform: ${(props) => (props.$isDragging ? "scale(0.95)" : "scale(1)")};
+	border-color: ${(props) =>
+		props.$dragOver ? "rgba(255, 255, 255, 0.6)" : "rgba(255, 255, 255, 0.3)"};
 
 	&:hover {
 		background-color: rgba(255, 255, 255, 0.25);
+	}
+
+	&:active {
+		cursor: ${(props) => (props.draggable ? "grabbing" : "pointer")};
 	}
 `
 
