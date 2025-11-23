@@ -232,6 +232,20 @@ export const Header = () => {
 					</CloseButton>
 				</RightSidebarHeader>
 				<AccountMenuContent>
+					{userHandle && (
+						<>
+							<AccountMenuItem>
+								<AccountMenuLink href={`/whois?${userHandle}`} onClick={closeAccountMenu}>
+									Nametag
+								</AccountMenuLink>
+							</AccountMenuItem>
+							<AccountMenuItem>
+								<AccountMenuLink href="/whois" onClick={closeAccountMenu}>
+									All Members
+								</AccountMenuLink>
+							</AccountMenuItem>
+						</>
+					)}
 					{!userHandle && (
 						<AccountMenuItem>
 							<AccountMenuLink href="/setup" onClick={closeAccountMenu}>
@@ -239,9 +253,12 @@ export const Header = () => {
 							</AccountMenuLink>
 						</AccountMenuItem>
 					)}
-					<AccountMenuItem>
-						<AccountMenuButton onClick={handleSignOut}>Sign Out</AccountMenuButton>
-					</AccountMenuItem>
+					<AccountMenuDivider />
+					{user && (
+						<AccountMenuItem>
+							<AccountMenuButton onClick={handleSignOut}>Sign Out</AccountMenuButton>
+						</AccountMenuItem>
+					)}
 				</AccountMenuContent>
 			</RightSidebar>
 		</>
