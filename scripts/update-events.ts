@@ -563,7 +563,7 @@ async function scrapeEventPage(
 
 					if (normalizedText) {
 						domLocationText = normalizedText
-						const cityStateRegex = /([A-Za-z][A-Za-z\s.'-]+?),\s*([A-Z]{2})(?:\s|,|$)/
+						const cityStateRegex = /([A-Za-z](?:[A-Za-z\s.']|-)+?),\s*([A-Z]{2})(?:\s|,|$)/
 						const cityStateMatch = normalizedText.match(cityStateRegex)
 
 						if (cityStateMatch) {

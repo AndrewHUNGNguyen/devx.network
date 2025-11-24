@@ -117,7 +117,7 @@ export default function Setup() {
 			}
 
 			// Validate handle format: lowercase alphanumeric with underscores/hyphens, 3-30 chars
-			const handleRegex = /^[a-z0-9_-]+$/
+			const handleRegex = /^(?:[a-z0-9_]|-)+$/
 			if (!handleRegex.test(handle) || handle.length < 3 || handle.length > 30) {
 				setHandleAvailable(false)
 				return
@@ -305,7 +305,7 @@ export default function Setup() {
 									onChange={(e) => setHandle(e.target.value.toLowerCase())}
 									placeholder="your-handle"
 									required
-									pattern="[a-z0-9_-]{3,30}"
+									pattern="(?:[a-z0-9_]|-){3,30}"
 									minLength={3}
 									maxLength={30}
 								/>
