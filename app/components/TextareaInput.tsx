@@ -4,26 +4,29 @@ import { forwardRef } from "react"
 
 // Types //
 
-type BaseInputProps = Omit<React.InputHTMLAttributes<HTMLInputElement>, "size">
+type BaseTextareaProps = Omit<React.TextareaHTMLAttributes<HTMLTextAreaElement>, "size">
 
-interface TextInputProps extends BaseInputProps {
+interface TextareaInputProps extends BaseTextareaProps {
 	variant?: "primary" | "secondary"
 	size?: "small" | "default"
 }
 
 // Components //
 
-export const TextInput = forwardRef<HTMLInputElement, TextInputProps>(
-	({ variant = "secondary", size = "small", ...props }, ref) => {
-		return <StyledInput ref={ref} $variant={variant} $size={size} {...props} />
+export const TextareaInput = forwardRef<HTMLTextAreaElement, TextareaInputProps>(
+	({ variant = "secondary", size = "default", ...props }, ref) => {
+		return <StyledTextarea ref={ref} $variant={variant} $size={size} {...props} />
 	}
 )
 
-TextInput.displayName = "TextInput"
+TextareaInput.displayName = "TextareaInput"
 
 // Styled Components //
 
-const StyledInput = styled.input<{ $variant: "primary" | "secondary"; $size: "small" | "default" }>`
+const StyledTextarea = styled.textarea<{
+	$variant: "primary" | "secondary"
+	$size: "small" | "default"
+}>`
 	padding: ${(props) => (props.$size === "small" ? "0.5rem 1rem" : "0.75rem 1.5rem")};
 	border-radius: 0.25rem;
 	font-weight: ${(props) => (props.$size === "small" ? "500" : "600")};
@@ -33,6 +36,7 @@ const StyledInput = styled.input<{ $variant: "primary" | "secondary"; $size: "sm
 	transition: all 0.2s ease;
 	width: 100%;
 	box-sizing: border-box;
+	resize: vertical;
 	background-color: ${(props) => (props.$variant === "primary" ? "white" : "transparent")};
 	color: ${(props) => (props.$variant === "primary" ? "black" : "white")};
 	border: ${(props) =>
