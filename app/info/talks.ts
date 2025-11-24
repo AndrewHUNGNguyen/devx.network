@@ -5,6 +5,34 @@ TODO: Fill in missing startTime/endTime values by watching videos
 */
 
 export const talks = [
+	// November 2025
+	{
+		videoId: "JH8mz4Kkxvk",
+		speaker: "Rick Moy",
+		title: "UpSight: Teach Your App to Talk",
+		date: "2025-11-23",
+		year: 2025,
+		startTime: "5m32s",
+		endTime: "28m40s"
+	},
+	{
+		videoId: "JH8mz4Kkxvk",
+		speaker: "Tony Bubbins",
+		title: "A Crash Course in on-premise AI",
+		date: "2025-11-23",
+		year: 2025,
+		startTime: "28m52s",
+		endTime: "56m20s"
+	},
+	{
+		videoId: "JH8mz4Kkxvk",
+		speaker: "Sam Holmes",
+		title: "DEVx Announcement",
+		date: "2025-11-23",
+		year: 2025,
+		startTime: "66m6s",
+		endTime: "71m52s"
+	},
 	// August 2025
 	{
 		videoId: "VIEHeDUsjjA",
