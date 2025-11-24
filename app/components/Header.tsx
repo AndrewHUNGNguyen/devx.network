@@ -294,6 +294,10 @@ const Container = styled.header`
 	backdrop-filter: blur(38px);
 	border-bottom: 1px solid rgba(0, 0, 0, 0.1);
 	z-index: 100;
+
+	body.full & {
+		position: fixed;
+	}
 `
 
 const Nav = styled.nav`
