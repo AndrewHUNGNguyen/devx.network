@@ -48,7 +48,9 @@ export default function Who() {
 		if (typeof window === "undefined") return ""
 		const search = window.location.search
 		if (search.startsWith("?")) {
-			return search.substring(1).split("&")[0]
+			const firstParam = search.substring(1).split("&")[0]
+			// Handle cases like "sam=" by splitting on = and taking the part before it
+			return firstParam.split("=")[0]
 		}
 		return ""
 	}
