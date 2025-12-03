@@ -1,6 +1,6 @@
 "use client"
 import styled from "styled-components"
-import { useState, useEffect, useRef } from "react"
+import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { supabaseClient } from "../../lib/supabaseClient"
 import { updateProfileCache } from "../../lib/profileCache"
@@ -8,7 +8,7 @@ import { PotionBackground } from "../components/PotionBackground"
 import { Nametag } from "../components/Nametag"
 import { TextInput } from "../components/TextInput"
 import { Button } from "../components/Button"
-import { QuestionIcon } from "../components/icons"
+import { HelpInfoButton } from "../components/HelpInfoButton"
 
 type NametagData = {
 	fullName: string
@@ -24,8 +24,6 @@ export default function Setup() {
 	const [handle, setHandle] = useState("")
 	const [handleAvailable, setHandleAvailable] = useState<boolean | null>(null)
 	const [checkingHandle, setCheckingHandle] = useState(false)
-	const [handleHelpOpen, setHandleHelpOpen] = useState(false)
-	const handleHelpRef = useRef<HTMLDivElement | null>(null)
 	const [nametagData, setNametagData] = useState<NametagData>({
 		fullName: "",
 		title: "",
@@ -110,22 +108,6 @@ export default function Setup() {
 
 		checkAuth()
 	}, [router])
-
-	// Close handle help tooltip when clicking outside, matching Nametag tooltip behavior
-	useEffect(() => {
-		if (!handleHelpOpen) return
-
-		const handleClickOutside = (event: MouseEvent) => {
-			if (handleHelpRef.current && !handleHelpRef.current.contains(event.target as Node)) {
-				setHandleHelpOpen(false)
-			}
-		}
-
-		document.addEventListener("mousedown", handleClickOutside)
-		return () => {
-			document.removeEventListener("mousedown", handleClickOutside)
-		}
-	}, [handleHelpOpen])
 
 	// Check handle availability
 	useEffect(() => {
@@ -329,17 +311,9 @@ export default function Setup() {
 										minLength={3}
 										maxLength={30}
 									/>
-									<HandleHelpIconWrapper
-										ref={handleHelpRef}
-										onClick={() => setHandleHelpOpen((open) => !open)}
-									>
-										<QuestionIcon />
-										{handleHelpOpen && (
-											<HandleTooltip>
-												Your unique DEVx username, used for your nametag or public profile.
-											</HandleTooltip>
-										)}
-									</HandleHelpIconWrapper>
+									<HelpInfoButton minWidth="220px" maxWidth="260px">
+										Your unique DEVx username, used for your nametag or public profile.
+									</HelpInfoButton>
 								</HandleInputRow>
 								{handle && (
 									<HandleStatus>
@@ -476,44 +450,6 @@ const HandleInputRow = styled.div`
 	align-items: center;
 	gap: 0.5rem;
 	width: 100%;
-`
-
-const HandleHelpIconWrapper = styled.div`
-	position: relative;
-	cursor: pointer;
-	display: inline-flex;
-	align-items: center;
-	justify-content: center;
-	color: rgba(255, 255, 255, 0.6);
-	transition: color 0.2s ease;
-	flex-shrink: 0;
-
-	&:hover {
-		color: rgba(255, 255, 255, 0.9);
-	}
-`
-
-const HandleTooltip = styled.div`
-	position: absolute;
-	bottom: calc(100% + 8px);
-	right: 0;
-	background: rgba(0, 0, 0, 0.95);
-	color: rgba(255, 255, 255, 0.95);
-	padding: 0.75rem 1rem;
-	border-radius: 8px;
-	font-size: 0.875rem;
-	line-height: 1.4;
-	white-space: normal;
-	min-width: 220px;
-	max-width: 260px;
-	width: max-content;
-	z-index: 1000;
-	box-shadow:
-		0 4px 12px rgba(0, 0, 0, 0.4),
-		0 0 0 1px rgba(255, 255, 255, 0.1);
-	pointer-events: auto;
-	opacity: 1;
-	transform: translateY(0);
 `
 
 const HandleStatus = styled.div`
