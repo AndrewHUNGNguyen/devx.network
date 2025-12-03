@@ -1,0 +1,110 @@
+"use client"
+import { useState, useRef, useEffect, type ReactNode } from "react"
+import styled from "styled-components"
+import { QuestionIcon } from "./icons"
+
+type HelpInfoButtonProps = {
+	children: ReactNode
+	isOpen?: boolean
+	onOpenChange?: (open: boolean) => void
+	minWidth?: string
+	maxWidth?: string
+}
+
+export const HelpInfoButton = ({
+	children,
+	isOpen,
+	onOpenChange,
+	minWidth,
+	maxWidth
+}: HelpInfoButtonProps) => {
+	const [internalOpen, setInternalOpen] = useState(false)
+	const wrapperRef = useRef<HTMLDivElement | null>(null)
+
+	const open = isOpen ?? internalOpen
+
+	const setOpen = (next: boolean) => {
+		if (onOpenChange) {
+			onOpenChange(next)
+		}
+		if (isOpen === undefined) {
+			setInternalOpen(next)
+		}
+	}
+
+	const handleToggle = () => {
+		setOpen(!open)
+	}
+
+	useEffect(() => {
+		if (!open) return
+
+		const handleClickOutside = (event: MouseEvent) => {
+			if (wrapperRef.current && !wrapperRef.current.contains(event.target as Node)) {
+				setOpen(false)
+			}
+		}
+
+		document.addEventListener("mousedown", handleClickOutside)
+		return () => {
+			document.removeEventListener("mousedown", handleClickOutside)
+		}
+	}, [open, setOpen])
+
+	return (
+		<HelpIconWrapper ref={wrapperRef} onClick={handleToggle}>
+			<QuestionIcon />
+			{open && (
+				<Tooltip $minWidth={minWidth} $maxWidth={maxWidth}>
+					{children}
+				</Tooltip>
+			)}
+		</HelpIconWrapper>
+	)
+}
+
+const HelpIconWrapper = styled.div`
+	position: relative;
+	cursor: pointer;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	color: rgba(255, 255, 255, 0.6);
+	transition: color 0.2s ease;
+	flex-shrink: 0;
+
+	&:hover {
+		color: rgba(255, 255, 255, 0.9);
+	}
+`
+
+const Tooltip = styled.div<{ $minWidth?: string; $maxWidth?: string }>`
+	position: absolute;
+	bottom: calc(100% + 8px);
+	right: 0;
+	background: rgba(0, 0, 0, 0.95);
+	color: rgba(255, 255, 255, 0.95);
+	padding: 0.75rem 1rem;
+	border-radius: 8px;
+	font-size: 0.875rem;
+	line-height: 1.4;
+	white-space: normal;
+	min-width: ${(props) => props.$minWidth || "200px"};
+	max-width: ${(props) => props.$maxWidth || "250px"};
+	width: max-content;
+	z-index: 1000;
+	box-shadow:
+		0 4px 12px rgba(0, 0, 0, 0.4),
+		0 0 0 1px rgba(255, 255, 255, 0.1);
+	pointer-events: auto;
+
+	&::after {
+		content: "";
+		position: absolute;
+		top: 100%;
+		right: 1rem;
+		transform: translateX(50%);
+		border: 6px solid transparent;
+		border-top-color: rgba(0, 0, 0, 0.95);
+	}
+`
