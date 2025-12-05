@@ -5,43 +5,24 @@ import { QuestionIcon } from "./icons"
 
 type HelpInfoButtonProps = {
 	children: ReactNode
-	isOpen?: boolean
-	onOpenChange?: (open: boolean) => void
 	minWidth?: string
 	maxWidth?: string
 }
 
-export const HelpInfoButton = ({
-	children,
-	isOpen,
-	onOpenChange,
-	minWidth,
-	maxWidth
-}: HelpInfoButtonProps) => {
-	const [internalOpen, setInternalOpen] = useState(false)
+export const HelpInfoButton = ({ children, minWidth, maxWidth }: HelpInfoButtonProps) => {
+	const [isOpen, setIsOpen] = useState(false)
 	const wrapperRef = useRef<HTMLDivElement | null>(null)
 
-	const open = isOpen ?? internalOpen
-
-	const setOpen = (next: boolean) => {
-		if (onOpenChange) {
-			onOpenChange(next)
-		}
-		if (isOpen === undefined) {
-			setInternalOpen(next)
-		}
-	}
-
 	const handleToggle = () => {
-		setOpen(!open)
+		setIsOpen(!isOpen)
 	}
 
 	useEffect(() => {
-		if (!open) return
+		if (!isOpen) return
 
 		const handleClickOutside = (event: MouseEvent) => {
 			if (wrapperRef.current && !wrapperRef.current.contains(event.target as Node)) {
-				setOpen(false)
+				setIsOpen(false)
 			}
 		}
 
@@ -49,12 +30,12 @@ export const HelpInfoButton = ({
 		return () => {
 			document.removeEventListener("mousedown", handleClickOutside)
 		}
-	}, [open, setOpen])
+	}, [isOpen])
 
 	return (
 		<HelpIconWrapper ref={wrapperRef} onClick={handleToggle}>
 			<QuestionIcon />
-			{open && (
+			{isOpen && (
 				<Tooltip $minWidth={minWidth} $maxWidth={maxWidth}>
 					{children}
 				</Tooltip>

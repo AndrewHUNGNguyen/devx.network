@@ -41,7 +41,6 @@ export const Nametag = ({
 	const [rotation, setRotation] = useState({ x: 0, y: 0 })
 	const fileInputRef = useRef<HTMLInputElement>(null)
 	const containerRef = useRef<HTMLDivElement>(null)
-	const [openTooltip, setOpenTooltip] = useState<string | null>(null)
 
 	// In forced edit mode, always keep editing enabled (unless readOnly)
 	// In readOnly mode, never allow editing
@@ -78,10 +77,6 @@ export const Nametag = ({
 		setFormData(data)
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [data, isEditing])
-
-	const handleTooltipOpenChange = (fieldName: string, open: boolean) => {
-		setOpenTooltip(open ? fieldName : null)
-	}
 
 	const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
 		if (!containerRef.current) return
@@ -285,12 +280,7 @@ export const Nametag = ({
 								required
 							/>
 						</NametagInputWrapper>
-						<HelpInfoButton
-							isOpen={openTooltip === "title"}
-							onOpenChange={(open) => handleTooltipOpenChange("title", open)}
-						>
-							Your job title or role.
-						</HelpInfoButton>
+						<HelpInfoButton>Your job title or role.</HelpInfoButton>
 					</InputWithHelpContainer>
 				</NametagInputGroup>
 
@@ -312,12 +302,7 @@ export const Nametag = ({
 								required
 							/>
 						</NametagInputWrapper>
-						<HelpInfoButton
-							isOpen={openTooltip === "affiliation"}
-							onOpenChange={(open) => handleTooltipOpenChange("affiliation", open)}
-						>
-							Your company, organization, or school name.
-						</HelpInfoButton>
+						<HelpInfoButton>Your company, organization, or school name.</HelpInfoButton>
 					</InputWithHelpContainer>
 				</NametagInputGroup>
 			</NametagRight>

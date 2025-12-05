@@ -24,7 +24,6 @@ export default function Setup() {
 	const [handle, setHandle] = useState("")
 	const [handleAvailable, setHandleAvailable] = useState<boolean | null>(null)
 	const [checkingHandle, setCheckingHandle] = useState(false)
-	const [handleHelpOpen, setHandleHelpOpen] = useState(false)
 	const [nametagData, setNametagData] = useState<NametagData>({
 		fullName: "",
 		title: "",
@@ -312,12 +311,7 @@ export default function Setup() {
 										minLength={3}
 										maxLength={30}
 									/>
-									<HelpInfoButton
-										isOpen={handleHelpOpen}
-										onOpenChange={setHandleHelpOpen}
-										minWidth="220px"
-										maxWidth="260px"
-									>
+									<HelpInfoButton minWidth="220px" maxWidth="260px">
 										Your unique DEVx username, used for your nametag or public profile.
 									</HelpInfoButton>
 								</HandleInputRow>
