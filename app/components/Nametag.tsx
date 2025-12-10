@@ -3,7 +3,8 @@ import styled from "styled-components"
 import { useState, useRef, useEffect } from "react"
 import { TextInput } from "./TextInput"
 import { Button } from "./Button"
-import { EditIcon, CameraIcon, QuestionIcon } from "./icons"
+import { EditIcon, CameraIcon } from "./icons"
+import { HelpInfoButton } from "./HelpInfoButton"
 
 type NametagData = {
 	fullName: string
@@ -38,10 +39,8 @@ export const Nametag = ({
 	const [isEditing, setIsEditing] = useState(initialEditing || forcedEditMode)
 	const [formData, setFormData] = useState<NametagData>(data)
 	const [rotation, setRotation] = useState({ x: 0, y: 0 })
-	const [openTooltip, setOpenTooltip] = useState<string | null>(null)
 	const fileInputRef = useRef<HTMLInputElement>(null)
 	const containerRef = useRef<HTMLDivElement>(null)
-	const tooltipRefs = useRef<{ [key: string]: HTMLDivElement | null }>({})
 
 	// In forced edit mode, always keep editing enabled (unless readOnly)
 	// In readOnly mode, never allow editing
@@ -78,29 +77,6 @@ export const Nametag = ({
 		setFormData(data)
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [data, isEditing])
-
-	// Close tooltip when clicking outside
-	useEffect(() => {
-		const handleClickOutside = (event: MouseEvent) => {
-			if (openTooltip) {
-				const tooltipElement = tooltipRefs.current[openTooltip]
-				if (tooltipElement && !tooltipElement.contains(event.target as Node)) {
-					setOpenTooltip(null)
-				}
-			}
-		}
-
-		if (openTooltip) {
-			document.addEventListener("mousedown", handleClickOutside)
-			return () => {
-				document.removeEventListener("mousedown", handleClickOutside)
-			}
-		}
-	}, [openTooltip])
-
-	const toggleTooltip = (fieldName: string) => {
-		setOpenTooltip(openTooltip === fieldName ? null : fieldName)
-	}
 
 	const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
 		if (!containerRef.current) return
@@ -304,18 +280,7 @@ export const Nametag = ({
 								required
 							/>
 						</NametagInputWrapper>
-						<HelpIconWrapper onClick={() => toggleTooltip("title")}>
-							<QuestionIcon />
-							{openTooltip === "title" && (
-								<Tooltip
-									ref={(el) => {
-										tooltipRefs.current["title"] = el
-									}}
-								>
-									Your job title or role.
-								</Tooltip>
-							)}
-						</HelpIconWrapper>
+						<HelpInfoButton>Your job title or role.</HelpInfoButton>
 					</InputWithHelpContainer>
 				</NametagInputGroup>
 
@@ -337,18 +302,7 @@ export const Nametag = ({
 								required
 							/>
 						</NametagInputWrapper>
-						<HelpIconWrapper onClick={() => toggleTooltip("affiliation")}>
-							<QuestionIcon />
-							{openTooltip === "affiliation" && (
-								<Tooltip
-									ref={(el) => {
-										tooltipRefs.current["affiliation"] = el
-									}}
-								>
-									Your company, organization, or school name.
-								</Tooltip>
-							)}
-						</HelpIconWrapper>
+						<HelpInfoButton>Your company, organization, or school name.</HelpInfoButton>
 					</InputWithHelpContainer>
 				</NametagInputGroup>
 			</NametagRight>
@@ -669,52 +623,6 @@ const NametagInputWrapper = styled.div<{ $fontSize?: string; $fontWeight?: strin
 			border-bottom-color: rgba(156, 163, 255, 0.8);
 			background: rgba(255, 255, 255, 0.05);
 		}
-	}
-`
-
-const HelpIconWrapper = styled.div`
-	position: relative;
-	cursor: pointer;
-	display: inline-flex;
-	align-items: center;
-	justify-content: center;
-	color: rgba(255, 255, 255, 0.6);
-	transition: color 0.2s ease;
-	flex-shrink: 0;
-
-	&:hover {
-		color: rgba(255, 255, 255, 0.9);
-	}
-`
-
-const Tooltip = styled.div`
-	position: absolute;
-	bottom: calc(100% + 8px);
-	right: 0;
-	background: rgba(0, 0, 0, 0.95);
-	color: rgba(255, 255, 255, 0.95);
-	padding: 0.75rem 1rem;
-	border-radius: 8px;
-	font-size: 0.875rem;
-	line-height: 1.4;
-	white-space: normal;
-	min-width: 200px;
-	max-width: 250px;
-	width: max-content;
-	z-index: 1000;
-	box-shadow:
-		0 4px 12px rgba(0, 0, 0, 0.4),
-		0 0 0 1px rgba(255, 255, 255, 0.1);
-	pointer-events: auto;
-
-	&::after {
-		content: "";
-		position: absolute;
-		top: 100%;
-		right: 1rem;
-		transform: translateX(50%);
-		border: 6px solid transparent;
-		border-top-color: rgba(0, 0, 0, 0.95);
 	}
 `
 

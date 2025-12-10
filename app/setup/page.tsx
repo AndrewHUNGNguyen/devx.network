@@ -8,6 +8,7 @@ import { PotionBackground } from "../components/PotionBackground"
 import { Nametag } from "../components/Nametag"
 import { TextInput } from "../components/TextInput"
 import { Button } from "../components/Button"
+import { HelpInfoButton } from "../components/HelpInfoButton"
 
 type NametagData = {
 	fullName: string
@@ -298,17 +299,22 @@ export default function Setup() {
 						<Section>
 							<SectionTitle>Choose a handle</SectionTitle>
 							<HandleInputWrapper>
-								<TextInput
-									variant="secondary"
-									size="default"
-									value={handle}
-									onChange={(e) => setHandle(e.target.value.toLowerCase())}
-									placeholder="your-handle"
-									required
-									pattern="(?:[a-z0-9_]|-){3,30}"
-									minLength={3}
-									maxLength={30}
-								/>
+								<HandleInputRow>
+									<TextInput
+										variant="secondary"
+										size="default"
+										value={handle}
+										onChange={(e) => setHandle(e.target.value.toLowerCase())}
+										placeholder="your-handle"
+										required
+										pattern="(?:[a-z0-9_]|-){3,30}"
+										minLength={3}
+										maxLength={30}
+									/>
+									<HelpInfoButton minWidth="220px" maxWidth="260px">
+										Your unique DEVx username, used for your nametag or public profile.
+									</HelpInfoButton>
+								</HandleInputRow>
 								{handle && (
 									<HandleStatus>
 										{checkingHandle ? (
@@ -435,6 +441,13 @@ const SectionTitle = styled.h2`
 const HandleInputWrapper = styled.div`
 	display: flex;
 	flex-direction: column;
+	gap: 0.5rem;
+	width: 100%;
+`
+
+const HandleInputRow = styled.div`
+	display: flex;
+	align-items: center;
 	gap: 0.5rem;
 	width: 100%;
 `
